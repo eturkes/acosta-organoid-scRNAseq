@@ -5,13 +5,10 @@
 /cache
 
 # Container files
-*.simg
-/.env
-
-# HPC files
-batch.bash*
+*.sif
 nohup.out
-.Rproj.user
+/run
+/var-lib-rstudio-server
 
 # History files
 .Rhistory
