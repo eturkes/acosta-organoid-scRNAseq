@@ -1,2 +1,22 @@
 BootStrap: docker
 From: rocker/rstudio:4.2.0
+
+%post
+    Rscript \
+        -e "install.packages('base64enc')" \
+        -e "install.packages('digest')" \
+        -e "install.packages('evaluate')" \
+        -e "install.packages('glue')" \
+        -e "install.packages('highr')" \
+        -e "install.packages('htmltools')" \
+        -e "install.packages('jsonlite')" \
+        -e "install.packages('knitr')" \
+        -e "install.packages('magrittr')" \
+        -e "install.packages('rmarkdown')" \
+        -e "install.packages('stringi')" \
+        -e "install.packages('stringr')" \
+        -e "install.packages('xfun')" \
+        -e "install.packages('yaml')"
+    rm -Rf \
+        /tmp/downloaded_packages/ \
+        /tmp/*.rds
