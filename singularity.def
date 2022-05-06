@@ -2,6 +2,11 @@ BootStrap: docker
 From: rocker/rstudio:4.2.0
 
 %post
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        libgeos-dev \
+        libxml2-dev \
+        libglpk-dev
     Rscript \
         -e "install.packages('base64enc')" \
         -e "install.packages('digest')" \
@@ -16,7 +21,17 @@ From: rocker/rstudio:4.2.0
         -e "install.packages('stringi')" \
         -e "install.packages('stringr')" \
         -e "install.packages('xfun')" \
-        -e "install.packages('yaml')"
+        -e "install.packages('yaml')" \
+        -e "install.packages('conflicted')" \
+        -e "install.packages('Seurat')" \
+        -e "install.packages('DT')" \
+        -e "install.packages('viridis')" \
+        -e "install.packages('BiocManager')" \
+        -e "BiocManager::install('SingleCellExperiment')" \
+        -e "BiocManager::install('scuttle')" \
+        -e "BiocManager::install('DropletUtils')"
+    apt-get clean
     rm -Rf \
+        /var/lib/apt/lists/ \
         /tmp/downloaded_packages/ \
         /tmp/*.rds
