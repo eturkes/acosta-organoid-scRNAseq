@@ -1,0 +1,152 @@
+---
+title: '02 Annotation - `r unlist(strsplit(getwd(), "/"))[8]`'
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "02_annotation.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Hongjun Fu, Ohio
+#    State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c(
+  "conflicted", "Seurat", "SingleCellExperiment", "scater", "SingleR", "dplyr", "ggrepel"
+)
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+analysis_no <- 2
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
+```
+
+# Prep
+
+```{r}
+seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
+
+load(file.path(data_dir, "sc_dev_cortex_geschwind", "raw_counts_mat.rdata"))
+cell_metadata <- read.csv(file.path(data_dir, "sc_dev_cortex_geschwind", "cell_metadata.csv"))
+raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% cell_metadata$Cell]
+
+ref <- SingleCellExperiment(list(counts = raw_counts_mat), colData = cell_metadata)
+ref <- logNormCounts(ref)
+ref
+```
+
+# Broad Clusters
+
+```{r}
+table(ref$Cluster)
+
+rds <- file.path(cache_dir, "broad_predictions.rds")
+if (file.exists(rds)) {
+  broad_predictions <- readRDS(rds)
+} else {
+  broad_predictions <- SingleR(
+    GetAssayData(seurat, assay = "RNA"), ref, ref$Cluster, aggr.ref = TRUE
+  )
+  saveRDS(broad_predictions, rds)
+}
+
+table(broad_predictions$labels)
+
+seurat$broad_predictions <- broad_predictions$labels
+
+red_dim_plot(seurat, "umap1", "umap2", "broad_predictions", "cat")
+```
+
+# Subclusters
+
+```{r}
+table(ref$Subcluster)
+
+rds <- file.path(cache_dir, "subcluster_predictions.rds")
+if (file.exists(rds)) {
+  subcluster_predictions <- readRDS(rds)
+} else {
+  subcluster_predictions <- SingleR(
+    GetAssayData(seurat, assay = "RNA"), ref, ref$Subcluster, aggr.ref = TRUE
+  )
+  saveRDS(subcluster_predictions, rds)
+}
+
+table(subcluster_predictions$labels)
+
+seurat$subcluster_predictions <- subcluster_predictions$labels
+
+red_dim_plot(seurat, "umap1", "umap2", "subcluster_predictions")
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```

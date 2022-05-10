@@ -29,7 +29,9 @@ From: rocker/rstudio:4.2.0
         -e "install.packages('BiocManager')" \
         -e "BiocManager::install('SingleCellExperiment')" \
         -e "BiocManager::install('scuttle')" \
-        -e "BiocManager::install('DropletUtils')"
+        -e "BiocManager::install('DropletUtils')" \
+        -e "BiocManager::install('SingleR')" \
+        -e "BiocManager::install('scater')"
     apt-get clean
     rm -Rf \
         /var/lib/apt/lists/ \
