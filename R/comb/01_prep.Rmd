@@ -154,6 +154,8 @@ if (file.exists(rds)) {
 }
 ```
 
+# Normalization & Clustering
+
 ```{r}
 DefaultAssay(seurat) <- "RNA"
 seurat[["SCT"]] <- NULL
