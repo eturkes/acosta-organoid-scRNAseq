@@ -1,0 +1,185 @@
+---
+title: '01 Prep - `r unlist(strsplit(getwd(), "/"))[8]`'
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "01_prep.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we prepare the gene count matrix for downstream analysis.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Hongjun Fu, Ohio
+#    State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c(
+  "conflicted", "Seurat", "SingleCellExperiment", "scuttle", "DT", "DropletUtils", "parallel",
+  "ggplot2", "dplyr", "ggrepel", "viridis"
+)
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+protocol <- c("human", "droplet", "single-cell", "umis") # See `cluster_pipeline` in `utils.R`.
+vars_to_regress <- NULL # See `cluster_pipeline` in `utils.R`.
+parallel_override <- 0 # See `parallel_plan` in `utils.R`.
+
+# Metadata to plot after dimensionality reduction and clustering.
+# Values in list can include "no_legend and/or "no_label" to exclude those.
+# -------------------------------------------------------------------------
+metadata_to_plot <- vector("list", 2)
+names(metadata_to_plot) <- c("sample", "seurat_clusters")
+metadata_to_plot$seurat_clusters <- "no_legend"
+# -------------------------------------------------------------------------
+
+analysis_no <- 1
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
+```
+
+# Merging
+
+```{r}
+rds <- file.path(cache_dir, "seurat_merged.rds")
+if (file.exists(rds)) {
+  seurat <- readRDS(rds)
+} else {
+
+  file_list <- list.files(file.path(cache_dir, "..", ".."), recursive = TRUE)
+  if (length(file_list) == 13) {
+    file_list <- file_list[-1]
+  }
+  files <- vector("list", length(file_list))
+  for (i in seq_along(files)) {
+    files[[i]] <- readRDS(file.path(cache_dir, "..", "..", file_list[i]))
+  }
+
+  genes <- Reduce(
+    intersect,
+    list(
+      rownames(files[[1]]), rownames(files[[2]]), rownames(files[[3]]), rownames(files[[4]]),
+      rownames(files[[5]]), rownames(files[[6]]), rownames(files[[7]]), rownames(files[[8]]),
+      rownames(files[[9]]), rownames(files[[10]]), rownames(files[[11]]), rownames(files[[12]])
+    )
+  )
+  for (i in seq_along(files)) {
+    files[[i]] <- files[[i]][genes, ]
+  }
+
+  seurat <- merge(
+    files[[1]],
+    c(
+      files[[2]], files[[3]], files[[4]], files[[5]], files[[6]], files[[7]],
+      files[[8]], files[[9]], files[[10]], files[[11]], files[[12]]
+    )
+  )
+  seurat$sample <- c(
+    rep(sub("\\/.*", "", file_list[1]), ncol(files[[1]])),
+    rep(sub("\\/.*", "", file_list[2]), ncol(files[[2]])),
+    rep(sub("\\/.*", "", file_list[3]), ncol(files[[3]])),
+    rep(sub("\\/.*", "", file_list[4]), ncol(files[[4]])),
+    rep(sub("\\/.*", "", file_list[5]), ncol(files[[5]])),
+    rep(sub("\\/.*", "", file_list[6]), ncol(files[[6]])),
+    rep(sub("\\/.*", "", file_list[7]), ncol(files[[7]])),
+    rep(sub("\\/.*", "", file_list[8]), ncol(files[[8]])),
+    rep(sub("\\/.*", "", file_list[9]), ncol(files[[9]])),
+    rep(sub("\\/.*", "", file_list[10]), ncol(files[[10]])),
+    rep(sub("\\/.*", "", file_list[11]), ncol(files[[11]])),
+    rep(sub("\\/.*", "", file_list[12]), ncol(files[[12]]))
+  )
+
+  saveRDS(seurat, rds)
+}
+```
+
+```{r}
+DefaultAssay(seurat) <- "RNA"
+seurat[["SCT"]] <- NULL
+sub_name <- "all"
+seurat <- cluster_pipeline(
+  seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend())
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
