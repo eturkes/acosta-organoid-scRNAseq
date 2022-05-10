@@ -89,7 +89,11 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 
 ```{r}
 seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
+```
 
+# Polioudakis et al. 2019
+
+```{r}
 load(file.path(data_dir, "sc_dev_cortex_geschwind", "raw_counts_mat.rdata"))
 cell_metadata <- read.csv(file.path(data_dir, "sc_dev_cortex_geschwind", "cell_metadata.csv"))
 raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% cell_metadata$Cell]
@@ -99,48 +103,48 @@ ref <- logNormCounts(ref)
 ref
 ```
 
-# Broad Clusters
+## Broad Clusters
 
 ```{r}
 table(ref$Cluster)
 
-rds <- file.path(cache_dir, "broad_predictions.rds")
+rds <- file.path(cache_dir, "polioudakis_broad.rds")
 if (file.exists(rds)) {
-  broad_predictions <- readRDS(rds)
+  predictions <- readRDS(rds)
 } else {
-  broad_predictions <- SingleR(
+  predictions <- SingleR(
     GetAssayData(seurat, assay = "RNA"), ref, ref$Cluster, aggr.ref = TRUE
   )
-  saveRDS(broad_predictions, rds)
+  saveRDS(predictions, rds)
 }
 
-table(broad_predictions$labels)
+table(predictions$labels)
 
-seurat$broad_predictions <- broad_predictions$labels
+seurat$polioudakis_broad <- predictions$labels
 
-red_dim_plot(seurat, "umap1", "umap2", "broad_predictions", "cat")
+red_dim_plot(seurat, "umap1", "umap2", "polioudakis_broad", "cat")
 ```
 
-# Subclusters
+## Subclusters
 
 ```{r}
 table(ref$Subcluster)
 
-rds <- file.path(cache_dir, "subcluster_predictions.rds")
+rds <- file.path(cache_dir, "polioudakis_sub.rds")
 if (file.exists(rds)) {
-  subcluster_predictions <- readRDS(rds)
+  predictions <- readRDS(rds)
 } else {
-  subcluster_predictions <- SingleR(
+  predictions <- SingleR(
     GetAssayData(seurat, assay = "RNA"), ref, ref$Subcluster, aggr.ref = TRUE
   )
-  saveRDS(subcluster_predictions, rds)
+  saveRDS(predictions, rds)
 }
 
-table(subcluster_predictions$labels)
+table(predictions$labels)
 
-seurat$subcluster_predictions <- subcluster_predictions$labels
+seurat$polioudakis_sub <- predictions$labels
 
-red_dim_plot(seurat, "umap1", "umap2", "subcluster_predictions")
+red_dim_plot(seurat, "umap1", "umap2", "polioudakis_sub")
 ```
 
 # References
