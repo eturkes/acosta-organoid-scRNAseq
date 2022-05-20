@@ -63,11 +63,9 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c(
-  "conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork", "GSEABase", "GSVA",
-  "dplyr", "ggrepel", "ComplexHeatmap"
-)
+packages <- c("conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+`%notin%` <- Negate(`%in%`)
 source(file.path("..", "utils.R"))
 
 analysis_no <- 2
@@ -97,11 +95,49 @@ bhaduri_markers <- read.xlsx(
 )
 bhaduri_markers <- bhaduri_markers[ , (ncol(bhaduri_markers) - 2):ncol(bhaduri_markers)]
 bhaduri_markers <- bhaduri_markers[-which(is.na(bhaduri_markers$Type)), ]
+
 bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Low Quality"), ]
 bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Microglia low quality"), ]
 bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Outlier"), ]
+
 bhaduri_markers$Rationale[bhaduri_markers$Subtype == "IPC/newborn"] <-
-  c("PPP1R17, SSTR2, KCNQ3, ROBO2")
+  "PPP1R17, SSTR2, KCNQ3, ROBO2"
+bhaduri_markers$Rationale[bhaduri_markers$Subtype == "Endothelial"] <- "CD93, GBN, IL32, IGFPB7"
+
+bhaduri_markers$TypeSubtype <- paste(bhaduri_markers$Type, bhaduri_markers$Subtype, sep = "_")
+dup <- bhaduri_markers[duplicated(bhaduri_markers$TypeSubtype), ]
+bhaduri_markers <- bhaduri_markers[-which(duplicated(bhaduri_markers$TypeSubtype)), ]
+for (i in seq(nrow(dup))) {
+  idx <- match(dup$TypeSubtype[i], bhaduri_markers$TypeSubtype)
+  bhaduri_markers$Rationale[idx] <- paste(
+    bhaduri_markers$Rationale[idx], dup$Rationale[i], sep = ", "
+  )
+}
+
+missing_genes <- unlist(str_split(bhaduri_markers$Rationale, ", "))
+missing_genes <- missing_genes[missing_genes %notin% rownames(seurat)]
+missing_genes <- missing_genes[-which(missing_genes == "")]
+expanded_genes <- vector("list", length(missing_genes))
+for (i in seq_along(missing_genes)) {
+  expanded_genes[[i]] <- rownames(seurat)[grep(missing_genes[i], rownames(seurat))]
+}
+
+add_genes <- vector("list", 4)
+add_genes[[1]] <- expanded_genes[[1]][-1]
+add_genes[[2]] <- expanded_genes[[2]]
+add_genes[[3]] <- expanded_genes[[4]]
+add_genes[[4]] <- expanded_genes[[6]][-1]
+names(add_genes) <- c("AURK", "HMGB", "ROBO", "AIF1")
+
+replace_idx <- vector("list", 4)
+for (i in seq_along(replace_idx)) {
+  replace_idx[[i]] <- grep(names(add_genes)[i], str_split(bhaduri_markers$Rationale, ", "))
+}
+
+bhaduri_markers$Rationale[1] <-
+  "TOP2A, AURKB, AURKC, AURKC, HMGB2, HMGB1, HMGB3, CTNNB1, HES1, VIM, PTN, CLU"
+bhaduri_markers$Rationale[5] <- "MEF2C, STMN2, FLT, ROBO2, ROBO1, ROBO3, CRYM"
+bhaduri_markers$Rationale[7] <- "C1QB, AIF1L, CCL4, C1QC, AIF1, SPP1, C1QC, CCL3"
 ```
 
 # Bhaduri et al. 2020 Marker Genes
@@ -124,7 +160,7 @@ for (i in seq(nrow(bhaduri_markers))) {
         ncol = ncol, keep.scale = "all", reduction = "umap"
       ) +
         plot_annotation(
-          paste(bhaduri_markers$Type[i], bhaduri_markers$Subtype[i], sep = " - "),
+          bhaduri_markers$TypeSubtype,
           theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
         )
     )
