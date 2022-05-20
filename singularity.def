@@ -32,7 +32,8 @@ From: rocker/rstudio:4.2.0
         -e "BiocManager::install('scuttle')" \
         -e "BiocManager::install('DropletUtils')" \
         -e "BiocManager::install('SingleR')" \
-        -e "BiocManager::install('scater')"
+        -e "BiocManager::install('scater')" \
+        -e "BiocManager::install('GSVA')"
     apt-get clean
     rm -Rf \
         /var/lib/apt/lists/ \

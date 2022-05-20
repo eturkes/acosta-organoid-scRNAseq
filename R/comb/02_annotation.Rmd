@@ -63,7 +63,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c("conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork")
+packages <- c("conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork", "GSVA")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 `%notin%` <- Negate(`%in%`)
 source(file.path("..", "utils.R"))
@@ -142,7 +142,39 @@ bhaduri_markers$Rationale[7] <- "C1QB, AIF1L, CCL4, C1QC, AIF1, SPP1, C1QC, CCL3
 
 # Bhaduri et al. 2020 Marker Genes
 
+## Aggregated
+
 ```{r}
+rds <- file.path(cache_dir, "gsva.rds")
+if (file.exists(rds)) {
+  gsva <- readRDS(rds)
+} else {
+  gene_sets <- str_split(bhaduri_markers$Rationale, ", ")
+  names(gene_sets) <- bhaduri_markers$TypeSubtype
+
+  gsva <- gsva(as.matrix(GetAssayData(seurat)), gene_sets, method = "ssgsea", ssgsea.norm = FALSE)
+  saveRDS(gsva, rds)
+}
+
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
+
+gsva_seurat <- CreateAssayObject(data = gsva)
+seurat[["GSVA"]] <- gsva_seurat
+DefaultAssay(seurat) <- "GSVA"
+
+for (i in seq(nrow(seurat))) {
+  print(
+    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
+      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
+  )
+}
+```
+
+## Individual
+
+```{r}
+DefaultAssay(seurat) <- "SCT"
+
 for (i in seq(nrow(bhaduri_markers))) {
   genes <- str_split(bhaduri_markers$Rationale[i], ", ")[[1]]
 
