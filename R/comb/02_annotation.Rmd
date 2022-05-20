@@ -64,8 +64,8 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
 packages <- c(
-  "conflicted", "Seurat", "data.table", "SingleCellExperiment", "Matrix", "scater", "SingleR",
-  "dplyr", "ggrepel"
+  "conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork", "GSEABase", "GSVA",
+  "dplyr", "ggrepel", "ComplexHeatmap"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
@@ -92,92 +92,44 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
 seurat
 
-rds <- file.path(cache_dir, "data_list.rds")
-if (file.exists(rds)) {
-  data_list <- readRDS(rds)
-} else {
-
-  data_list <- vector("list", 4)
-
-  data <- fread(file.path(data_dir, "bhaduri_2020", "exprMatrix.tsv"), data.table = FALSE)
-  rownames(data) <- gsub(".+[|]", "", data$gene)
-  data <- data[ , -1]
-  meta <- read.delim(file.path(data_dir, "bhaduri_2020", "meta.tsv"))
-  meta$TypeSubtype <- paste(meta$Type, meta$Subtype, sep = "_")
-  data_list[[1]] <- SingleCellExperiment(list(logcounts = data), colData = meta)
-
-  load(file.path(data_dir, "polioudakis_2019", "raw_counts_mat.rdata"))
-  meta <- read.csv(file.path(data_dir, "polioudakis_2019", "cell_metadata.csv"))
-  raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% meta$Cell]
-  data_list[[2]] <- SingleCellExperiment(list(counts = raw_counts_mat), colData = meta)
-  rm(raw_counts_mat)
-  data_list[[2]] <- logNormCounts(data_list[[2]])
-
-  data <- readMM(file.path(data_dir, "kanton_2019", "human_cell_counts_GRCh38.mtx"))
-  meta <- read.delim(file.path(data_dir, "kanton_2019", "metadata_human_cells.tsv"))
-  genes <- read.delim(file.path(data_dir, "kanton_2019", "genes_GRCh38.txt"), header = FALSE)
-  colnames(data) <- rownames(meta)
-  rownames(data) <- genes$V2
-  data_list[[3]] <- SingleCellExperiment(list(counts = data), colData = meta, rowData = genes)
-  rm(genes)
-  data_list[[3]] <- logNormCounts(data_list[[3]])
-
-  file_list <- list.files(file.path(data_dir, "velasco_2019", "SCP282", "expression"))
-  for (i in seq_along(file_list)) {
-    if (i == 1) {
-      data <- fread(
-        file.path(data_dir, "velasco_2019", "SCP282", "expression", file_list[i]),
-        data.table = FALSE
-      )
-    } else {
-      data <- cbind(
-        data,
-        fread(
-          file.path(data_dir, "velasco_2019", "SCP282", "expression", file_list[i]),
-          data.table = FALSE
-        )
-      )
-    }
-  }
-  meta <- read.delim(file.path(data_dir, "velasco_2019", "SCP282", "metadata", "meta_combined.txt"))
-  meta <- meta[-1, ]
-  data <- data[ , colnames(data) %in% meta$NAME]
-  data <- data[ , order(match(colnames(data), meta$NAME))]
-  data_list[[4]] <- SingleCellExperiment(list(logcounts = data), colData = meta)
-  
-  rm(data, meta)
-  
-  saveRDS(data_list, rds)
-}
-
-for (i in seq_along(data_list)) {
-  print(data_list[[i]])
-}
+bhaduri_markers <- read.xlsx(
+  file.path(data_dir, "bhaduri_2020", "41586_2020_1962_MOESM3_ESM.xlsx"), 2
+)
+bhaduri_markers <- bhaduri_markers[ , (ncol(bhaduri_markers) - 2):ncol(bhaduri_markers)]
+bhaduri_markers <- bhaduri_markers[-which(is.na(bhaduri_markers$Type)), ]
+bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Low Quality"), ]
+bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Microglia low quality"), ]
+bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Outlier"), ]
+bhaduri_markers$Rationale[bhaduri_markers$Subtype == "IPC/newborn"] <-
+  c("PPP1R17, SSTR2, KCNQ3, ROBO2")
 ```
 
-# Annotation
+# Bhaduri et al. 2020 Marker Genes
 
 ```{r}
-rds <- file.path(cache_dir, "predictions.rds")
-if (file.exists(rds)) {
-  predictions <- readRDS(rds)
-} else {
-  predictions <- SingleR(
-    GetAssayData(seurat, assay = "RNA"),
-    list(
-      bhaduri = data_list[[1]], polioudakis = data_list[[2]],
-      kanton_2019 = data_list[[3]], velasco = data_list[[4]]
-    ),
-    list(
-      data_list[[1]]$TypeSubtype, data_list[[2]]$Subcluster,
-      data_list[[3]]$PredCellType, data_list[[4]]$CellType
-    ),
-    aggr.ref = TRUE
-  )
-  saveRDS(predictions, rds)
-}
+for (i in seq(nrow(bhaduri_markers))) {
+  genes <- str_split(bhaduri_markers$Rationale[i], ", ")[[1]]
 
-table(predictions$labels)
+  if (length(which(genes %in% rownames(seurat))) > 0) {
+
+    if (length(which(genes %in% rownames(seurat))) > 4) {
+      ncol <- 3
+    } else {
+      ncol <- 2
+    }
+
+    print(
+      FeaturePlot(
+        seurat, genes, order = TRUE, cols = c("lightgrey", "red"),
+        ncol = ncol, keep.scale = "all", reduction = "umap"
+      ) +
+        plot_annotation(
+          paste(bhaduri_markers$Type[i], bhaduri_markers$Subtype[i], sep = " - "),
+          theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+        )
+    )
+  }
+}
 ```
 
 # References
