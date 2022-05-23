@@ -94,358 +94,9 @@ seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
 seurat
 ```
 
-# Module Method + Ast (Top 40)
-
-```{r}
-markers <- getGmt(file.path(data_dir, "polioudakis_2019", "polioudakis-top40.gmt"))
-
-rds <- file.path(cache_dir, "gsva_top40.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
-    ssgsea.norm = FALSE, verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-  cat(rownames(seurat)[i])
-}
-
-seurat <- FindNeighbors(seurat, features = rownames(seurat), dims = NULL, verbose = FALSE)
-seurat <- FindClusters(seurat, verbose = FALSE)
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.75,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "seurat_clusters", "cat")
-```
-
-# Module Method + Ast (Top 40, 3000 HVG)
-
-```{r}
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-
-rds <- file.path(cache_dir, "gsva_top40_3000hvg.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat))[rownames(seurat) %in% VariableFeatures(seurat), ], markers,
-    method = "ssgsea", ssgsea.norm = FALSE,
-    verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-  cat(rownames(seurat)[i])
-}
-
-seurat <- FindNeighbors(seurat, features = rownames(seurat), dims = NULL, verbose = FALSE)
-seurat <- FindClusters(seurat, verbose = FALSE)
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.75,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "seurat_clusters", "cat")
-```
-
-# Module Method + Ast
-
-```{r}
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-
-ast <- geneIds(markers[["Ast"]])
-meta <- read.xlsx(
-  file.path(data_dir, "polioudakis_2019", "1-s2.0-S0896627319305616-mmc5.xlsx"), 3
-)
-markers <- vector("list", length(unique(meta$Cluster)) + 1)
-names(markers) <- c(unique(meta$Cluster), "Ast")
-for (i in seq_along(markers)) {
-  markers[[i]] <- meta$Gene[meta$Cluster %in% unique(meta$Cluster)[i]]
-}
-markers[[length(unique(meta$Cluster)) + 1]] <- ast
-
-rds <- file.path(cache_dir, "gsva.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
-    ssgsea.norm = FALSE, verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-  cat(rownames(seurat)[i])
-}
-
-seurat <- FindNeighbors(seurat, features = rownames(seurat), dims = NULL, verbose = FALSE)
-seurat <- FindClusters(seurat, verbose = FALSE)
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.75,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "seurat_clusters", "cat")
-```
-
-# Module Method + Ast (3000 HVG)
-
-```{r}
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-
-rds <- file.path(cache_dir, "gsva_3000hvg.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat))[rownames(seurat) %in% VariableFeatures(seurat), ], markers,
-    method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-  cat(rownames(seurat)[i])
-}
-
-seurat <- FindNeighbors(seurat, features = rownames(seurat), dims = NULL, verbose = FALSE)
-seurat <- FindClusters(seurat, verbose = FALSE)
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.75,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "seurat_clusters", "cat")
-```
-
-# Module Method + Ast (No Duplicates)
-
-```{r}
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-
-meta_extend <- rbind(meta, meta[1:length(ast), ])
-meta_extend$Gene[(nrow(meta) + 1):(nrow(meta) + length(ast))] <- ast
-meta_extend$Cluster[(nrow(meta) + 1):(nrow(meta) + length(ast))] <- "Ast"
-
-dup <- unique(meta_extend$Gene[duplicated(meta_extend$Gene)])
-meta_nodup <- meta_extend[-which(meta_extend$Gene %in% dup), ]
-
-markers <- vector("list", length(unique(meta_nodup$Cluster)))
-names(markers) <- c(unique(meta_nodup$Cluster))
-for (i in seq_along(markers)) {
-  markers[[i]] <- meta_nodup$Gene[meta_nodup$Cluster %in% unique(meta_nodup$Cluster)[i]]
-}
-
-rds <- file.path(cache_dir, "gsva_nodup.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
-    ssgsea.norm = FALSE, verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-  cat(rownames(seurat)[i])
-}
-
-seurat <- FindNeighbors(seurat, features = rownames(seurat), dims = NULL, verbose = FALSE)
-seurat <- FindClusters(seurat, verbose = FALSE)
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.75,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "seurat_clusters", "cat")
-```
-
-# Module Method + Ast (No Duplicates, 3000 HVG)
-
-```{r}
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-
-rds <- file.path(cache_dir, "gsva_nodup_3000hvg.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat))[rownames(seurat) %in% VariableFeatures(seurat), ], markers,
-    method = "ssgsea", ssgsea.norm = FALSE,
-    verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-  cat(rownames(seurat)[i])
-}
-
-seurat <- FindNeighbors(seurat, features = rownames(seurat), dims = NULL, verbose = FALSE)
-seurat <- FindClusters(seurat, verbose = FALSE)
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.75,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "seurat_clusters", "cat")
-```
-
-# SingleR
-
-```{r}
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-
-load(file.path(data_dir, "polioudakis_2019", "raw_counts_mat.rdata"))
-cell_metadata <- read.csv(file.path(data_dir, "polioudakis_2019", "cell_metadata.csv"))
-raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% cell_metadata$Cell]
-
-ref <- SingleCellExperiment(list(counts = raw_counts_mat), colData = cell_metadata)
-ref <- logNormCounts(ref)
-
-rds <- file.path(cache_dir, "singleR.rds")
-if (file.exists(rds)) {
-  predictions <- readRDS(rds)
-} else {
-  predictions <- SingleR(
-    GetAssayData(seurat, assay = "RNA"), ref, ref$Cluster, aggr.ref = TRUE
-  )
-  saveRDS(predictions, rds)
-}
-
-seurat$polioudakis_singleR <- predictions$labels
-
-red_dim_plot(seurat, "umap1", "umap2", "polioudakis_singleR", "cat")
-```
-
-# SingleR (3000 HVG)
-
-```{r}
-rds <- file.path(cache_dir, "singleR_3000hvg.rds")
-if (file.exists(rds)) {
-  predictions <- readRDS(rds)
-} else {
-  predictions <- SingleR(
-    GetAssayData(seurat, assay = "RNA")[rownames(seurat) %in% VariableFeatures(seurat), ], ref,
-    ref$Cluster, aggr.ref = TRUE
-  )
-  saveRDS(predictions, rds)
-}
-
-seurat$polioudakis_singleR_3000hvg <- predictions$labels
-
-red_dim_plot(seurat, "umap1", "umap2", "polioudakis_singleR_3000hvg", "cat")
-```
-
 # Clustering and Marker Genes
 
 ```{r}
-seurat <- FindNeighbors(seurat, dims = 1:30, verbose = FALSE)
 seurat <- FindClusters(seurat, verbose = FALSE)
 red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
 
@@ -466,6 +117,34 @@ markers %>%
 for (i in seq_along(top1$gene)) {
   print(FeaturePlot(seurat, features = top1$gene[i], order = TRUE, cols = c("lightgrey", "red")))
 }
+```
+
+# SingleR
+
+```{r}
+load(file.path(data_dir, "polioudakis_2019", "raw_counts_mat.rdata"))
+cell_metadata <- read.csv(file.path(data_dir, "polioudakis_2019", "cell_metadata.csv"))
+raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% cell_metadata$Cell]
+
+ref <- SingleCellExperiment(list(counts = raw_counts_mat), colData = cell_metadata)
+ref <- logNormCounts(ref)
+
+rds <- file.path(cache_dir, "singleR_clusters.rds")
+if (file.exists(rds)) {
+  predictions <- readRDS(rds)
+} else {
+  predictions <- SingleR(
+    GetAssayData(seurat, assay = "RNA"), ref, ref$Cluster, clusters = seurat$seurat_clusters
+  )
+  saveRDS(predictions, rds)
+}
+
+predictions <- predictions$labels
+names(predictions) <- levels(seurat)
+seurat <- RenameIdents(seurat, predictions)
+seurat$polioudakis_singleR_clusters <- seurat@active.ident
+
+red_dim_plot(seurat, "umap1", "umap2", "polioudakis_singleR_clusters", "cat")
 ```
 
 # References
