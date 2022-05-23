@@ -1,5 +1,5 @@
 ---
-title: '02 Annotation - `r unlist(strsplit(getwd(), "/"))[8]`'
+title: "02 Annotation - Combined Organelles"
 author:
   - name: "Emir Turkes [emir.turkes@eturkes.com]"
   - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
@@ -41,6 +41,7 @@ div.main-container {max-width: none; width: 100%;}
 
 *This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
 
+In this document we annotate cell-types based on reference datasets and marker genes.
 The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
 
 ```{r}
