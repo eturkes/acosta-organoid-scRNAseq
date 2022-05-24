@@ -195,6 +195,7 @@ markers[[length(unique(meta$Cluster)) + 1]] <- ast
 gsva <- gsva(
   logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
 set.seed(1)
 heatmap <- Heatmap(
@@ -228,6 +229,7 @@ for (i in seq_along(markers)) {
 gsva <- gsva(
   logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
 set.seed(1)
 heatmap <- Heatmap(
@@ -260,6 +262,7 @@ markers[["Ast"]] <- ast
 gsva <- gsva(
   logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
 set.seed(1)
 heatmap <- Heatmap(
@@ -330,6 +333,7 @@ names(markers) <- bhaduri_markers$TypeSubtype
 gsva <- gsva(
   logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
 set.seed(1)
 heatmap <- Heatmap(
