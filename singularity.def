@@ -34,7 +34,8 @@ From: rocker/rstudio:4.2.0
         -e "BiocManager::install('SingleR')" \
         -e "BiocManager::install('scater')" \
         -e "BiocManager::install('GSVA')" \
-        -e "BiocManager::install('GSEABase')"
+        -e "BiocManager::install('GSEABase')" \
+        -e "BiocManager::install('biomaRt')"
     apt-get clean
     rm -Rf \
         /var/lib/apt/lists/ \

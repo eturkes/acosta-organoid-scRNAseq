@@ -66,7 +66,8 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 
 packages <- c(
   "conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork", "GSVA", "GSEABase",
-  "SingleCellExperiment", "scuttle", "SingleR", "dplyr", "ggrepel", "DT", "edgeR", "ComplexHeatmap"
+  "SingleCellExperiment", "scuttle", "SingleR", "dplyr", "ggrepel", "DT", "edgeR", "ComplexHeatmap",
+  "biomaRt"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 `%notin%` <- Negate(`%in%`)
@@ -339,6 +340,72 @@ heatmap <- Heatmap(
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
+```
+
+# Custom List
+
+```{r}
+markers <- read.delim(
+  file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
+  check.names = FALSE
+)
+
+name_idx <- which(colnames(markers) == "Pollen Cell 2015")
+start_idx <- name_idx + 1
+end_idx <- which(colnames(markers) == "Bhaduri-Nature 2020") - 1
+colnames(markers)[start_idx:end_idx] <- paste(
+  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
+)
+
+name_idx <- which(colnames(markers) == "Bhaduri-Nature 2020")
+start_idx <- name_idx + 1
+end_idx <- which(colnames(markers) == "Polioudakis Neuron 2019") - 1
+colnames(markers)[start_idx:end_idx] <- paste(
+  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
+)
+
+name_idx <- which(colnames(markers) == "Polioudakis Neuron 2019")
+start_idx <- name_idx + 1
+end_idx <- ncol(markers)
+colnames(markers)[start_idx:end_idx] <- paste(
+  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
+)
+
+markers <- Filter(function(x) !all(is.na(x)), markers)
+markers <- as.list(markers)
+markers <- lapply(markers, function(x) x[!(x == "")])
+
+rds <- file.path(cache_dir, "gene_anno.rds")
+if (file.exists(rds)) {
+  gene_anno <- readRDS(rds)
+} else {
+  ensembl <- unique(unlist(markers)[grep("ENS", unlist(markers))])
+  mart <- useEnsembl("ensembl", "hsapiens_gene_ensembl")
+  attributes <- c("external_gene_name", "ensembl_gene_id")
+  gene_anno <- getBM(attributes, "ensembl_gene_id", ensembl, mart)
+  saveRDS(gene_anno, rds)
+}
+
+gene_anno <- gene_anno[-which(gene_anno$external_gene_name == ""), ]
+remove <- ensembl[ensembl %notin% gene_anno$ensembl_gene_id]
+markers <- lapply(markers, function(x) x[!(x %in% remove)])
+for (i in seq(nrow(gene_anno))) {
+  markers <- rapply(
+    markers,
+    function(x) ifelse(x == gene_anno$ensembl_gene_id[i], gene_anno$external_gene_name[i], x),
+    how = "replace")
+}
+
+date_genes <- read.delim(file.path(data_dir, "gene-lists", "date-genes.tsv"))
+date_genes <- date_genes[date_genes$Exc_Genes %in% unlist(markers), ]
+for (i in seq(nrow(date_genes))) {
+  markers <- rapply(
+    markers,
+    function(x) ifelse(x == date_genes$Exc_Genes[i], date_genes$Gene_Symbol[i], x),
+    how = "replace")
+}
+
+
 ```
 
 # References
