@@ -409,7 +409,20 @@ for (i in seq(nrow(date_genes))) {
     how = "replace")
 }
 
+gsva <- gsva(
+  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
+)
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
+set.seed(1)
+heatmap <- Heatmap(
+  gsva,
+  column_km = 6,
+  show_column_names = TRUE,
+  cluster_columns = FALSE,
+  row_names_max_width = max_text_width(rownames(gsva)),
+  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
 ```
 
 # References
