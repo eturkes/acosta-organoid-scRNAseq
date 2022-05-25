@@ -386,11 +386,11 @@ markers <- Filter(function(x) !all(is.na(x)), markers)
 markers <- as.list(markers)
 markers <- lapply(markers, function(x) x[!(x == "")])
 
+ensembl <- unique(unlist(markers)[grep("ENS", unlist(markers))])
 rds <- file.path(cache_dir, "gene_anno.rds")
 if (file.exists(rds)) {
   gene_anno <- readRDS(rds)
 } else {
-  ensembl <- unique(unlist(markers)[grep("ENS", unlist(markers))])
   mart <- useEnsembl("ensembl", "hsapiens_gene_ensembl")
   attributes <- c("external_gene_name", "ensembl_gene_id")
   gene_anno <- getBM(attributes, "ensembl_gene_id", ensembl, mart)
