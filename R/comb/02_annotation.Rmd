@@ -103,7 +103,7 @@ if (file.exists(rds)) {
   seurat$umap1 <- add_df$umap1
   seurat$umap2 <- add_df$umap2
   seurat <- FindNeighbors(seurat, dims = 1:9, verbose = FALSE)
-  seurat <- FindClusters(seurat, resolution = 0.1, verbose = FALSE)
+  seurat <- FindClusters(seurat, resolution = 0.13, verbose = FALSE)
   saveRDS(seurat, rds)
 }
 
@@ -114,7 +114,7 @@ seurat
 
 ```{r}
 ElbowPlot(seurat, 50) + geom_vline(xintercept = 9, color = "red")
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 9, Res = 0.13")
 
 rds <- file.path(cache_dir, "markers.rds")
 if (file.exists(rds)) {
