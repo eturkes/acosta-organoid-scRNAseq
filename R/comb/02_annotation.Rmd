@@ -207,14 +207,11 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 6,
-  show_column_names = FALSE,
+  column_km = 5,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
-
-FeaturePlot(seurat, markers[["IP"]][1:4])
 ```
 
 ## Polioudakis (No Duplicates)
@@ -241,8 +238,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 6,
-  show_column_names = FALSE,
+  column_km = 5,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
@@ -274,8 +270,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 6,
-  show_column_names = TRUE,
+  column_km = 5,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
@@ -285,57 +280,17 @@ draw(heatmap)
 ## Bhaduri
 
 ```{r}
-bhaduri_markers <- read.xlsx(
-  file.path(data_dir, "bhaduri_2020", "41586_2020_1962_MOESM3_ESM.xlsx"), 2
+markers <- read.delim(
+  file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
+  check.names = FALSE
 )
-bhaduri_markers <- bhaduri_markers[ , (ncol(bhaduri_markers) - 2):ncol(bhaduri_markers)]
-bhaduri_markers <- bhaduri_markers[-which(is.na(bhaduri_markers$Type)), ]
 
-bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Low Quality"), ]
-bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Microglia low quality"), ]
-bhaduri_markers <- bhaduri_markers[-which(bhaduri_markers$Subtype == "Outlier"), ]
+start_idx <- which(colnames(markers) == "Bhaduri-Nature 2020") + 1
+end_idx <- which(colnames(markers) == "Polioudakis Neuron 2019") - 2
+markers <- markers[ , start_idx:end_idx]
 
-bhaduri_markers$Rationale[bhaduri_markers$Subtype == "IPC/newborn"] <-
-  "PPP1R17, SSTR2, KCNQ3, ROBO2"
-bhaduri_markers$Rationale[bhaduri_markers$Subtype == "Endothelial"] <- "CD93, GBN, IL32, IGFPB7"
-
-bhaduri_markers$TypeSubtype <- paste(bhaduri_markers$Type, bhaduri_markers$Subtype, sep = "_")
-dup <- bhaduri_markers[duplicated(bhaduri_markers$TypeSubtype), ]
-bhaduri_markers <- bhaduri_markers[-which(duplicated(bhaduri_markers$TypeSubtype)), ]
-for (i in seq(nrow(dup))) {
-  idx <- match(dup$TypeSubtype[i], bhaduri_markers$TypeSubtype)
-  bhaduri_markers$Rationale[idx] <- paste(
-    bhaduri_markers$Rationale[idx], dup$Rationale[i], sep = ", "
-  )
-}
-
-missing_genes <- unlist(str_split(bhaduri_markers$Rationale, ", "))
-missing_genes <- missing_genes[missing_genes %notin% rownames(seurat)]
-missing_genes <- missing_genes[-which(missing_genes == "")]
-expanded_genes <- vector("list", length(missing_genes))
-for (i in seq_along(missing_genes)) {
-  expanded_genes[[i]] <- rownames(seurat)[grep(missing_genes[i], rownames(seurat))]
-}
-
-add_genes <- vector("list", 4)
-add_genes[[1]] <- expanded_genes[[1]][-1]
-add_genes[[2]] <- expanded_genes[[2]]
-add_genes[[3]] <- expanded_genes[[4]]
-add_genes[[4]] <- expanded_genes[[6]][-1]
-names(add_genes) <- c("AURK", "HMGB", "ROBO", "AIF1")
-
-replace_idx <- vector("list", 4)
-for (i in seq_along(replace_idx)) {
-  replace_idx[[i]] <- grep(names(add_genes)[i], str_split(bhaduri_markers$Rationale, ", "))
-}
-
-bhaduri_markers$Rationale[1] <-
-  "TOP2A, AURKB, AURKC, AURKA, HMGB2, HMGB1, HMGB3, CTNNB1, HES1, VIM, PTN, CLU"
-bhaduri_markers$Rationale[5] <- "MEF2C, STMN2, FLT, ROBO2, ROBO1, ROBO3, CRYM"
-bhaduri_markers$Rationale[7] <- "C1QB, AIF1L, CCL4, C1QC, AIF1, SPP1, C1QC, CCL3"
-
-markers <- str_split(bhaduri_markers$Rationale, ", ")
-names(markers) <- bhaduri_markers$TypeSubtype
+markers <- as.list(markers)
+markers <- lapply(markers, function(x) x[!(x == "")])
 
 gsva <- gsva(
   logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
@@ -345,8 +300,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 6,
-  show_column_names = TRUE,
+  column_km = 5,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
@@ -424,8 +378,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 6,
-  show_column_names = TRUE,
+  column_km = 5,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
