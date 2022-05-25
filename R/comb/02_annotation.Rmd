@@ -97,7 +97,13 @@ if (file.exists(rds)) {
   seurat <- readRDS(rds)
 } else {
   seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
-  seurat <- FindClusters(seurat, verbose = FALSE)
+  seurat <- RunUMAP(seurat, 1:9, min.dist = 0.75, verbose = FALSE)
+  add_df <- data.frame(Embeddings(seurat, "umap"))
+  names(add_df) <- paste0("umap", seq(ncol(add_df)))
+  seurat$umap1 <- add_df$umap1
+  seurat$umap2 <- add_df$umap2
+  seurat <- FindNeighbors(seurat, dims = 1:9, verbose = FALSE)
+  seurat <- FindClusters(seurat, resolution = 0.1, verbose = FALSE)
   saveRDS(seurat, rds)
 }
 
@@ -107,6 +113,7 @@ seurat
 # Clustering and Marker Genes
 
 ```{r}
+ElbowPlot(seurat, 50) + geom_vline(xintercept = 9, color = "red")
 red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
 
 rds <- file.path(cache_dir, "markers.rds")
