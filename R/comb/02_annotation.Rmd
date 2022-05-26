@@ -176,7 +176,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
@@ -187,7 +187,7 @@ gsva <- gsva(logcounts(pseudobulk), markers, method = "gsva", mx.diff = FALSE, v
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
@@ -195,7 +195,7 @@ draw(heatmap)
 
 remove <- which(
   names(markers) %in% c(
-    "Radial Glia_vRG", "Radial Glia_tRG", "Excitatory Neuron _Newborn", "IPC", "OPC", "Endothelial"
+    "Radial Glia_vRG", "Radial Glia_tRG", "Excitatory Neuron _Newborn", "IPC"
   )
 )
 markers_trimmed <- markers[-remove]
@@ -208,7 +208,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
@@ -221,7 +221,7 @@ gsva <- gsva(
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
@@ -257,7 +257,7 @@ for (i in seq(nrow(seurat))) {
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   show_column_names = FALSE,
   column_gap = unit(3, "mm"),
   cluster_columns = FALSE,
@@ -266,13 +266,6 @@ heatmap <- Heatmap(
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 
-remove <- which(
-  names(markers) %in% c(
-    "Radial Glia_vRG", "Radial Glia_tRG", "Excitatory Neuron _Newborn", "IPC", "OPC", "Endothelial"
-  )
-)
-markers <- markers[-remove]
-
 DefaultAssay(seurat) <- "SCT"
 seurat[["GSVA"]] <- NULL
 rds <- file.path(cache_dir, "gsva_trimmed.rds")
@@ -280,7 +273,7 @@ if (file.exists(rds)) {
   gsva <- readRDS(rds)
 } else {
   gsva <- gsva(
-    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
+    as.matrix(GetAssayData(seurat)), markers_trimmed, method = "ssgsea",
     ssgsea.norm = FALSE, verbose = FALSE
   )
   saveRDS(gsva, rds)
@@ -294,7 +287,7 @@ DefaultAssay(seurat) <- "GSVA"
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   show_column_names = FALSE,
   column_gap = unit(3, "mm"),
   cluster_columns = FALSE,
@@ -353,8 +346,9 @@ for (i in seq(nrow(seurat))) {
 
 DefaultAssay(seurat) <- "SCT"
 seurat <- RunUMAP(
-  seurat, features = rownames(seurat)[rownames(seurat) %in% unlist(markers)], min.dist = 0.5,
-  verbose = FALSE, reduction.name = "gsva_genes_umap", reduction.key = "GSVA_GENES_UMAP_"
+  seurat, features = rownames(seurat)[rownames(seurat) %in% unlist(markers_trimmed)],
+  min.dist = 0.5, verbose = FALSE,
+  reduction.name = "gsva_genes_umap", reduction.key = "GSVA_GENES_UMAP_"
 )
 add_df <- data.frame(Embeddings(seurat, "gsva_genes_umap"))
 names(add_df) <- paste0("gsva_genes_umap", seq(ncol(add_df)))
@@ -364,10 +358,10 @@ seurat$gsva_genes_umap2 <- add_df$gsva_genes_umap2
 red_dim_plot(seurat, "gsva_genes_umap1", "gsva_genes_umap2", "gsva_names", "cat")
 red_dim_plot(seurat, "gsva_genes_umap1", "gsva_genes_umap2", "sample", "cat")
 
-for (i in seq_along(markers)) {
+for (i in seq_along(markers_trimmed)) {
   print(
     FeaturePlot(
-      seurat, features = markers[[i]], reduction = "gsva_genes_umap",
+      seurat, features = markers_trimmed[[i]], reduction = "gsva_genes_umap",
       order = TRUE, cols = c("lightgrey", "red")
     )
   )
@@ -460,7 +454,7 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
@@ -472,7 +466,7 @@ gsva <- gsva(logcounts(pseudobulk), markers, method = "gsva", mx.diff = FALSE, v
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 7,
+  column_km = 12,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
