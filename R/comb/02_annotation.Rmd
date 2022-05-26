@@ -135,38 +135,6 @@ for (i in seq_along(top$gene)) {
 }
 ```
 
-# SingleR
-
-## Polioudakis on Clusters
-
-```{r}
-rds <- file.path(cache_dir, "singleR_clusters.rds")
-if (file.exists(rds)) {
-  predictions <- readRDS(rds)
-} else {
-
-  load(file.path(data_dir, "polioudakis_2019", "raw_counts_mat.rdata"))
-  cell_metadata <- read.csv(file.path(data_dir, "polioudakis_2019", "cell_metadata.csv"))
-  raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% cell_metadata$Cell]
-  
-  ref <- SingleCellExperiment(list(counts = raw_counts_mat), colData = cell_metadata)
-  ref <- logNormCounts(ref)
-
-  predictions <- SingleR(
-    GetAssayData(seurat, assay = "RNA"), ref, ref$Cluster, clusters = seurat$seurat_clusters
-  )
-
-  saveRDS(predictions, rds)
-}
-
-predictions <- predictions$labels
-names(predictions) <- levels(seurat)
-seurat <- RenameIdents(seurat, predictions)
-seurat$polioudakis_singleR_clusters <- seurat@active.ident
-
-red_dim_plot(seurat, "umap1", "umap2", "polioudakis_singleR_clusters", "cat")
-```
-
 # GSVA
 
 ```{r}
@@ -182,99 +150,6 @@ if (file.exists(rds)) {
   logcounts(pseudobulk, withDimnames = FALSE) <- edgeR::cpm(dge, log = TRUE, prior.count = 3)
   saveRDS(pseudobulk, rds)
 }
-```
-
-## Polioudakis
-
-```{r}
-markers <- getGmt(file.path(data_dir, "polioudakis_2019", "polioudakis-top40.gmt"))
-ast <- geneIds(markers[["Ast"]])
-meta <- read.xlsx(
-  file.path(data_dir, "polioudakis_2019", "1-s2.0-S0896627319305616-mmc5.xlsx"), 3
-)
-markers <- vector("list", length(unique(meta$Cluster)) + 1)
-names(markers) <- c(unique(meta$Cluster), "Ast")
-for (i in seq_along(markers)) {
-  markers[[i]] <- meta$Gene[meta$Cluster %in% unique(meta$Cluster)[i]]
-}
-markers[[length(unique(meta$Cluster)) + 1]] <- ast
-
-gsva <- gsva(
-  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
-)
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 5,
-  cluster_columns = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
-```
-
-## Polioudakis (No Duplicates)
-
-```{r}
-meta_extend <- rbind(meta, meta[1:length(ast), ])
-meta_extend$Gene[(nrow(meta) + 1):(nrow(meta) + length(ast))] <- ast
-meta_extend$Cluster[(nrow(meta) + 1):(nrow(meta) + length(ast))] <- "Ast"
-
-dup <- unique(meta_extend$Gene[duplicated(meta_extend$Gene)])
-meta_nodup <- meta_extend[-which(meta_extend$Gene %in% dup), ]
-
-markers <- vector("list", length(unique(meta_nodup$Cluster)))
-names(markers) <- c(unique(meta_nodup$Cluster))
-for (i in seq_along(markers)) {
-  markers[[i]] <- meta_nodup$Gene[meta_nodup$Cluster %in% unique(meta_nodup$Cluster)[i]]
-}
-
-gsva <- gsva(
-  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
-)
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 5,
-  cluster_columns = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
-```
-
-## Polioudakis (No Duplicates, All Ast)
-
-```{r}
-meta_extend <- rbind(meta, meta[1:length(ast), ])
-meta_extend$Gene[(nrow(meta) + 1):(nrow(meta) + length(ast))] <- ast
-meta_extend$Cluster[(nrow(meta) + 1):(nrow(meta) + length(ast))] <- "Ast"
-
-dup <- unique(meta_extend$Gene[duplicated(meta_extend$Gene)])
-meta_nodup <- meta_extend[-which(meta_extend$Gene %in% dup), ]
-
-markers <- vector("list", length(unique(meta_nodup$Cluster)))
-names(markers) <- c(unique(meta_nodup$Cluster))
-for (i in seq_along(markers)) {
-  markers[[i]] <- meta_nodup$Gene[meta_nodup$Cluster %in% unique(meta_nodup$Cluster)[i]]
-}
-markers[["Ast"]] <- ast
-
-gsva <- gsva(
-  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
-)
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 5,
-  cluster_columns = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
 ```
 
 ## Bhaduri
@@ -470,7 +345,7 @@ for (i in seq(nrow(seurat))) {
 red_dim_plot(seurat, "umap1", "umap2", "gsva_names", "cat")
 ```
 
-# Custom List
+## Custom List
 
 ```{r}
 markers <- read.delim(
