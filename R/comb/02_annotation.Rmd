@@ -115,6 +115,7 @@ seurat
 ```{r}
 ElbowPlot(seurat, 50) + geom_vline(xintercept = 14, color = "red")
 red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 14, Res = 1.2")
+red_dim_plot(seurat, "umap1", "umap2", "sample", "cat") + ggtitle("Dims = 14, Res = 1.2")
 
 rds <- file.path(cache_dir, "markers.rds")
 if (file.exists(rds)) {
@@ -175,10 +176,55 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 8,
+  column_km = 7,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
+
+gsva <- gsva(logcounts(pseudobulk), markers, method = "gsva", mx.diff = FALSE, verbose = FALSE)
+
+set.seed(1)
+heatmap <- Heatmap(
+  gsva,
+  column_km = 7,
+  cluster_columns = FALSE,
+  row_names_max_width = max_text_width(rownames(gsva)),
+  heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
+
+remove <- which(
+  names(markers) %in% c(
+    "Radial Glia_vRG", "Radial Glia_tRG", "Excitatory Neuron _Newborn", "IPC", "OPC", "Endothelial"
+  )
+)
+markers_trimmed <- markers[-remove]
+
+gsva <- gsva(
+  logcounts(pseudobulk), markers_trimmed, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
+)
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
+
+set.seed(1)
+heatmap <- Heatmap(
+  gsva,
+  column_km = 7,
+  cluster_columns = FALSE,
+  row_names_max_width = max_text_width(rownames(gsva)),
+  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
+
+gsva <- gsva(
+  logcounts(pseudobulk), markers_trimmed, method = "gsva", mx.diff = FALSE, verbose = FALSE
+)
+
+set.seed(1)
+heatmap <- Heatmap(
+  gsva,
+  column_km = 7,
+  cluster_columns = FALSE,
+  row_names_max_width = max_text_width(rownames(gsva)),
+  heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 ```
 
@@ -189,7 +235,10 @@ rds <- file.path(cache_dir, "gsva.rds")
 if (file.exists(rds)) {
   gsva <- readRDS(rds)
 } else {
-  gsva <- gsva(as.matrix(GetAssayData(seurat)), markers, method = "ssgsea", ssgsea.norm = FALSE)
+  gsva <- gsva(
+    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
+    ssgsea.norm = FALSE, verbose = FALSE
+  )
   saveRDS(gsva, rds)
 }
 gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
@@ -230,7 +279,10 @@ rds <- file.path(cache_dir, "gsva_trimmed.rds")
 if (file.exists(rds)) {
   gsva <- readRDS(rds)
 } else {
-  gsva <- gsva(as.matrix(GetAssayData(seurat)), markers, method = "ssgsea", ssgsea.norm = FALSE)
+  gsva <- gsva(
+    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
+    ssgsea.norm = FALSE, verbose = FALSE
+  )
   saveRDS(gsva, rds)
 }
 gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
@@ -238,13 +290,6 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 gsva_seurat <- CreateAssayObject(data = gsva)
 seurat[["GSVA"]] <- gsva_seurat
 DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-}
 
 set.seed(1)
 heatmap <- Heatmap(
@@ -335,14 +380,6 @@ for (i in seq(nrow(seurat))) {
       scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
   )
 }
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-}
-red_dim_plot(seurat, "umap1", "umap2", "gsva_names", "cat")
 ```
 
 ## Custom List
@@ -368,6 +405,13 @@ colnames(markers)[start_idx:end_idx] <- paste(
 )
 
 name_idx <- which(colnames(markers) == "Polioudakis Neuron 2019")
+start_idx <- name_idx + 1
+end_idx <- which(colnames(markers) == "Kanton Nature 2019") - 1
+colnames(markers)[start_idx:end_idx] <- paste(
+  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
+)
+
+name_idx <- which(colnames(markers) == "Kanton Nature 2019")
 start_idx <- name_idx + 1
 end_idx <- ncol(markers)
 colnames(markers)[start_idx:end_idx] <- paste(
@@ -416,10 +460,23 @@ gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 5,
+  column_km = 7,
   cluster_columns = FALSE,
+  cluster_rows = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
+
+gsva <- gsva(logcounts(pseudobulk), markers, method = "gsva", mx.diff = FALSE, verbose = FALSE)
+
+set.seed(1)
+heatmap <- Heatmap(
+  gsva,
+  column_km = 7,
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  row_names_max_width = max_text_width(rownames(gsva)),
+  heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 ```
 
