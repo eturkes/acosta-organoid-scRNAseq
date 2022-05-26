@@ -113,7 +113,7 @@ seurat
 # Clustering and Marker Genes
 
 ```{r}
-ElbowPlot(seurat, 50) + geom_vline(xintercept = 9, color = "red")
+ElbowPlot(seurat, 50) + geom_vline(xintercept = 14, color = "red")
 red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 14, Res = 1.2")
 
 rds <- file.path(cache_dir, "markers.rds")
