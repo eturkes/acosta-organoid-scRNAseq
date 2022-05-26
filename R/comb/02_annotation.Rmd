@@ -308,7 +308,12 @@ gsva_clusters <- data.frame(
     rep(names(lengths(modules))[4], lengths(modules)[4]),
     rep(names(lengths(modules))[5], lengths(modules)[5]),
     rep(names(lengths(modules))[6], lengths(modules)[6]),
-    rep(names(lengths(modules))[7], lengths(modules)[7])
+    rep(names(lengths(modules))[7], lengths(modules)[7]),
+    rep(names(lengths(modules))[8], lengths(modules)[8]),
+    rep(names(lengths(modules))[9], lengths(modules)[9]),
+    rep(names(lengths(modules))[10], lengths(modules)[10]),
+    rep(names(lengths(modules))[11], lengths(modules)[11]),
+    rep(names(lengths(modules))[12], lengths(modules)[12])
   )
 )
 gsva_clusters$seurat <- match(colnames(mat), colnames(seurat))
@@ -317,9 +322,13 @@ seurat$gsva_clusters <- gsva_clusters$clusters
 seurat@active.ident <- factor(seurat$gsva_clusters)
 
 seurat <- RenameIdents(
-  seurat, "1" = "Radial Glia Early", "2" = "Inhibitory Neurons",
-  "3" = "Radial Glia Late", "4" = "Excitatory Neuron Deep Layer", "5" = "Undifferentiated",
-  "6" = "Excitatory Neuron Upper Layer", "7" = "Mural Cells"
+  seurat,
+  "1" = "Inhibitory Neurons", "2" = "Unclassified",
+  "3" = "Excitatory Neuron Deep Layer", "4" = "Excitatory Neuron Upper Layer",
+  "5" = "Excitatory Neuron Upper Layer", "6" = "Excitatory Neuron Upper Layer",
+  "7" = "Radial Glia Early", "8" = "Inhibitory Neurons",
+  "9" = "Radial Glia Late", "10" = "Astrocytes",
+  "11" = "OPC", "12" = "Mural"
 )
 seurat$gsva_names <- seurat@active.ident
 
