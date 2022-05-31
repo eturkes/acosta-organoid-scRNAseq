@@ -110,9 +110,6 @@ if (file.exists(rds)) {
   if (length(file_list) == 13) {
     file_list <- file_list[-1]
   }
-  if (length(file_list) == 12) {
-    file_list <- file_list[-4]
-  }
   files <- vector("list", length(file_list))
   for (i in seq_along(files)) {
     files[[i]] <- readRDS(file.path(cache_dir, "..", "..", file_list[i]))
@@ -123,7 +120,7 @@ if (file.exists(rds)) {
     list(
       rownames(files[[1]]), rownames(files[[2]]), rownames(files[[3]]), rownames(files[[4]]),
       rownames(files[[5]]), rownames(files[[6]]), rownames(files[[7]]), rownames(files[[8]]),
-      rownames(files[[9]]), rownames(files[[10]]), rownames(files[[11]])
+      rownames(files[[9]]), rownames(files[[10]]), rownames(files[[11]]), rownames(files[[12]])
     )
   )
   for (i in seq_along(files)) {
@@ -133,8 +130,8 @@ if (file.exists(rds)) {
   seurat <- merge(
     files[[1]],
     c(
-      files[[2]], files[[3]], files[[4]], files[[5]], files[[6]],
-      files[[7]], files[[8]], files[[9]], files[[10]], files[[11]]
+      files[[2]], files[[3]], files[[4]], files[[5]], files[[6]], files[[7]],
+      files[[8]], files[[9]], files[[10]], files[[11]], files[[12]]
     )
   )
   seurat$sample <- c(
@@ -148,7 +145,8 @@ if (file.exists(rds)) {
     rep(sub("\\/.*", "", file_list[8]), ncol(files[[8]])),
     rep(sub("\\/.*", "", file_list[9]), ncol(files[[9]])),
     rep(sub("\\/.*", "", file_list[10]), ncol(files[[10]])),
-    rep(sub("\\/.*", "", file_list[11]), ncol(files[[11]]))
+    rep(sub("\\/.*", "", file_list[11]), ncol(files[[11]])),
+    rep(sub("\\/.*", "", file_list[12]), ncol(files[[12]]))
   )
   seurat$timepoint <- sub("_.*", "", seurat$sample)
 
@@ -163,7 +161,7 @@ DefaultAssay(seurat) <- "RNA"
 seurat[["SCT"]] <- NULL
 sub_name <- "all"
 seurat <- cluster_pipeline(
-  seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override
+  seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
 
 for (i in 1:length(metadata_to_plot)) {
