@@ -279,7 +279,7 @@ cluster_pipeline <- function(
     # ---------------------------
     resolution <- (dim(seurat)[2] / 3000) * 0.8 # Default is optimal for 3K cells so we scale it.
     seurat <- FindNeighbors(seurat, reduction, dims, verbose = FALSE)
-    seurat <- FindClusters(seurat, verbose = FALSE)
+    seurat <- FindClusters(seurat, resolution = resolution, verbose = FALSE)
     # ---------------------------
 
     saveRDS(seurat, rds)
