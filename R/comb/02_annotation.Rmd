@@ -97,13 +97,13 @@ if (file.exists(rds)) {
   seurat <- readRDS(rds)
 } else {
   seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
-  seurat <- RunUMAP(seurat, 1:14, min.dist = 0.75, verbose = FALSE)
+  seurat <- RunUMAP(seurat, 1:39, min.dist = 0.75, verbose = FALSE)
   add_df <- data.frame(Embeddings(seurat, "umap"))
   names(add_df) <- paste0("umap", seq(ncol(add_df)))
   seurat$umap1 <- add_df$umap1
   seurat$umap2 <- add_df$umap2
-  seurat <- FindNeighbors(seurat, dims = 1:14, verbose = FALSE)
-  seurat <- FindClusters(seurat, resolution = 1.2, verbose = FALSE)
+  seurat <- FindNeighbors(seurat, dims = 1:39, verbose = FALSE)
+  seurat <- FindClusters(seurat, resolution = 1, verbose = FALSE)
   saveRDS(seurat, rds)
 }
 
@@ -113,9 +113,9 @@ seurat
 # Clustering and Marker Genes
 
 ```{r}
-ElbowPlot(seurat, 50) + geom_vline(xintercept = 14, color = "red")
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 14, Res = 1.2")
-red_dim_plot(seurat, "umap1", "umap2", "sample", "cat") + ggtitle("Dims = 14, Res = 1.2")
+ElbowPlot(seurat, 50) + geom_vline(xintercept = 39, color = "red")
+red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 39, Res = 1")
+red_dim_plot(seurat, "umap1", "umap2", "sample", "cat") + ggtitle("Dims = 39, Res = 1")
 
 rds <- file.path(cache_dir, "markers.rds")
 if (file.exists(rds)) {
@@ -153,7 +153,7 @@ if (file.exists(rds)) {
 }
 ```
 
-## Bhaduri
+## Bhaduri + Pollen
 
 ```{r}
 markers <- read.delim(
@@ -161,10 +161,9 @@ markers <- read.delim(
   check.names = FALSE
 )
 
-start_idx <- which(colnames(markers) == "Bhaduri-Nature 2020") + 1
-end_idx <- which(colnames(markers) == "Polioudakis Neuron 2019") - 2
-markers <- markers[ , start_idx:end_idx]
-
+markers <- markers[ , 1:which(colnames(markers) == "Polioudakis Neuron 2019")]
+markers <- markers[ , -(which(colnames(markers) == "oRG vRG shared genes"))]
+markers <- Filter(function(x) !all(is.na(x)), markers)
 markers <- as.list(markers)
 markers <- lapply(markers, function(x) x[!(x == "")])
 
@@ -182,23 +181,23 @@ heatmap <- Heatmap(
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 
-gsva <- gsva(logcounts(pseudobulk), markers, method = "gsva", mx.diff = FALSE, verbose = FALSE)
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 12,
-  cluster_columns = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
-
+remove <- c(
+  "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
+  "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
+  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
+)
+markers_trimmed <- markers
+for (i in seq_along(remove)) {
+  markers_trimmed <- rapply(
+    markers_trimmed, function(x) ifelse(x == remove[i], "", x), how = "replace")
+}
+markers_trimmed <- lapply(markers_trimmed, function(x) x[!(x == "")])
 remove <- which(
-  names(markers) %in% c(
-    "Radial Glia_vRG", "Radial Glia_tRG", "Excitatory Neuron _Newborn", "IPC"
+  names(markers_trimmed) %in% c(
+    "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes"
   )
 )
-markers_trimmed <- markers[-remove]
+markers_trimmed <- markers_trimmed[-remove]
 
 gsva <- gsva(
   logcounts(pseudobulk), markers_trimmed, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
@@ -214,18 +213,20 @@ heatmap <- Heatmap(
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 
-gsva <- gsva(
-  logcounts(pseudobulk), markers_trimmed, method = "gsva", mx.diff = FALSE, verbose = FALSE
-)
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 12,
-  cluster_columns = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
+out_dir <- file.path(results_dir, data_name, "markers-QC-trimmed")
+if (!dir.exists(out_dir)) {
+  dir.create(out_dir, recursive = TRUE)
+}
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    png(
+      file.path(out_dir, paste0("bhaduri_", names(markers_trimmed)[i], ".png")), 10, 7,
+      "in", res = 300
+    )
+    plot(FeaturePlot(seurat, markers_trimmed[[i]], order = TRUE, cols = c("lightgrey", "red")))
+    dev.off()
+  }
+}
 ```
 
 ### Clustering Based on GSVA
@@ -284,10 +285,28 @@ gsva_seurat <- CreateAssayObject(data = gsva)
 seurat[["GSVA"]] <- gsva_seurat
 DefaultAssay(seurat) <- "GSVA"
 
+DefaultAssay(seurat) <- "SCT"
+seurat <- RunUMAP(
+  seurat, features = rownames(seurat)[rownames(seurat) %in% unlist(markers_trimmed)],
+  min.dist = 0.5, verbose = FALSE,
+  reduction.name = "gsva_genes_umap", reduction.key = "GSVA_GENES_UMAP_"
+)
+add_df <- data.frame(Embeddings(seurat, "gsva_genes_umap"))
+names(add_df) <- paste0("gsva_genes_umap", seq(ncol(add_df)))
+seurat$gsva_genes_umap1 <- add_df$gsva_genes_umap1
+seurat$gsva_genes_umap2 <- add_df$gsva_genes_umap2
+
+png(
+  file.path(out_dir, "art.png"), 10, 7,
+  "in", res = 300
+)
+plot(red_dim_plot(seurat, "gsva_genes_umap1", "gsva_genes_umap2", "gsva_names") + NoLegend())
+dev.off()
+
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
-  column_km = 12,
+  column_km = 19,
   show_column_names = FALSE,
   column_gap = unit(3, "mm"),
   cluster_columns = FALSE,
@@ -313,76 +332,62 @@ gsva_clusters <- data.frame(
     rep(names(lengths(modules))[9], lengths(modules)[9]),
     rep(names(lengths(modules))[10], lengths(modules)[10]),
     rep(names(lengths(modules))[11], lengths(modules)[11]),
-    rep(names(lengths(modules))[12], lengths(modules)[12])
+    rep(names(lengths(modules))[12], lengths(modules)[12]),
+    rep(names(lengths(modules))[13], lengths(modules)[13]),
+    rep(names(lengths(modules))[14], lengths(modules)[14]),
+    rep(names(lengths(modules))[15], lengths(modules)[15]),
+    rep(names(lengths(modules))[16], lengths(modules)[16]),
+    rep(names(lengths(modules))[17], lengths(modules)[17]),
+    rep(names(lengths(modules))[18], lengths(modules)[18]),
+    rep(names(lengths(modules))[19], lengths(modules)[19])
   )
 )
 gsva_clusters$seurat <- match(colnames(mat), colnames(seurat))
 gsva_clusters <- gsva_clusters[order(gsva_clusters$seurat), ]
 seurat$gsva_clusters <- gsva_clusters$clusters
-seurat@active.ident <- factor(seurat$gsva_clusters)
 
+seurat@active.ident <- factor(seurat$gsva_clusters)
 seurat <- RenameIdents(
   seurat,
-  "1" = "Inhibitory Neurons", "2" = "Unclassified",
-  "3" = "Excitatory Neuron Deep Layer", "4" = "Excitatory Neuron Upper Layer",
-  "5" = "Excitatory Neuron Upper Layer", "6" = "Excitatory Neuron Upper Layer",
-  "7" = "Radial Glia Early", "8" = "Inhibitory Neurons",
-  "9" = "Radial Glia Late", "10" = "Astrocytes",
-  "11" = "OPC", "12" = "Mural"
+  "1" = "Inhibitory Neurons", "2" = "Excitatory Neuron Upper Layer",
+  "3" = "Inhibitory Neurons", "4" = "Radial Glia Late",
+  "5" = "Excitatory Neuron Newborn", "6" = "Unclassified",
+  "7" = "Unclassified", "8" = "IPCs",
+  "9" = "Excitatory Neuron Upper Layer", "10" = "Excitatory Neuron Upper Layer",
+  "11" = "Excitatory Neuron Deep Layer", "12" = "Inhibitory Neurons",
+  "13" = "Radial Glia Late", "14" = "Excitatory Neuron Upper Layer",
+  "15" = "OPCs", "16" = "Mural Cells",
+  "17" = "Radial Glia Early", "18" = "Radial Glia Early",
+  "19" = "Astrocytes"
 )
 seurat$gsva_names <- seurat@active.ident
-
 red_dim_plot(seurat, "umap1", "umap2", "gsva_names", "cat")
 
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat), min.dist = 0.5,
-  verbose = FALSE, reduction.name = "gsva_umap", reduction.key = "GSVA_UMAP_"
+table(seurat$gsva_names, seurat$seurat_clusters)
+
+seurat@active.ident <- seurat$seurat_clusters
+seurat <- RenameIdents(
+  seurat,
+  "0" = "IPCs", "1" = "Unclassified",
+  "2" = "Radial Glia Late", "3" = "Excitatory Neuron Deep Layer",
+  "4" = "Unclassified", "5" = "Excitatory Neuron Upper Layer",
+  "6" = "Excitatory Neuron Upper Layer", "7" = "Unclassified",
+  "8" = "Radial Glia Early", "9" = "Excitatory Neuron Deep Layer",
+  "10" = "Inhibitory Neurons", "11" = "Astrocytes",
+  "12" = "Excitatory Neuron Newborn", "13" = "Radial Glia Late",
+  "14" = "Radial Glia Early", "15" = "OPCs",
+  "16" = "Inhibitory Neurons", "17" = "Radial Glia Late",
+  "18" = "IPCs", "19" = "IPCs",
+  "20" = "Unclassified", "21" = "Excitatory Neuron Upper Layer",
+  "22" = "Radial Glia Late", "23" = "Mural Cells",
+  "24" = "Radial Glia Late", "25" = "Excitatory Neuron Newborn",
+  "26" = "Mural Cells", "27" = "OPCs",
+  "28" = "Radial Glia Late", "29" = "Unclassified",
+  "30" = "Radial Glia Early", "31" = "Radial Glia Early",
+  "32" = "OPCs"
 )
-add_df <- data.frame(Embeddings(seurat, "gsva_umap"))
-names(add_df) <- paste0("gsva_umap", seq(ncol(add_df)))
-seurat$gsva_umap1 <- add_df$gsva_umap1
-seurat$gsva_umap2 <- add_df$gsva_umap2
-
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "gsva_names", "cat")
-red_dim_plot(seurat, "gsva_umap1", "gsva_umap2", "sample", "cat")
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "gsva_umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-}
-
-DefaultAssay(seurat) <- "SCT"
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat)[rownames(seurat) %in% unlist(markers_trimmed)],
-  min.dist = 0.5, verbose = FALSE,
-  reduction.name = "gsva_genes_umap", reduction.key = "GSVA_GENES_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_genes_umap"))
-names(add_df) <- paste0("gsva_genes_umap", seq(ncol(add_df)))
-seurat$gsva_genes_umap1 <- add_df$gsva_genes_umap1
-seurat$gsva_genes_umap2 <- add_df$gsva_genes_umap2
-
-red_dim_plot(seurat, "gsva_genes_umap1", "gsva_genes_umap2", "gsva_names", "cat")
-red_dim_plot(seurat, "gsva_genes_umap1", "gsva_genes_umap2", "sample", "cat")
-
-for (i in seq_along(markers_trimmed)) {
-  print(
-    FeaturePlot(
-      seurat, features = markers_trimmed[[i]], reduction = "gsva_genes_umap",
-      order = TRUE, cols = c("lightgrey", "red")
-    )
-  )
-}
-
-DefaultAssay(seurat) <- "GSVA"
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "gsva_genes_umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-}
+seurat$cluster_names <- seurat@active.ident
+red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
 ```
 
 ## Custom List
