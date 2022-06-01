@@ -281,28 +281,6 @@ if (file.exists(rds)) {
 }
 gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-DefaultAssay(seurat) <- "SCT"
-seurat <- RunUMAP(
-  seurat, features = rownames(seurat)[rownames(seurat) %in% unlist(markers_trimmed)],
-  min.dist = 0.5, verbose = FALSE,
-  reduction.name = "gsva_genes_umap", reduction.key = "GSVA_GENES_UMAP_"
-)
-add_df <- data.frame(Embeddings(seurat, "gsva_genes_umap"))
-names(add_df) <- paste0("gsva_genes_umap", seq(ncol(add_df)))
-seurat$gsva_genes_umap1 <- add_df$gsva_genes_umap1
-seurat$gsva_genes_umap2 <- add_df$gsva_genes_umap2
-
-png(
-  file.path(out_dir, "art.png"), 10, 7,
-  "in", res = 300
-)
-plot(red_dim_plot(seurat, "gsva_genes_umap1", "gsva_genes_umap2", "gsva_names") + NoLegend())
-dev.off()
-
 set.seed(1)
 heatmap <- Heatmap(
   gsva,
@@ -316,7 +294,7 @@ heatmap <- Heatmap(
 set.seed(1)
 modules <- column_order(draw(heatmap))
 
-mat <- GetAssayData(seurat, assay = "GSVA", slot = "data")
+mat <- GetAssayData(seurat)
 mat <- mat[ , unlist(modules)]
 gsva_clusters <- data.frame(
   sample = colnames(mat),
@@ -473,18 +451,6 @@ heatmap <- Heatmap(
   cluster_rows = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
-
-gsva <- gsva(logcounts(pseudobulk), markers, method = "gsva", mx.diff = FALSE, verbose = FALSE)
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 12,
-  cluster_columns = FALSE,
-  cluster_rows = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "GSVA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 ```
 
