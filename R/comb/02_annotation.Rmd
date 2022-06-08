@@ -67,7 +67,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 packages <- c(
   "conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork", "GSVA", "GSEABase",
   "SingleCellExperiment", "scuttle", "SingleR", "dplyr", "ggrepel", "DT", "edgeR", "ComplexHeatmap",
-  "biomaRt"
+  "biomaRt", "clustree"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 `%notin%` <- Negate(`%in%`)
@@ -92,34 +92,80 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 # Prep
 
 ```{r}
+markers <- read.delim(
+  file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
+  check.names = FALSE
+)
+
+markers <- markers[ , 1:which(colnames(markers) == "Polioudakis Neuron 2019")]
+markers <- markers[ , -(which(colnames(markers) == "oRG vRG shared genes"))]
+markers <- Filter(function(x) !all(is.na(x)), markers)
+markers <- as.list(markers)
+markers <- lapply(markers, function(x) x[!(x == "")])
+
+remove <- c(
+  "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
+  "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
+  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
+)
+markers <- markers
+for (i in seq_along(remove)) {
+  markers <- rapply(
+    markers, function(x) ifelse(x == remove[i], "", x), how = "replace")
+}
+markers <- lapply(markers, function(x) x[!(x == "")])
+remove <- which(
+  names(markers) %in% c(
+    "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes",
+    "Endothelial"
+  )
+)
+markers <- markers[-remove]
+
 rds <- file.path(cache_dir, "reclustered_seurat.rds")
 if (file.exists(rds)) {
   seurat <- readRDS(rds)
 } else {
   seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
-  seurat <- RunUMAP(seurat, 1:39, min.dist = 0.75, verbose = FALSE)
+
+  seurat <- RunPCA(seurat, verbose = FALSE)
+  add_df <- data.frame(Embeddings(seurat)[ , 1:2])
+  names(add_df) <- paste0("pca", seq(ncol(add_df)))
+  seurat$pca1 <- add_df$pca1
+  seurat$pca2 <- add_df$pca2
+
+  loadings <- Loadings(seurat)
+  loadings_list <- markers
+  for (i in seq_along(loadings_list)) {
+    sub_loadings <- loadings[rownames(loadings) %in% markers[[i]], ]
+    loadings_list[[i]] <- min(
+      c(which.max(colMeans(sub_loadings)), which.min(colMeans(sub_loadings)))
+    )
+    # loadings_list[[i]] <- c(which.max(colMeans(sub_loadings)), which.min(colMeans(sub_loadings)))
+  }
+  idx <- max(unlist(loadings_list))
+
+  seurat <- RunUMAP(seurat, 1:idx, min.dist = 0.1, n.neighbors = 35, verbose = FALSE)
   add_df <- data.frame(Embeddings(seurat, "umap"))
   names(add_df) <- paste0("umap", seq(ncol(add_df)))
   seurat$umap1 <- add_df$umap1
   seurat$umap2 <- add_df$umap2
-  seurat <- FindNeighbors(seurat, dims = 1:39, verbose = FALSE)
-  resolution <- (dim(seurat)[2] / 3000) * 0.8
-  seurat <- FindClusters(seurat, resolution = resolution, verbose = FALSE)
+
+  seurat <- FindNeighbors(seurat, dims = 1:idx, verbose = FALSE)
+  seurat <- FindClusters(seurat, resolution = 0.5, verbose = FALSE)
+
   saveRDS(seurat, rds)
 }
-
-seurat
 ```
 
 # Clustering and Marker Genes
 
 ```{r}
-ElbowPlot(seurat, 50) + geom_vline(xintercept = 39, color = "red")
-resolution <- (dim(seurat)[2] / 3000) * 0.8
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters") +
-  ggtitle(paste0("Dims = 39, Res = ", resolution))
-red_dim_plot(seurat, "umap1", "umap2", "sample", "cat") +
-  ggtitle(paste0("Dims = 39, Res = ", resolution))
+clustree(seurat)
+clustree(seurat, node_colour = "sc3_stability")
+
+red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "umap1", "umap2", "sample", "cat")
 
 rds <- file.path(cache_dir, "markers.rds")
 if (file.exists(rds)) {
@@ -149,55 +195,11 @@ if (file.exists(rds)) {
 }
 ```
 
-## Bhaduri + Pollen
+## Bhaduri
 
 ```{r}
-markers <- read.delim(
-  file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
-  check.names = FALSE
-)
-
-markers <- markers[ , 1:which(colnames(markers) == "Polioudakis Neuron 2019")]
-markers <- markers[ , -(which(colnames(markers) == "oRG vRG shared genes"))]
-markers <- Filter(function(x) !all(is.na(x)), markers)
-markers <- as.list(markers)
-markers <- lapply(markers, function(x) x[!(x == "")])
-
 gsva <- gsva(
   logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
-)
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 12,
-  cluster_columns = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  column_names_gp = gpar(fontsize = 8),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
-
-remove <- c(
-  "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
-  "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
-  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
-)
-markers_trimmed <- markers
-for (i in seq_along(remove)) {
-  markers_trimmed <- rapply(
-    markers_trimmed, function(x) ifelse(x == remove[i], "", x), how = "replace")
-}
-markers_trimmed <- lapply(markers_trimmed, function(x) x[!(x == "")])
-remove <- which(
-  names(markers_trimmed) %in% c(
-    "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes"
-  )
-)
-markers_trimmed <- markers_trimmed[-remove]
-
-gsva <- gsva(
-  logcounts(pseudobulk), markers_trimmed, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
 gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
@@ -233,36 +235,19 @@ DefaultAssay(seurat) <- "GSVA"
 
 for (i in seq(nrow(seurat))) {
   print(
+    clustree(
+      seurat, prefix = "SCT_snn_res.",
+      node_colour = rownames(seurat)[i], node_colour_aggr = "median"
+    )
+  )
+}
+
+for (i in seq(nrow(seurat))) {
+  print(
     FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
       scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
   )
 }
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 12,
-  show_column_names = FALSE,
-  column_gap = unit(3, "mm"),
-  cluster_columns = FALSE,
-  cluster_rows = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
-
-DefaultAssay(seurat) <- "SCT"
-seurat[["GSVA"]] <- NULL
-rds <- file.path(cache_dir, "gsva_trimmed.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat)), markers_trimmed, method = "ssgsea",
-    ssgsea.norm = FALSE, verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
 set.seed(1)
 heatmap <- Heatmap(
@@ -310,69 +295,25 @@ seurat$gsva_clusters <- gsva_clusters$clusters
 seurat@active.ident <- seurat$seurat_clusters
 seurat <- RenameIdents(
   seurat,
-  "0" = "Astrocytes", "1" = "Astrocytes",
-  "2" = "Excitatory Neuron Newborn", "3" = "Excitatory Neuron Deep Layer",
-  "4" = "Excitatory Neuron Upper Layer", "5" = "Excitatory Neuron Deep Layer",
-  "6" = "Radial Glia Late", "7" = "Radial Glia Early",
-  "8" = "Radial Glia Early", "9" = "IPCs",
-  "10" = "Radial Glia Late", "11" = "IPCs",
-  "12" = "Radial Glia Late", "13" = "Radial Glia Late",
-  "14" = "Excitatory Neuron Deep Layer", "15" = "Excitatory Neuron Deep Layer",
-  "16" = "Excitatory Neuron Upper Layer", "17" = "Radial Glia Late",
-  "18" = "Excitatory Neuron Upper Layer", "19" = "Excitatory Neuron Upper Layer",
-  "20" = "Excitatory Neuron Deep Layer", "21" = "Excitatory Neuron Deep Layer",
-  "22" = "Inhibitory Neurons", "23" = "Inhibitory Neurons",
-  "24" = "Excitatory Neuron Newborn", "25" = "Inhibitory Neurons",
-  "26" = "Excitatory Neuron Deep Layer", "27" = "IPCs",
-  "28" = "Excitatory Neuron Upper Layer", "29" = "Excitatory Neuron Deep Layer",
-  "30" = "IPCs", "31" = "OPCs",
-  "32" = "Excitatory Neuron Deep Layer", "33" = "Excitatory Neuron Upper Layer",
-  "34" = "Mural Cells", "35" = "Excitatory Neuron Deep Layer",
-  "36" = "Excitatory Neuron Deep Layer", "37" = "Excitatory Neuron Upper Layer",
-  "38" = "Excitatory Neuron Deep Layer", "39" = "Inhibitory Neurons",
-  "40" = "Excitatory Neuron Upper Layer", "41" = "Radial Glia Early",
-  "42" = "IPCs", "43" = "OPCs",
-  "44" = "Excitatory Neuron Newborn", "45" = "Radial Glia Early",
-  "46" = "Inhibitory Neurons", "47" = "Excitatory Neuron Deep Layer",
-  "48" = "IPCs", "49" = "Excitatory Neuron Newborn",
-  "50" = "Excitatory Neuron Deep Layer", "51" = "Inhibitory Neurons",
-  "52" = "Excitatory Neuron Deep Layer", "53" = "Astrocytes",
-  "54" = "Radial Glia Late", "55" = "Excitatory Neuron Deep Layer",
-  "56" = "Excitatory Neuron Deep Layer", "57" = "Excitatory Neuron Upper Layer",
-  "58" = "Excitatory Neuron Upper Layer", "59" = "Radial Glia Late",
-  "60" = "IPCs", "61" = "Radial Glia Early",
-  "62" = "Excitatory Neuron Newborn", "63" = "IPCs",
-  "64" = "Mural Cells", "65" = "Inhibitory Neurons",
-  "66" = "Radial Glia Early", "67" = "IPCs",
-  "68" = "Excitatory Neuron Upper Layer", "69" = "Excitatory Neuron Newborn",
-  "70" = "Excitatory Neuron Deep Layer", "71" = "Excitatory Neuron Newborn",
-  "72" = "Inhibitory Neurons", "73" = "Excitatory Neuron Upper Layer",
-  "74" = "Radial Glia Late", "75" = "Excitatory Neuron Upper Layer",
-  "76" = "Astrocytes", "77" = "Radial Glia Late",
-  "78" = "Excitatory Neuron Upper Layer", "79" = "Excitatory Neuron Newborn",
-  "80" = "Excitatory Neuron Newborn", "81" = "Astrocytes",
-  "82" = "Excitatory Neuron Upper Layer", "83" = "IPCs",
-  "84" = "Radial Glia Late", "85" = "Radial Glia Late",
-  "86" = "Excitatory Neuron Upper Layer", "87" = "Excitatory Neuron Upper Layer",
-  "88" = "Excitatory Neuron Upper Layer", "89" = "Inhibitory Neurons",
-  "90" = "OPCs", "91" = "Excitatory Neuron Upper Layer",
-  "92" = "Radial Glia Early", "93" = "Excitatory Neuron Deep Layer",
-  "94" = "Astrocytes", "95" = "Radial Glia Late",
-  "96" = "IPCs", "97" = "Mural Cells",
-  "98" = "Excitatory Neuron Upper Layer", "99" = "Excitatory Neuron Upper Layer",
-  "100" = "Excitatory Neuron Deep Layer", "101" = "OPCs",
-  "102" = "Radial Glia Early", "103" = "OPCs",
-  "104" = "OPCs", "105" = "Radial Glia Late",
-  "106" = "OPCs", "107" = "Radial Glia Late",
-  "108" = "Excitatory Neuron Upper Layer", "109" = "Radial Glia Early",
-  "110" = "Inhibitory Neurons", "111" = "IPCs",
-  "112" = "Excitatory Neuron Newborn", "113" = "Excitatory Neuron Upper Layer",
-  "114" = "IPCs", "115" = "Mural Cells",
-  "116" = "Inhibitory Neurons", "117" = "Radial Glia Early",
-  "118" = "Inhibitory Neurons", "119" = "OPCs",
-  "120" = "Excitatory Neuron Deep Layer", "121" = "OPCs",
-  "122" = "OPCs", "123" = "Mural Cells",
-  "124" = "IPCs", "125" = "Inhibitory Neurons"
+  "37" = "IPC", "14" = "Excitatory Neuron Deep Layer",
+  "15" = "Excitatory Neuron Deep Layer", "20" = "Excitatory Neuron Deep Layer",
+  "36" = "IPC", "5" = "Excitatory Neuron Upper Layer",
+  "9" = "Unclassified", "13" = "IPC",
+  "29" = "IPC", "33" = "Excitatory Neuron Deep Layer",
+  "3" = "Excitatory Neuron Newborn", "11" = "Excitatory Neuron Newborn",
+  "31" = "Excitatory Neuron Newborn", "0" = "Excitatory Neuron Upper Layer",
+  "4" = "Excitatory Neuron Upper Layer", "10" = "Excitatory Neuron Upper Layer",
+  "21" = "Excitatory Neuron Upper Layer", "26" = "Excitatory Neuron Upper Layer",
+  "16" = "Inhibitory Neuron", "17" = "Inhibitory Neuron",
+  "24" = "Inhibitory Neuron", "8" = "OPC",
+  "19" = "OPC", "2" = "Radial Glia Late",
+  "12" = "Radial Glia Early", "22" = "Radial Glia Late",
+  "34" = "Radial Glia Late", "6" = "IPC",
+  "18" = "Radial Glia Early", "23" = "Radial Glia Early",
+  "35" = "Radial Glia Early", "1" = "Unclassified",
+  "28" = "Unclassified", "32" = "Unclassified",
+  "27" = "Mural", "30" = "Mural",
+  "7" = "Astrocyte", "25" = "Astrocyte"
 )
 seurat$cluster_names <- seurat@active.ident
 red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
