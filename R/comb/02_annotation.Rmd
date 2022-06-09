@@ -176,23 +176,23 @@ draw(heatmap)
 seurat@active.ident <- seurat$seurat_clusters
 seurat <- RenameIdents(
   seurat,
-  "0" = "IPCs", "1" = "Unclassified 1",
+  "0" = "IPC", "1" = "Unclassified 1",
   "2" = "Radial Glia Late", "3" = "Excitatory Neuron Deep Layer",
   "4" = "Unclassified 2", "5" = "Excitatory Neuron Upper Layer",
   "6" = "Excitatory Neuron Upper Layer", "7" = "Unclassified 3",
   "8" = "Radial Glia Early", "9" = "Excitatory Neuron Deep Layer",
-  "10" = "Inhibitory Neurons", "11" = "Astrocytes",
+  "10" = "Inhibitory Neurons", "11" = "Astrocyte",
   "12" = "Excitatory Neuron Newborn", "13" = "Radial Glia Late",
-  "14" = "Radial Glia Early", "15" = "OPCs",
+  "14" = "Radial Glia Early", "15" = "OPC",
   "16" = "Inhibitory Neurons", "17" = "Radial Glia Late",
-  "18" = "IPCs", "19" = "IPCs",
+  "18" = "IPC", "19" = "IPC",
   "20" = "Unclassified 4", "21" = "Excitatory Neuron Upper Layer",
-  "22" = "Radial Glia Late", "23" = "Mural Cells",
+  "22" = "Radial Glia Late", "23" = "Mural",
   "24" = "Radial Glia Late", "25" = "Excitatory Neuron Newborn",
-  "26" = "Mural Cells", "27" = "OPCs",
+  "26" = "Mural", "27" = "OPC",
   "28" = "Radial Glia Late", "29" = "Unclassified 3",
   "30" = "Radial Glia Early", "31" = "Radial Glia Early",
-  "32" = "OPCs"
+  "32" = "OPC"
 )
 seurat$cluster_names <- seurat@active.ident
 red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
@@ -447,186 +447,85 @@ for (i in seq_along(markers_trimmed)) {
 }
 ```
 
-### Organoid Broad Clusters
+### Custom Clusters
 
 ```{r}
-rds <- file.path(cache_dir, "bhaduri_organoid_rca_Type.rds")
-rds2 <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Type.rds")
+rds <- file.path(cache_dir, "bhaduri_primary_rca_custom.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_custom.rds")
 if (file.exists(rds)) {
   rca <- readRDS(rds)
   ref <- readRDS(rds2)
 } else {
 
-  rds <- file.path(cache_dir, "bhaduri_organoid_ref.rds")
+  rds <- file.path(cache_dir, "bhaduri_primary_ref.rds")
   if (file.exists(rds)) {
     ref <- readRDS(rds)
   } else {
-    ref <- fread(
-      file.path(data_dir, "bhaduri_2020", "organoid", "organoidsmatrix_nonorm.txt"),
-      data.table = FALSE
-    )
+    ref <- fread(file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE)
     gc()
     rownames(ref) <- ref[ , 1]
     ref <- ref[ , -1]
   
-    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "organoid", "meta.tsv"), row.names = 1)
+    meta <- read.delim(
+      file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1
+    )
     meta <- meta[-(which(meta$Type == "Outlier")), ]
-    meta <- meta[-(which(meta$Type == "Unknown")), ]
-    meta <- meta[-(which(meta$Subtype == "lowquality")), ]
+    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
+    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
   
-    barcode <- sub(".*_", "", rownames(meta))
-    rownames(meta) <- paste(barcode, meta$Sample, sep = " ")
     ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
-    meta <- meta[rownames(meta) %in% colnames(ref), ]
-    meta <- meta[match(colnames(ref), rownames(meta)), ]
   
-    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
-    rm(meta)
-    gc()
-    saveRDS(ref, rds)
-  }
-  
-  rds <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Type.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    top <- nrow(ref) / 2
-    top <- ref[1:top, ]
-    top <- aggregateAcrossCells(top, top$Type, "mean")
-  
-    bottom <- (nrow(ref) / 2) + 1
-    bottom <- ref[bottom:(nrow(ref)), ]
-    bottom <- aggregateAcrossCells(bottom, bottom$Type, "mean")
-  
-    ref <- rbind(top, bottom)
-    rm(top, bottom)
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, "bhaduri_organoid_panel_Type.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
-  
-    ref2 <- ref
-    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
-    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
-    ref <- cbind(ref, ref2)
-    rm(ref2)
-  
-    ref <- buildReferencePanel(counts(ref))
-    saveRDS(ref, rds)
-  }
-
-  rm(ref)
-  rds <- file.path(cache_dir, "bhaduri_organoid_rca_Type.rds")
-  if (file.exists(rds)) {
-    rca <- readRDS(rds)
-  } else {
-    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
-    rca <- dataProject(
-      rca, "Custom", file.path(cache_dir, "bhaduri_organoid_panel_Type.rds"), "spearman"
-    )
-    rca <- computeUMAP(rca)
-    rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
-  }
-
-}
-
-rca
-
-seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
-)
-add_df <- data.frame(Embeddings(seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-seurat$rca_umap1 <- add_df$rca_umap1
-seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
-
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
-    print(
-      FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
-      )
-    )
-  }
-}
-```
-
-### Organoid Sub Clusters
-
-```{r}
-rds <- file.path(cache_dir, "bhaduri_organoid_rca_Subtype.rds")
-rds2 <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Subtype.rds")
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-  ref <- readRDS(rds2)
-} else {
-
-  rds <- file.path(cache_dir, "bhaduri_organoid_ref.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- fread(
-      file.path(data_dir, "bhaduri_2020", "organoid", "organoidsmatrix_nonorm.txt"),
-      data.table = FALSE
-    )
-    gc()
-    rownames(ref) <- ref[ , 1]
-    ref <- ref[ , -1]
-  
-    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "organoid", "meta.tsv"), row.names = 1)
-    meta <- meta[-(which(meta$Type == "Outlier")), ]
-    meta <- meta[-(which(meta$Type == "Unknown")), ]
-    meta <- meta[-(which(meta$Subtype == "lowquality")), ]
-  
-    barcode <- sub(".*_", "", rownames(meta))
-    rownames(meta) <- paste(barcode, meta$Sample, sep = " ")
-    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
-    meta <- meta[rownames(meta) %in% colnames(ref), ]
-    meta <- meta[match(colnames(ref), rownames(meta)), ]
-  
-    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
+    ref <- SingleCellExperiment(list(normcounts = ref), colData = meta)
+    counts(ref) <- 2 ^ normcounts(ref) - 1
     rm(meta)
     gc()
     saveRDS(ref, rds)
   }
 
-  rds <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Subtype.rds")
+  ref$custom <- ref$Subtype
+  remove <- which(
+    ref$custom == "oRG" | ref$custom == "vRG" | ref$custom == "IPC/newborn" |
+      ref$custom == "Layer VI Occipital" | ref$custom == "Cajal Retzius" |
+      ref$custom == "Layer VI Pan-area" | ref$custom == "PFC" |
+      ref$custom == "Parietal and Temporal" | ref$custom == "Layer IV" | ref$custom == "tRG" |
+      ref$custom == "Endothelial" | ref$custom == "Microglia"
+  )
+  ref <- ref[ , -remove]
+
+  ref$custom[
+    which(
+      ref$custom == "Upper Layer Occipital" | ref$custom == "Upper Layer" |
+        ref$custom == "Upper Layer PFC"
+    )
+  ] <- "Excitatory Neuron Upper Layer"
+  ref$custom[
+    which(ref$custom == "IPC-new" | ref$custom == "IPC-div1" | ref$custom == "IPC-div2")
+  ] <- "IPC"
+  ref$custom[which(ref$custom == "SST-MGE1" | ref$custom == "MGE2")] <- "Inhibitory Neuron"
+  ref$custom[which(ref$custom == "Deep Layer")] <- "Excitatory Neuron Deep Layer"
+  ref$custom[which(ref$custom == "late")] <- "Radial Glia Late"
+  ref$custom[which(ref$custom == "early")] <- "Radial Glia Early"
+  ref$custom[which(ref$custom == "Newborn")] <- "Excitatory Neuron Newborn"
+  ref$custom[which(ref$custom == "oRG/Astrocyte")] <- "Astrocyte"
+
+  rds <- file.path(cache_dir, "bhaduri_primary_pseudobulk_custom.rds")
   if (file.exists(rds)) {
     ref <- readRDS(rds)
   } else {
     top <- nrow(ref) / 2
     top <- ref[1:top, ]
-    top <- aggregateAcrossCells(top, top$Subtype, "mean")
+    top <- aggregateAcrossCells(top, top$custom, "mean")
   
     bottom <- (nrow(ref) / 2) + 1
     bottom <- ref[bottom:(nrow(ref)), ]
-    bottom <- aggregateAcrossCells(bottom, bottom$Subtype, "mean")
+    bottom <- aggregateAcrossCells(bottom, bottom$custom, "mean")
   
     ref <- rbind(top, bottom)
     rm(top, bottom)
     saveRDS(ref, rds)
   }
 
-  rds <- file.path(cache_dir, "bhaduri_organoid_panel_Subtype.rds")
+  rds <- file.path(cache_dir, "bhaduri_primary_panel_custom.rds")
   if (file.exists(rds)) {
     ref <- readRDS(rds)
   } else {
@@ -643,120 +542,13 @@ if (file.exists(rds)) {
   }
 
   rm(ref)
-  rds <- file.path(cache_dir, "bhaduri_organoid_rca_Subtype.rds")
+  rds <- file.path(cache_dir, "bhaduri_primary_rca_custom.rds")
   if (file.exists(rds)) {
     rca <- readRDS(rds)
   } else {
     rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
     rca <- dataProject(
-      rca, "Custom", file.path(cache_dir, "bhaduri_organoid_panel_Subtype.rds"), "spearman"
-    )
-    rca <- computeUMAP(rca)
-    rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
-  }
-}
-
-rca
-
-seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
-)
-add_df <- data.frame(Embeddings(seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-seurat$rca_umap1 <- add_df$rca_umap1
-seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
-
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
-    print(
-      FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
-      )
-    )
-  }
-}
-```
-
-## Polioudakis
-
-### Broad Clusters
-
-```{r}
-rds <- file.path(cache_dir, "polioudakis_rca_Cluster.rds")
-rds2 <- file.path(cache_dir, "polioudakis_pseudobulk_Cluster.rds")
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-  ref <- readRDS(rds2)
-} else {
-
-  rds <- file.path(cache_dir, "polioudakis_ref.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    load(file.path(data_dir, "polioudakis_2019", "raw_counts_mat.rdata"))
-    meta <- read.csv(file.path(data_dir, "polioudakis_2019", "cell_metadata.csv"))
-    raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% meta$Cell]
-    ref <- SingleCellExperiment(list(counts = raw_counts_mat), colData = meta)
-    gc()
-    saveRDS(ref, rds)
-  }
-  
-  rds <- file.path(cache_dir, "polioudakis_pseudobulk_Cluster.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    top <- nrow(ref) / 2
-    top <- ref[1:top, ]
-    top <- aggregateAcrossCells(top, top$Cluster, "mean")
-  
-    bottom <- (nrow(ref) / 2) + 1
-    bottom <- ref[bottom:(nrow(ref)), ]
-    bottom <- aggregateAcrossCells(bottom, bottom$Cluster, "mean")
-  
-    ref <- rbind(top, bottom)
-    rm(top, bottom)
-    saveRDS(ref, rds)
-  }
-  
-  rds <- file.path(cache_dir, "polioudakis_panel_Cluster.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
-  
-    ref2 <- ref
-    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
-    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
-    ref <- cbind(ref, ref2)
-    rm(ref2)
-  
-    ref <- buildReferencePanel(counts(ref))
-    saveRDS(ref, rds)
-  }
-  
-  rm(ref)
-  rds <- file.path(cache_dir, "polioudakis_rca_Cluster.rds")
-  if (file.exists(rds)) {
-    rca <- readRDS(rds)
-  } else {
-    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
-    rca <- dataProject(
-      rca, method = "Custom", file.path(cache_dir, "polioudakis_panel_Cluster.rds"), "spearman"
+      rca, "Custom", file.path(cache_dir, "bhaduri_primary_panel_custom.rds"), "spearman"
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca)
