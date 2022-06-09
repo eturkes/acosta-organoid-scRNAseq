@@ -65,12 +65,10 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
 packages <- c(
-  "conflicted", "Seurat", "openxlsx", "stringr", "ggplot2", "patchwork", "GSVA", "GSEABase",
-  "SingleCellExperiment", "scuttle", "SingleR", "dplyr", "ggrepel", "DT", "edgeR", "ComplexHeatmap",
-  "biomaRt", "clustree"
+  "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
-`%notin%` <- Negate(`%in%`)
 source(file.path("..", "utils.R"))
 
 analysis_no <- 2
@@ -92,6 +90,33 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 # Prep
 
 ```{r}
+rds <- file.path(cache_dir, "reclustered_seurat.rds")
+if (file.exists(rds)) {
+  seurat <- readRDS(rds)
+} else {
+  seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
+  seurat <- RunUMAP(seurat, 1:39, min.dist = 0.75, verbose = FALSE)
+  add_df <- data.frame(Embeddings(seurat, "umap"))
+  names(add_df) <- paste0("umap", seq(ncol(add_df)))
+  seurat$umap1 <- add_df$umap1
+  seurat$umap2 <- add_df$umap2
+  seurat <- FindNeighbors(seurat, dims = 1:39, verbose = FALSE)
+  seurat <- FindClusters(seurat, resolution = 1, verbose = FALSE)
+  saveRDS(seurat, rds)
+}
+
+seurat
+
+ElbowPlot(seurat, 50) + geom_vline(xintercept = 39, color = "red")
+red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 39, Res = 1")
+red_dim_plot(seurat, "umap1", "umap2", "sample", "cat") + ggtitle("Dims = 39, Res = 1")
+```
+
+# ssGSEA + Unbiased Clustering
+
+## Bhaduri
+
+```{r}
 markers <- read.delim(
   file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
   check.names = FALSE
@@ -108,80 +133,20 @@ remove <- c(
   "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
   "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
 )
-markers <- markers
+markers_trimmed <- markers
 for (i in seq_along(remove)) {
-  markers <- rapply(
-    markers, function(x) ifelse(x == remove[i], "", x), how = "replace")
+  markers_trimmed <- rapply(
+    markers_trimmed, function(x) ifelse(x == remove[i], "", x), how = "replace")
 }
-markers <- lapply(markers, function(x) x[!(x == "")])
+markers_trimmed <- lapply(markers_trimmed, function(x) x[!(x == "")])
 remove <- which(
-  names(markers) %in% c(
-    "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes",
-    "Endothelial"
+  names(markers_trimmed) %in% c(
+    "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes"
   )
 )
-markers <- markers[-remove]
+markers_trimmed <- markers_trimmed[-remove]
 
-rds <- file.path(cache_dir, "reclustered_seurat.rds")
-if (file.exists(rds)) {
-  seurat <- readRDS(rds)
-} else {
-  seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
-
-  seurat <- RunPCA(seurat, verbose = FALSE)
-  add_df <- data.frame(Embeddings(seurat)[ , 1:2])
-  names(add_df) <- paste0("pca", seq(ncol(add_df)))
-  seurat$pca1 <- add_df$pca1
-  seurat$pca2 <- add_df$pca2
-
-  loadings <- Loadings(seurat)
-  loadings_list <- markers
-  for (i in seq_along(loadings_list)) {
-    sub_loadings <- loadings[rownames(loadings) %in% markers[[i]], ]
-    loadings_list[[i]] <- min(
-      c(which.max(colMeans(sub_loadings)), which.min(colMeans(sub_loadings)))
-    )
-    # loadings_list[[i]] <- c(which.max(colMeans(sub_loadings)), which.min(colMeans(sub_loadings)))
-  }
-  idx <- max(unlist(loadings_list))
-
-  seurat <- RunUMAP(seurat, 1:idx, min.dist = 0.1, n.neighbors = 35, verbose = FALSE)
-  add_df <- data.frame(Embeddings(seurat, "umap"))
-  names(add_df) <- paste0("umap", seq(ncol(add_df)))
-  seurat$umap1 <- add_df$umap1
-  seurat$umap2 <- add_df$umap2
-
-  seurat <- FindNeighbors(seurat, dims = 1:idx, verbose = FALSE)
-  seurat <- FindClusters(seurat, resolution = 0.5, verbose = FALSE)
-
-  saveRDS(seurat, rds)
-}
-```
-
-# Clustering and Marker Genes
-
-```{r}
-clustree(seurat)
-clustree(seurat, node_colour = "sc3_stability")
-
-red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
-red_dim_plot(seurat, "umap1", "umap2", "sample", "cat")
-
-rds <- file.path(cache_dir, "markers.rds")
-if (file.exists(rds)) {
-  markers <- readRDS(rds)
-} else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
-  saveRDS(markers, rds)
-}
-
-datatable_download(markers)
-```
-
-# GSVA
-
-```{r}
-rds <- file.path(cache_dir, "pseudobulk.rds")
+rds <- file.path(cache_dir, "seurat_pseudobulk.rds")
 if (file.exists(rds)) {
   pseudobulk <- readRDS(rds)
 } else {
@@ -193,13 +158,9 @@ if (file.exists(rds)) {
   logcounts(pseudobulk, withDimnames = FALSE) <- edgeR::cpm(dge, log = TRUE, prior.count = 3)
   saveRDS(pseudobulk, rds)
 }
-```
 
-## Bhaduri
-
-```{r}
 gsva <- gsva(
-  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
+  logcounts(pseudobulk), markers_trimmed, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
 gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
@@ -209,200 +170,633 @@ heatmap <- Heatmap(
   column_km = 12,
   cluster_columns = FALSE,
   row_names_max_width = max_text_width(rownames(gsva)),
-  column_names_gp = gpar(fontsize = 8),
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
-```
-
-### Clustering Based on GSVA
-
-```{r}
-rds <- file.path(cache_dir, "gsva.rds")
-if (file.exists(rds)) {
-  gsva <- readRDS(rds)
-} else {
-  gsva <- gsva(
-    as.matrix(GetAssayData(seurat)), markers, method = "ssgsea",
-    ssgsea.norm = FALSE, verbose = FALSE
-  )
-  saveRDS(gsva, rds)
-}
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
-
-gsva_seurat <- CreateAssayObject(data = gsva)
-seurat[["GSVA"]] <- gsva_seurat
-DefaultAssay(seurat) <- "GSVA"
-
-for (i in seq(nrow(seurat))) {
-  print(
-    clustree(
-      seurat, prefix = "SCT_snn_res.",
-      node_colour = rownames(seurat)[i], node_colour_aggr = "median"
-    )
-  )
-}
-
-for (i in seq(nrow(seurat))) {
-  print(
-    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "umap") +
-      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
-  )
-}
-
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 19,
-  show_column_names = FALSE,
-  column_gap = unit(3, "mm"),
-  cluster_columns = FALSE,
-  cluster_rows = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-set.seed(1)
-modules <- column_order(draw(heatmap))
-
-mat <- GetAssayData(seurat)
-mat <- mat[ , unlist(modules)]
-gsva_clusters <- data.frame(
-  sample = colnames(mat),
-  clusters = c(
-    rep(names(lengths(modules))[1], lengths(modules)[1]),
-    rep(names(lengths(modules))[2], lengths(modules)[2]),
-    rep(names(lengths(modules))[3], lengths(modules)[3]),
-    rep(names(lengths(modules))[4], lengths(modules)[4]),
-    rep(names(lengths(modules))[5], lengths(modules)[5]),
-    rep(names(lengths(modules))[6], lengths(modules)[6]),
-    rep(names(lengths(modules))[7], lengths(modules)[7]),
-    rep(names(lengths(modules))[8], lengths(modules)[8]),
-    rep(names(lengths(modules))[9], lengths(modules)[9]),
-    rep(names(lengths(modules))[10], lengths(modules)[10]),
-    rep(names(lengths(modules))[11], lengths(modules)[11]),
-    rep(names(lengths(modules))[12], lengths(modules)[12]),
-    rep(names(lengths(modules))[13], lengths(modules)[13]),
-    rep(names(lengths(modules))[14], lengths(modules)[14]),
-    rep(names(lengths(modules))[15], lengths(modules)[15]),
-    rep(names(lengths(modules))[16], lengths(modules)[16]),
-    rep(names(lengths(modules))[17], lengths(modules)[17]),
-    rep(names(lengths(modules))[18], lengths(modules)[18]),
-    rep(names(lengths(modules))[19], lengths(modules)[19])
-  )
-)
-gsva_clusters$seurat <- match(colnames(mat), colnames(seurat))
-gsva_clusters <- gsva_clusters[order(gsva_clusters$seurat), ]
-seurat$gsva_clusters <- gsva_clusters$clusters
 
 seurat@active.ident <- seurat$seurat_clusters
 seurat <- RenameIdents(
   seurat,
-  "37" = "IPC", "14" = "Excitatory Neuron Deep Layer",
-  "15" = "Excitatory Neuron Deep Layer", "20" = "Excitatory Neuron Deep Layer",
-  "36" = "IPC", "5" = "Excitatory Neuron Upper Layer",
-  "9" = "Unclassified", "13" = "IPC",
-  "29" = "IPC", "33" = "Excitatory Neuron Deep Layer",
-  "3" = "Excitatory Neuron Newborn", "11" = "Excitatory Neuron Newborn",
-  "31" = "Excitatory Neuron Newborn", "0" = "Excitatory Neuron Upper Layer",
-  "4" = "Excitatory Neuron Upper Layer", "10" = "Excitatory Neuron Upper Layer",
-  "21" = "Excitatory Neuron Upper Layer", "26" = "Excitatory Neuron Upper Layer",
-  "16" = "Inhibitory Neuron", "17" = "Inhibitory Neuron",
-  "24" = "Inhibitory Neuron", "8" = "OPC",
-  "19" = "OPC", "2" = "Radial Glia Late",
-  "12" = "Radial Glia Early", "22" = "Radial Glia Late",
-  "34" = "Radial Glia Late", "6" = "IPC",
-  "18" = "Radial Glia Early", "23" = "Radial Glia Early",
-  "35" = "Radial Glia Early", "1" = "Unclassified",
-  "28" = "Unclassified", "32" = "Unclassified",
-  "27" = "Mural", "30" = "Mural",
-  "7" = "Astrocyte", "25" = "Astrocyte"
+  "0" = "IPCs", "1" = "Unclassified 1",
+  "2" = "Radial Glia Late", "3" = "Excitatory Neuron Deep Layer",
+  "4" = "Unclassified 2", "5" = "Excitatory Neuron Upper Layer",
+  "6" = "Excitatory Neuron Upper Layer", "7" = "Unclassified 3",
+  "8" = "Radial Glia Early", "9" = "Excitatory Neuron Deep Layer",
+  "10" = "Inhibitory Neurons", "11" = "Astrocytes",
+  "12" = "Excitatory Neuron Newborn", "13" = "Radial Glia Late",
+  "14" = "Radial Glia Early", "15" = "OPCs",
+  "16" = "Inhibitory Neurons", "17" = "Radial Glia Late",
+  "18" = "IPCs", "19" = "IPCs",
+  "20" = "Unclassified 4", "21" = "Excitatory Neuron Upper Layer",
+  "22" = "Radial Glia Late", "23" = "Mural Cells",
+  "24" = "Radial Glia Late", "25" = "Excitatory Neuron Newborn",
+  "26" = "Mural Cells", "27" = "OPCs",
+  "28" = "Radial Glia Late", "29" = "Unclassified 3",
+  "30" = "Radial Glia Early", "31" = "Radial Glia Early",
+  "32" = "OPCs"
 )
 seurat$cluster_names <- seurat@active.ident
 red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(seurat, markers_trimmed[[i]], order = TRUE, cols = c("lightgrey", "red"))
+    )
+  }
+}
 ```
 
-## Custom List
+# RCAv2
+
+## Bhaduri
+
+### Primary Broad Clusters
 
 ```{r}
-markers <- read.delim(
-  file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
-  check.names = FALSE
-)
-
-name_idx <- which(colnames(markers) == "Pollen Cell 2015")
-start_idx <- name_idx + 1
-end_idx <- which(colnames(markers) == "Bhaduri-Nature 2020") - 1
-colnames(markers)[start_idx:end_idx] <- paste(
-  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
-)
-
-name_idx <- which(colnames(markers) == "Bhaduri-Nature 2020")
-start_idx <- name_idx + 1
-end_idx <- which(colnames(markers) == "Polioudakis Neuron 2019") - 1
-colnames(markers)[start_idx:end_idx] <- paste(
-  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
-)
-
-name_idx <- which(colnames(markers) == "Polioudakis Neuron 2019")
-start_idx <- name_idx + 1
-end_idx <- which(colnames(markers) == "Kanton Nature 2019") - 1
-colnames(markers)[start_idx:end_idx] <- paste(
-  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
-)
-
-name_idx <- which(colnames(markers) == "Kanton Nature 2019")
-start_idx <- name_idx + 1
-end_idx <- ncol(markers)
-colnames(markers)[start_idx:end_idx] <- paste(
-  colnames(markers)[name_idx], colnames(markers)[start_idx:end_idx], sep = "_"
-)
-
-markers <- Filter(function(x) !all(is.na(x)), markers)
-markers <- as.list(markers)
-markers <- lapply(markers, function(x) x[!(x == "")])
-
-ensembl <- unique(unlist(markers)[grep("ENS", unlist(markers))])
-rds <- file.path(cache_dir, "gene_anno.rds")
+rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type.rds")
 if (file.exists(rds)) {
-  gene_anno <- readRDS(rds)
+  rca <- readRDS(rds)
+  ref <- readRDS(rds2)
 } else {
-  mart <- useEnsembl("ensembl", "hsapiens_gene_ensembl")
-  attributes <- c("external_gene_name", "ensembl_gene_id")
-  gene_anno <- getBM(attributes, "ensembl_gene_id", ensembl, mart)
-  saveRDS(gene_anno, rds)
+
+  rds <- file.path(cache_dir, "bhaduri_primary_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
+    )
+    gc()
+    rownames(ref) <- ref[ , 1]
+    ref <- ref[ , -1]
+  
+    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1)
+    meta <- meta[-(which(meta$Type == "Outlier")), ]
+    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
+    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
+  
+    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
+    ref <- 2 ^ ref - 1
+  
+    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
+    rm(meta)
+    gc()
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Type, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Type, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_primary_panel_Type.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    saveRDS(ref, rds)
+  }
+
+  rm(ref)
+  rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca, "Custom", file.path(cache_dir, "bhaduri_primary_panel_Type.rds"), "spearman"
+    )
+    rca <- computeUMAP(rca)
+    rca <- estimateCellTypeFromProjection(rca)
+    saveRDS(rca, rds)
+  }
 }
 
-gene_anno <- gene_anno[-which(gene_anno$external_gene_name == ""), ]
-remove <- ensembl[ensembl %notin% gene_anno$ensembl_gene_id]
-markers <- lapply(markers, function(x) x[!(x %in% remove)])
-for (i in seq(nrow(gene_anno))) {
-  markers <- rapply(
-    markers,
-    function(x) ifelse(x == gene_anno$ensembl_gene_id[i], gene_anno$external_gene_name[i], x),
-    how = "replace")
-}
+rca
 
-date_genes <- read.delim(file.path(data_dir, "gene-lists", "date-genes.tsv"))
-date_genes <- date_genes[date_genes$Exc_Genes %in% unlist(markers), ]
-for (i in seq(nrow(date_genes))) {
-  markers <- rapply(
-    markers,
-    function(x) ifelse(x == date_genes$Exc_Genes[i], date_genes$Gene_Symbol[i], x),
-    how = "replace")
-}
-
-gsva <- gsva(
-  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
+seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
 )
-gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
 
-set.seed(1)
-heatmap <- Heatmap(
-  gsva,
-  column_km = 12,
-  cluster_columns = FALSE,
-  cluster_rows = FALSE,
-  row_names_max_width = max_text_width(rownames(gsva)),
-  heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
-draw(heatmap)
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(
+        seurat, markers_trimmed[[i]], reduction = "rca_umap",
+        order = TRUE, cols = c("lightgrey", "red")
+      )
+    )
+  }
+}
+```
+
+### Primary Sub Clusters
+
+```{r}
+rds <- file.path(cache_dir, "bhaduri_primary_rca_Subtype.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Subtype.rds")
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+  ref <- readRDS(rds2)
+} else {
+
+  rds <- file.path(cache_dir, "bhaduri_primary_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- fread(file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE)
+    gc()
+    rownames(ref) <- ref[ , 1]
+    ref <- ref[ , -1]
+  
+    meta <- read.delim(
+      file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1
+    )
+    meta <- meta[-(which(meta$Type == "Outlier")), ]
+    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
+    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
+  
+    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
+  
+    ref <- SingleCellExperiment(list(normcounts = ref), colData = meta)
+    counts(ref) <- 2 ^ normcounts(ref) - 1
+    rm(meta)
+    gc()
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Subtype.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Subtype, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Subtype, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_primary_panel_Subtype.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    saveRDS(ref, rds)
+  }
+
+  rm(ref)
+  rds <- file.path(cache_dir, "bhaduri_primary_rca_Subtype.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca, "Custom", file.path(cache_dir, "bhaduri_primary_panel_Subtype.rds"), "spearman"
+    )
+    rca <- computeUMAP(rca)
+    rca <- estimateCellTypeFromProjection(rca)
+    saveRDS(rca, rds)
+  }
+}
+
+rca
+
+seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
+)
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(
+        seurat, markers_trimmed[[i]], reduction = "rca_umap",
+        order = TRUE, cols = c("lightgrey", "red")
+      )
+    )
+  }
+}
+```
+
+### Organoid Broad Clusters
+
+```{r}
+rds <- file.path(cache_dir, "bhaduri_organoid_rca_Type.rds")
+rds2 <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Type.rds")
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+  ref <- readRDS(rds2)
+} else {
+
+  rds <- file.path(cache_dir, "bhaduri_organoid_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "organoid", "organoidsmatrix_nonorm.txt"),
+      data.table = FALSE
+    )
+    gc()
+    rownames(ref) <- ref[ , 1]
+    ref <- ref[ , -1]
+  
+    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "organoid", "meta.tsv"), row.names = 1)
+    meta <- meta[-(which(meta$Type == "Outlier")), ]
+    meta <- meta[-(which(meta$Type == "Unknown")), ]
+    meta <- meta[-(which(meta$Subtype == "lowquality")), ]
+  
+    barcode <- sub(".*_", "", rownames(meta))
+    rownames(meta) <- paste(barcode, meta$Sample, sep = " ")
+    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
+    meta <- meta[rownames(meta) %in% colnames(ref), ]
+    meta <- meta[match(colnames(ref), rownames(meta)), ]
+  
+    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
+    rm(meta)
+    gc()
+    saveRDS(ref, rds)
+  }
+  
+  rds <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Type.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Type, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Type, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_organoid_panel_Type.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    saveRDS(ref, rds)
+  }
+
+  rm(ref)
+  rds <- file.path(cache_dir, "bhaduri_organoid_rca_Type.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca, "Custom", file.path(cache_dir, "bhaduri_organoid_panel_Type.rds"), "spearman"
+    )
+    rca <- computeUMAP(rca)
+    rca <- estimateCellTypeFromProjection(rca)
+    saveRDS(rca, rds)
+  }
+
+}
+
+rca
+
+seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
+)
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(
+        seurat, markers_trimmed[[i]], reduction = "rca_umap",
+        order = TRUE, cols = c("lightgrey", "red")
+      )
+    )
+  }
+}
+```
+
+### Organoid Sub Clusters
+
+```{r}
+rds <- file.path(cache_dir, "bhaduri_organoid_rca_Subtype.rds")
+rds2 <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Subtype.rds")
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+  ref <- readRDS(rds2)
+} else {
+
+  rds <- file.path(cache_dir, "bhaduri_organoid_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "organoid", "organoidsmatrix_nonorm.txt"),
+      data.table = FALSE
+    )
+    gc()
+    rownames(ref) <- ref[ , 1]
+    ref <- ref[ , -1]
+  
+    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "organoid", "meta.tsv"), row.names = 1)
+    meta <- meta[-(which(meta$Type == "Outlier")), ]
+    meta <- meta[-(which(meta$Type == "Unknown")), ]
+    meta <- meta[-(which(meta$Subtype == "lowquality")), ]
+  
+    barcode <- sub(".*_", "", rownames(meta))
+    rownames(meta) <- paste(barcode, meta$Sample, sep = " ")
+    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
+    meta <- meta[rownames(meta) %in% colnames(ref), ]
+    meta <- meta[match(colnames(ref), rownames(meta)), ]
+  
+    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
+    rm(meta)
+    gc()
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_organoid_pseudobulk_Subtype.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Subtype, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Subtype, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_organoid_panel_Subtype.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    saveRDS(ref, rds)
+  }
+
+  rm(ref)
+  rds <- file.path(cache_dir, "bhaduri_organoid_rca_Subtype.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca, "Custom", file.path(cache_dir, "bhaduri_organoid_panel_Subtype.rds"), "spearman"
+    )
+    rca <- computeUMAP(rca)
+    rca <- estimateCellTypeFromProjection(rca)
+    saveRDS(rca, rds)
+  }
+}
+
+rca
+
+seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
+)
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(
+        seurat, markers_trimmed[[i]], reduction = "rca_umap",
+        order = TRUE, cols = c("lightgrey", "red")
+      )
+    )
+  }
+}
+```
+
+## Polioudakis
+
+### Broad Clusters
+
+```{r}
+rds <- file.path(cache_dir, "polioudakis_rca_Cluster.rds")
+rds2 <- file.path(cache_dir, "polioudakis_pseudobulk_Cluster.rds")
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+  ref <- readRDS(rds2)
+} else {
+
+  rds <- file.path(cache_dir, "polioudakis_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    load(file.path(data_dir, "polioudakis_2019", "raw_counts_mat.rdata"))
+    meta <- read.csv(file.path(data_dir, "polioudakis_2019", "cell_metadata.csv"))
+    raw_counts_mat <- raw_counts_mat[ , colnames(raw_counts_mat) %in% meta$Cell]
+    ref <- SingleCellExperiment(list(counts = raw_counts_mat), colData = meta)
+    gc()
+    saveRDS(ref, rds)
+  }
+  
+  rds <- file.path(cache_dir, "polioudakis_pseudobulk_Cluster.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Cluster, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Cluster, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds)
+  }
+  
+  rds <- file.path(cache_dir, "polioudakis_panel_Cluster.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    saveRDS(ref, rds)
+  }
+  
+  rm(ref)
+  rds <- file.path(cache_dir, "polioudakis_rca_Cluster.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca, method = "Custom", file.path(cache_dir, "polioudakis_panel_Cluster.rds"), "spearman"
+    )
+    rca <- computeUMAP(rca)
+    rca <- estimateCellTypeFromProjection(rca)
+    saveRDS(rca, rds)
+  }
+}
+
+rca
+
+seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
+)
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(
+        seurat, markers_trimmed[[i]], reduction = "rca_umap",
+        order = TRUE, cols = c("lightgrey", "red")
+      )
+    )
+  }
+}
 ```
 
 # References
