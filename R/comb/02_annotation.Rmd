@@ -591,6 +591,127 @@ for (i in seq_along(markers_trimmed)) {
 }
 ```
 
+### Primary Broad Clusters Without Small Groups
+
+```{r}
+rds <- file.path(cache_dir, "bhaduri_primary_rca_Type_filt.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type_filt.rds")
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+  ref <- readRDS(rds2)
+} else {
+
+  rds <- file.path(cache_dir, "bhaduri_primary_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
+    )
+    gc()
+    rownames(ref) <- ref[ , 1]
+    ref <- ref[ , -1]
+  
+    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1)
+    meta <- meta[-(which(meta$Type == "Outlier")), ]
+    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
+    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
+  
+    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
+    ref <- 2 ^ ref - 1
+  
+    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
+    rm(meta)
+    gc()
+    saveRDS(ref, rds)
+  }
+
+  remove <- which(ref$Type == "OPC" | ref$Type == "Microglia" | ref$Type == "Endothelial")
+  ref <- ref[ , -remove]
+
+  rds <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type_filt.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Type, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Type, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_primary_panel_Type_filt.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    saveRDS(ref, rds)
+  }
+
+  rm(ref)
+  rds <- file.path(cache_dir, "bhaduri_primary_rca_Type_filt.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca, "Custom", file.path(cache_dir, "bhaduri_primary_panel_Type_filt.rds"), "spearman"
+    )
+    rca <- computeUMAP(rca)
+    rca <- estimateCellTypeFromProjection(rca)
+    saveRDS(rca, rds)
+  }
+}
+
+rca
+
+seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
+)
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+
+for (i in seq_along(markers_trimmed)) {
+  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
+    print(names(markers_trimmed[i]))
+    print(
+      FeaturePlot(
+        seurat, markers_trimmed[[i]], reduction = "rca_umap",
+        order = TRUE, cols = c("lightgrey", "red")
+      )
+    )
+  }
+}
+```
+
 # References
 
 This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
