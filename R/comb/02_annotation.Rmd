@@ -348,7 +348,9 @@ if (file.exists(rds)) {
   if (file.exists(rds)) {
     ref <- readRDS(rds)
   } else {
-    ref <- fread(file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE)
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
+    )
     gc()
     rownames(ref) <- ref[ , 1]
     ref <- ref[ , -1]
@@ -466,7 +468,9 @@ if (file.exists(rds)) {
   if (file.exists(rds)) {
     ref <- readRDS(rds)
   } else {
-    ref <- fread(file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE)
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
+    )
     gc()
     rownames(ref) <- ref[ , 1]
     ref <- ref[ , -1]
