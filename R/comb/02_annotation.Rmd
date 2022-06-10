@@ -327,6 +327,11 @@ for (i in seq_along(markers_trimmed)) {
     )
   }
 }
+
+rds <- file.path(cache_dir, "rca_seurat.rds")
+if (!file.exists(rds)) {
+  saveRDS(seurat, rds)
+}
 ```
 
 ### Primary Sub Clusters
