@@ -90,26 +90,8 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 # Prep
 
 ```{r}
-rds <- file.path(cache_dir, "reclustered_seurat.rds")
-if (file.exists(rds)) {
-  seurat <- readRDS(rds)
-} else {
-  seurat <- readRDS(file.path(cache_dir, "..", "01", "all_seurat.rds"))
-  seurat <- RunUMAP(seurat, 1:39, min.dist = 0.75, verbose = FALSE)
-  add_df <- data.frame(Embeddings(seurat, "umap"))
-  names(add_df) <- paste0("umap", seq(ncol(add_df)))
-  seurat$umap1 <- add_df$umap1
-  seurat$umap2 <- add_df$umap2
-  seurat <- FindNeighbors(seurat, dims = 1:39, verbose = FALSE)
-  seurat <- FindClusters(seurat, resolution = 1, verbose = FALSE)
-  saveRDS(seurat, rds)
-}
-
+seurat <- readRDS(file.path(cache_dir, "..", "01", "seurat_merged_processed.rds"))
 seurat
-
-ElbowPlot(seurat, 50) + geom_vline(xintercept = 39, color = "red")
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat") + ggtitle("Dims = 39, Res = 1")
-red_dim_plot(seurat, "umap1", "umap2", "sample", "cat") + ggtitle("Dims = 39, Res = 1")
 ```
 
 # ssGSEA + Unbiased Clustering
@@ -215,7 +197,7 @@ for (i in seq_along(markers_trimmed)) {
 
 ```{r}
 rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
-rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_panel_Type.rds")
 if (file.exists(rds)) {
   rca <- readRDS(rds)
   ref <- readRDS(rds2)
@@ -243,7 +225,7 @@ if (file.exists(rds)) {
     ref <- SingleCellExperiment(list(counts = ref), colData = meta)
     rm(meta)
     gc()
-    saveRDS(ref, rds)
+    saveRDS(ref, rds, compress = FALSE)
   }
 
   rds <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type.rds")
@@ -279,7 +261,6 @@ if (file.exists(rds)) {
     saveRDS(ref, rds)
   }
 
-  rm(ref)
   rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
   if (file.exists(rds)) {
     rca <- readRDS(rds)
@@ -338,7 +319,7 @@ if (!file.exists(rds)) {
 
 ```{r}
 rds <- file.path(cache_dir, "bhaduri_primary_rca_Subtype.rds")
-rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Subtype.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_panel_Subtype.rds")
 if (file.exists(rds)) {
   rca <- readRDS(rds)
   ref <- readRDS(rds2)
@@ -404,7 +385,6 @@ if (file.exists(rds)) {
     saveRDS(ref, rds)
   }
 
-  rm(ref)
   rds <- file.path(cache_dir, "bhaduri_primary_rca_Subtype.rds")
   if (file.exists(rds)) {
     rca <- readRDS(rds)
@@ -458,7 +438,7 @@ for (i in seq_along(markers_trimmed)) {
 
 ```{r}
 rds <- file.path(cache_dir, "bhaduri_primary_rca_custom.rds")
-rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_custom.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_panel_custom.rds")
 if (file.exists(rds)) {
   rca <- readRDS(rds)
   ref <- readRDS(rds2)
@@ -550,7 +530,6 @@ if (file.exists(rds)) {
     saveRDS(ref, rds)
   }
 
-  rm(ref)
   rds <- file.path(cache_dir, "bhaduri_primary_rca_custom.rds")
   if (file.exists(rds)) {
     rca <- readRDS(rds)
@@ -604,7 +583,7 @@ for (i in seq_along(markers_trimmed)) {
 
 ```{r}
 rds <- file.path(cache_dir, "bhaduri_primary_rca_Type_filt.rds")
-rds2 <- file.path(cache_dir, "bhaduri_primary_pseudobulk_Type_filt.rds")
+rds2 <- file.path(cache_dir, "bhaduri_primary_panel_filt.rds")
 if (file.exists(rds)) {
   rca <- readRDS(rds)
   ref <- readRDS(rds2)
@@ -671,7 +650,6 @@ if (file.exists(rds)) {
     saveRDS(ref, rds)
   }
 
-  rm(ref)
   rds <- file.path(cache_dir, "bhaduri_primary_rca_Type_filt.rds")
   if (file.exists(rds)) {
     rca <- readRDS(rds)
@@ -793,7 +771,6 @@ if (file.exists(rds)) {
     saveRDS(ref, rds)
   }
 
-  rm(ref)
   rds <- file.path(cache_dir, "bhaduri_primary_rca_Type_merged.rds")
   if (file.exists(rds)) {
     rca <- readRDS(rds)

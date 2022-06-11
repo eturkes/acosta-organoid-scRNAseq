@@ -107,8 +107,8 @@ if (file.exists(rds)) {
 } else {
 
   file_list <- list.files(file.path(cache_dir, "..", ".."), recursive = TRUE)
-  file_list <- file_list[-grep("comb", files)]
-  files <- vector("list", length(files))
+  file_list <- file_list[-grep("comb", file_list)]
+  files <- vector("list", length(file_list))
   for (i in seq_along(files)) {
     files[[i]] <- readRDS(file.path(cache_dir, "..", "..", file_list[i]))
   }
@@ -148,19 +148,38 @@ if (file.exists(rds)) {
   )
   seurat$timepoint <- sub("_.*", "", seurat$sample)
 
-  saveRDS(seurat, rds)
+  saveRDS(seurat, rds, compress = FALSE)
 }
 ```
 
 # Normalization & Clustering
 
 ```{r}
-DefaultAssay(seurat) <- "RNA"
-seurat[["SCT"]] <- NULL
-sub_name <- "all"
-seurat <- cluster_pipeline(
-  seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
-)
+rds <- file.path(cache_dir, "seurat_merged_processed.rds")
+if (file.exists(rds)) {
+  seurat <- readRDS(rds)
+} else {
+  seurat <- suppressWarnings(SCTransform(seurat, verbose = FALSE))
+
+  seurat <- RunPCA(seurat, verbose = FALSE)
+  add_df <- data.frame(Embeddings(seurat)[ , 1:2])
+  names(add_df) <- paste0("pca", seq(ncol(add_df)))
+  seurat$pca1 <- add_df$pca1
+  seurat$pca2 <- add_df$pca2
+
+  seurat <- RunUMAP(seurat, 1:39, min.dist = 0.75, verbose = FALSE)
+  add_df <- data.frame(Embeddings(seurat, "umap"))
+  names(add_df) <- paste0("umap", seq(ncol(add_df)))
+  seurat$umap1 <- add_df$umap1
+  seurat$umap2 <- add_df$umap2
+
+  seurat <- FindNeighbors(seurat, dims = 1:39, verbose = FALSE)
+  seurat <- FindClusters(seurat, resolution = 1, verbose = FALSE)
+
+  saveRDS(seurat, rds, compress = FALSE)
+}
+
+ElbowPlot(seurat, 50) + geom_vline(xintercept = 39, color = "red")
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
