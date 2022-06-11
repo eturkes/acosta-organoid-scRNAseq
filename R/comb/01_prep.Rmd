@@ -79,7 +79,7 @@ parallel_override <- 0 # See `parallel_plan` in `utils.R`.
 # Values in list can include "no_legend and/or "no_label" to exclude those.
 # -------------------------------------------------------------------------
 metadata_to_plot <- vector("list", 3)
-names(metadata_to_plot) <- c("sample", "timepoint", "seurat_clusters")
+names(metadata_to_plot) <- c("seurat_clusters", "sample", "timepoint")
 # -------------------------------------------------------------------------
 
 analysis_no <- 1
