@@ -290,7 +290,7 @@ if (file.exists(rds)) {
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
+    saveRDS(rca, rds, compress = FALSE)
   }
 }
 
@@ -415,7 +415,7 @@ if (file.exists(rds)) {
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
+    saveRDS(rca, rds, compress = FALSE)
   }
 }
 
@@ -561,7 +561,7 @@ if (file.exists(rds)) {
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
+    saveRDS(rca, rds, compress = FALSE)
   }
 }
 
@@ -682,7 +682,7 @@ if (file.exists(rds)) {
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
+    saveRDS(rca, rds, compress = FALSE)
   }
 }
 
@@ -804,7 +804,7 @@ if (file.exists(rds)) {
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds)
+    saveRDS(rca, rds, compress = FALSE)
   }
 }
 
