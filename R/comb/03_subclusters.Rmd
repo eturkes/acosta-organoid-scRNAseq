@@ -69,6 +69,7 @@ packages <- c(
   "data.table", "GSVA", "edgeR", "ComplexHeatmap"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+options(future.globals.maxSize = 10485760000)
 source(file.path("..", "utils.R"))
 
 protocol <- c("human", "droplet", "single-cell", "umis") # See `cluster_pipeline` in `utils.R`.
@@ -119,13 +120,31 @@ red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Excitatory Neuron ")]
-
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-sub_name <- "Ex"
-sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+
+integrated_seurat <- SplitObject(sub_seurat, "sample")
+integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
+features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
+integrated_seurat <- PrepSCTIntegration(
+  integrated_seurat, anchor.features = features, verbose = FALSE
 )
+anchors <- FindIntegrationAnchors(
+  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
+)
+integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
+
+integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
+names(add_df) <- paste0("pca", seq(ncol(add_df)))
+integrated_seurat$pca1 <- add_df$pca1
+integrated_seurat$pca2 <- add_df$pca2
+
+integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
+names(add_df) <- paste0("umap", seq(ncol(add_df)))
+integrated_seurat$umap1 <- add_df$umap1
+integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -147,13 +166,31 @@ for (i in 1:length(metadata_to_plot)) {
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Inhibitory Neuron")]
-
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-sub_name <- "In"
-sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+
+integrated_seurat <- SplitObject(sub_seurat, "sample")
+integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
+features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
+integrated_seurat <- PrepSCTIntegration(
+  integrated_seurat, anchor.features = features, verbose = FALSE
 )
+anchors <- FindIntegrationAnchors(
+  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
+)
+integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
+
+integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
+names(add_df) <- paste0("pca", seq(ncol(add_df)))
+integrated_seurat$pca1 <- add_df$pca1
+integrated_seurat$pca2 <- add_df$pca2
+
+integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
+names(add_df) <- paste0("umap", seq(ncol(add_df)))
+integrated_seurat$umap1 <- add_df$umap1
+integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -175,13 +212,31 @@ for (i in 1:length(metadata_to_plot)) {
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "IPC")]
-
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-sub_name <- "IPC"
-sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+
+integrated_seurat <- SplitObject(sub_seurat, "sample")
+integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
+features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
+integrated_seurat <- PrepSCTIntegration(
+  integrated_seurat, anchor.features = features, verbose = FALSE
 )
+anchors <- FindIntegrationAnchors(
+  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
+)
+integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
+
+integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
+names(add_df) <- paste0("pca", seq(ncol(add_df)))
+integrated_seurat$pca1 <- add_df$pca1
+integrated_seurat$pca2 <- add_df$pca2
+
+integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
+names(add_df) <- paste0("umap", seq(ncol(add_df)))
+integrated_seurat$umap1 <- add_df$umap1
+integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -203,13 +258,31 @@ for (i in 1:length(metadata_to_plot)) {
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Mural")]
-
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-sub_name <- "Mu"
-sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+
+integrated_seurat <- SplitObject(sub_seurat, "sample")
+integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
+features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
+integrated_seurat <- PrepSCTIntegration(
+  integrated_seurat, anchor.features = features, verbose = FALSE
 )
+anchors <- FindIntegrationAnchors(
+  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
+)
+integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
+
+integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
+names(add_df) <- paste0("pca", seq(ncol(add_df)))
+integrated_seurat$pca1 <- add_df$pca1
+integrated_seurat$pca2 <- add_df$pca2
+
+integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
+names(add_df) <- paste0("umap", seq(ncol(add_df)))
+integrated_seurat$umap1 <- add_df$umap1
+integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -231,13 +304,31 @@ for (i in 1:length(metadata_to_plot)) {
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Radial Glia")]
-
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-sub_name <- "RG"
-sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+
+integrated_seurat <- SplitObject(sub_seurat, "sample")
+integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
+features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
+integrated_seurat <- PrepSCTIntegration(
+  integrated_seurat, anchor.features = features, verbose = FALSE
 )
+anchors <- FindIntegrationAnchors(
+  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
+)
+integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
+
+integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
+names(add_df) <- paste0("pca", seq(ncol(add_df)))
+integrated_seurat$pca1 <- add_df$pca1
+integrated_seurat$pca2 <- add_df$pca2
+
+integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
+add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
+names(add_df) <- paste0("umap", seq(ncol(add_df)))
+integrated_seurat$umap1 <- add_df$umap1
+integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
