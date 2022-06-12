@@ -69,7 +69,6 @@ packages <- c(
   "data.table", "GSVA", "edgeR", "ComplexHeatmap"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
-options(future.globals.maxSize = 10485760000)
 source(file.path("..", "utils.R"))
 
 protocol <- c("human", "droplet", "single-cell", "umis") # See `cluster_pipeline` in `utils.R`.
@@ -102,6 +101,8 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 # Prep
 
 ```{r}
+ref <- readRDS(file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"))
+
 seurat <- readRDS(file.path(cache_dir, "..", "02", "rca_seurat.rds"))
 seurat
 
@@ -120,31 +121,13 @@ red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Excitatory Neuron ")]
+
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-
-integrated_seurat <- SplitObject(sub_seurat, "sample")
-integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-integrated_seurat <- PrepSCTIntegration(
-  integrated_seurat, anchor.features = features, verbose = FALSE
+sub_name <- "Ex"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
-anchors <- FindIntegrationAnchors(
-  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-)
-integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-names(add_df) <- paste0("pca", seq(ncol(add_df)))
-integrated_seurat$pca1 <- add_df$pca1
-integrated_seurat$pca2 <- add_df$pca2
-
-integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-names(add_df) <- paste0("umap", seq(ncol(add_df)))
-integrated_seurat$umap1 <- add_df$umap1
-integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -160,37 +143,53 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
+  rca <- dataProject(
+    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+sub_seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
+)
+add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+sub_seurat$rca_umap1 <- add_df$rca_umap1
+sub_seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # Inhibitory Neuron
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Inhibitory Neuron")]
+
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-
-integrated_seurat <- SplitObject(sub_seurat, "sample")
-integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-integrated_seurat <- PrepSCTIntegration(
-  integrated_seurat, anchor.features = features, verbose = FALSE
+sub_name <- "In"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
-anchors <- FindIntegrationAnchors(
-  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-)
-integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-names(add_df) <- paste0("pca", seq(ncol(add_df)))
-integrated_seurat$pca1 <- add_df$pca1
-integrated_seurat$pca2 <- add_df$pca2
-
-integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-names(add_df) <- paste0("umap", seq(ncol(add_df)))
-integrated_seurat$umap1 <- add_df$umap1
-integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -206,37 +205,53 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
+  rca <- dataProject(
+    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+sub_seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
+)
+add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+sub_seurat$rca_umap1 <- add_df$rca_umap1
+sub_seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # IPC
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "IPC")]
+
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-
-integrated_seurat <- SplitObject(sub_seurat, "sample")
-integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-integrated_seurat <- PrepSCTIntegration(
-  integrated_seurat, anchor.features = features, verbose = FALSE
+sub_name <- "IPC"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
-anchors <- FindIntegrationAnchors(
-  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-)
-integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-names(add_df) <- paste0("pca", seq(ncol(add_df)))
-integrated_seurat$pca1 <- add_df$pca1
-integrated_seurat$pca2 <- add_df$pca2
-
-integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-names(add_df) <- paste0("umap", seq(ncol(add_df)))
-integrated_seurat$umap1 <- add_df$umap1
-integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -252,37 +267,53 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
+  rca <- dataProject(
+    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+sub_seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
+)
+add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+sub_seurat$rca_umap1 <- add_df$rca_umap1
+sub_seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # Mural
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Mural")]
+
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-
-integrated_seurat <- SplitObject(sub_seurat, "sample")
-integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-integrated_seurat <- PrepSCTIntegration(
-  integrated_seurat, anchor.features = features, verbose = FALSE
+sub_name <- "Mu"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
-anchors <- FindIntegrationAnchors(
-  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-)
-integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-names(add_df) <- paste0("pca", seq(ncol(add_df)))
-integrated_seurat$pca1 <- add_df$pca1
-integrated_seurat$pca2 <- add_df$pca2
-
-integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-names(add_df) <- paste0("umap", seq(ncol(add_df)))
-integrated_seurat$umap1 <- add_df$umap1
-integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -298,37 +329,53 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
+  rca <- dataProject(
+    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+sub_seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
+)
+add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+sub_seurat$rca_umap1 <- add_df$rca_umap1
+sub_seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # Radial Glia
 
 ```{r}
 sub_seurat <- seurat[ , which(seurat$rca_clusters == "Radial Glia")]
+
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
-
-integrated_seurat <- SplitObject(sub_seurat, "sample")
-integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-integrated_seurat <- PrepSCTIntegration(
-  integrated_seurat, anchor.features = features, verbose = FALSE
+sub_name <- "RG"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
-anchors <- FindIntegrationAnchors(
-  integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-)
-integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-names(add_df) <- paste0("pca", seq(ncol(add_df)))
-integrated_seurat$pca1 <- add_df$pca1
-integrated_seurat$pca2 <- add_df$pca2
-
-integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-names(add_df) <- paste0("umap", seq(ncol(add_df)))
-integrated_seurat$umap1 <- add_df$umap1
-integrated_seurat$umap2 <- add_df$umap2
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -344,6 +391,40 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
+  rca <- dataProject(
+    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+sub_seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
+)
+add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+sub_seurat$rca_umap1 <- add_df$rca_umap1
+sub_seurat$rca_umap2 <- add_df$rca_umap2
+
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
+
+cat(
+  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
+  unique(unlist(rca$cell.Type.Estimate))
+)
+cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # References
