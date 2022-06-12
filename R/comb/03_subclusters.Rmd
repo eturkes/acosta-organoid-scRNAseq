@@ -1,0 +1,264 @@
+---
+title: "03 Subclusters - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "03_subclusters.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we subcluster annotated cell-types
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Hongjun Fu, Ohio
+#    State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c(
+  "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap"
+)
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+protocol <- c("human", "droplet", "single-cell", "umis") # See `cluster_pipeline` in `utils.R`.
+vars_to_regress <- NULL # See `cluster_pipeline` in `utils.R`.
+parallel_override <- 0 # See `parallel_plan` in `utils.R`.
+
+# Metadata to plot after dimensionality reduction and clustering.
+# Values in list can include "no_legend and/or "no_label" to exclude those.
+# -------------------------------------------------------------------------
+metadata_to_plot <- vector("list", 3)
+names(metadata_to_plot) <- c("seurat_clusters", "sample", "timepoint")
+# -------------------------------------------------------------------------
+
+analysis_no <- 3
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
+```
+
+# Prep
+
+```{r}
+seurat <- readRDS(file.path(cache_dir, "..", "02", "rca_seurat.rds"))
+seurat
+
+table(seurat$rca_clusters)
+remove_clusters <- which(table(seurat$rca_clusters) < 100)
+remove <- which(seurat$rca_clusters %in% names(remove_clusters))
+cat("Removing", length(remove), "cells across", names(remove_clusters), "cell-types.")
+
+seurat <- seurat[ , -remove]
+seurat
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
+```
+
+# Excitatory Neuron
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$rca_clusters == "Excitatory Neuron ")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "Ex"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+# Inhibitory Neuron
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$rca_clusters == "Inhibitory Neuron")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "In"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+# IPC
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$rca_clusters == "IPC")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "IPC"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+# Mural
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$rca_clusters == "Mural")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "Mu"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+# Radial Glia
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$rca_clusters == "Radial Glia")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "RG"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
