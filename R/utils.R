@@ -349,7 +349,6 @@ gene_plot <- function(subset_list, subset_names, genes) {
       ncol <- 2
     }
 
-    # print(subset_names[i])
     if (length(genes) == 2 && all(genes %in% rownames(subset_list[[i]]))) {
       plots <- FeaturePlot(
         subset_list[[i]], genes, order = TRUE, blend = TRUE,
@@ -359,7 +358,8 @@ gene_plot <- function(subset_list, subset_names, genes) {
     } else if (any(genes %in% rownames(subset_list[[i]]))) {
       print(
         FeaturePlot(
-          subset_list[[i]], genes, order = TRUE, cols = c("lightgrey", "red"), ncol = ncol, keep.scale = "all", reduction = "umap"
+          subset_list[[i]], genes, order = TRUE, cols = c("lightgrey", "red"),
+          ncol = ncol, keep.scale = "all", reduction = "umap"
         )
       )
     }
