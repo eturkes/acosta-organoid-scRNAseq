@@ -131,6 +131,7 @@ sub_name <- "Ex"
 sub_seurat <- cluster_pipeline(
   sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
+sub_seurat
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -369,6 +370,7 @@ sub_name <- "In"
 sub_seurat <- cluster_pipeline(
   sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
+sub_seurat
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -437,6 +439,7 @@ sub_name <- "IPC"
 sub_seurat <- cluster_pipeline(
   sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
+sub_seurat
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -675,6 +678,7 @@ sub_name <- "Mu"
 sub_seurat <- cluster_pipeline(
   sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
+sub_seurat
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
@@ -743,6 +747,7 @@ sub_name <- "RG"
 sub_seurat <- cluster_pipeline(
   sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
 )
+sub_seurat
 
 for (i in 1:length(metadata_to_plot)) {
   print(names(metadata_to_plot)[i])
