@@ -102,8 +102,6 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 # Prep
 
 ```{r}
-ref <- readRDS(file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"))
-
 seurat <- readRDS(file.path(cache_dir, "..", "02", "rca_seurat.rds"))
 seurat
 
@@ -149,6 +147,43 @@ for (i in 1:length(metadata_to_plot)) {
 }
 ```
 
+### Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+  
+  for (j in 1:(length(metadata_to_plot) - 1)) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
 ## Integration
 
 ```{r}
@@ -209,152 +244,6 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
-```
-
-## RCA
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-} else {
-  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-  rca <- dataProject(
-    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
-  )
-  rca <- computeUMAP(rca)
-  rca <- estimateCellTypeFromProjection(rca)
-  saveRDS(rca, rds, compress = FALSE)
-}
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
-```
-
-## RCA Subset
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca_sub.rds", sep = "_"))
-rds2 <- file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-  ref <- readRDS(rds2)
-} else {
-
-  rds <- file.path(cache_dir, "..", "02", "bhaduri_primary_ref.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- fread(
-      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
-    )
-    gc()
-    rownames(ref) <- ref[ , 1]
-    ref <- ref[ , -1]
-  
-    meta <- read.delim(
-      file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1
-    )
-    meta <- meta[-(which(meta$Type == "Outlier")), ]
-    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
-    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
-  
-    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
-  
-    ref <- SingleCellExperiment(list(normcounts = ref), colData = meta)
-    counts(ref) <- 2 ^ normcounts(ref) - 1
-    rm(meta)
-    gc()
-    saveRDS(ref, rds)
-  }
-  
-  ref <- ref[ , which(ref$Type == "Excitatory Neuron ")]
-
-  rds <- file.path(cache_dir, paste(sub_name, "pseudobulk_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    top <- nrow(ref) / 2
-    top <- ref[1:top, ]
-    top <- aggregateAcrossCells(top, top$Subtype, "mean")
-  
-    bottom <- (nrow(ref) / 2) + 1
-    bottom <- ref[bottom:(nrow(ref)), ]
-    bottom <- aggregateAcrossCells(bottom, bottom$Subtype, "mean")
-  
-    ref <- rbind(top, bottom)
-    rm(top, bottom)
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
-  
-    ref2 <- ref
-    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
-    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
-    ref <- cbind(ref, ref2)
-    rm(ref2)
-  
-    ref <- buildReferencePanel(counts(ref))
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, paste(sub_name, "rca_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    rca <- readRDS(rds)
-  } else {
-    rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-    rca <- dataProject(
-      rca, "Custom", file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_")), "spearman"
-    )
-    rca <- computeUMAP(rca)
-    rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds, compress = FALSE)
-  }
-}
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # Inhibitory Neuron
@@ -388,42 +277,41 @@ for (i in 1:length(metadata_to_plot)) {
 }
 ```
 
-## RCA
+### Separated By Timepoint
 
 ```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-} else {
-  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-  rca <- dataProject(
-    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
   )
-  rca <- computeUMAP(rca)
-  rca <- estimateCellTypeFromProjection(rca)
-  saveRDS(rca, rds, compress = FALSE)
+  print(timepoint_seurat[[i]])
+  
+  for (j in 1:(length(metadata_to_plot) - 1)) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
 }
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # IPC
@@ -457,6 +345,43 @@ for (i in 1:length(metadata_to_plot)) {
 }
 ```
 
+### Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+  
+  for (j in 1:(length(metadata_to_plot) - 1)) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
 ## Integration
 
 ```{r}
@@ -517,152 +442,6 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
-```
-
-## RCA
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-} else {
-  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-  rca <- dataProject(
-    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
-  )
-  rca <- computeUMAP(rca)
-  rca <- estimateCellTypeFromProjection(rca)
-  saveRDS(rca, rds, compress = FALSE)
-}
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
-```
-
-## RCA Subset
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca_sub.rds", sep = "_"))
-rds2 <- file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-  ref <- readRDS(rds2)
-} else {
-
-  rds <- file.path(cache_dir, "..", "02", "bhaduri_primary_ref.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- fread(
-      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
-    )
-    gc()
-    rownames(ref) <- ref[ , 1]
-    ref <- ref[ , -1]
-  
-    meta <- read.delim(
-      file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1
-    )
-    meta <- meta[-(which(meta$Type == "Outlier")), ]
-    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
-    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
-  
-    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
-  
-    ref <- SingleCellExperiment(list(normcounts = ref), colData = meta)
-    counts(ref) <- 2 ^ normcounts(ref) - 1
-    rm(meta)
-    gc()
-    saveRDS(ref, rds)
-  }
-  
-  ref <- ref[ , which(ref$Type == "IPC")]
-
-  rds <- file.path(cache_dir, paste(sub_name, "pseudobulk_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    top <- nrow(ref) / 2
-    top <- ref[1:top, ]
-    top <- aggregateAcrossCells(top, top$Subtype, "mean")
-  
-    bottom <- (nrow(ref) / 2) + 1
-    bottom <- ref[bottom:(nrow(ref)), ]
-    bottom <- aggregateAcrossCells(bottom, bottom$Subtype, "mean")
-  
-    ref <- rbind(top, bottom)
-    rm(top, bottom)
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
-  
-    ref2 <- ref
-    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
-    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
-    ref <- cbind(ref, ref2)
-    rm(ref2)
-  
-    ref <- buildReferencePanel(counts(ref))
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, paste(sub_name, "rca_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    rca <- readRDS(rds)
-  } else {
-    rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-    rca <- dataProject(
-      rca, "Custom", file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_")), "spearman"
-    )
-    rca <- computeUMAP(rca)
-    rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds, compress = FALSE)
-  }
-}
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # Mural
@@ -696,42 +475,41 @@ for (i in 1:length(metadata_to_plot)) {
 }
 ```
 
-## RCA
+### Separated By Timepoint
 
 ```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-} else {
-  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-  rca <- dataProject(
-    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
   )
-  rca <- computeUMAP(rca)
-  rca <- estimateCellTypeFromProjection(rca)
-  saveRDS(rca, rds, compress = FALSE)
+  print(timepoint_seurat[[i]])
+  
+  for (j in 1:(length(metadata_to_plot) - 1)) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
 }
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # Radial Glia
@@ -761,6 +539,43 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
   } else {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+```
+
+### Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+  
+  for (j in 1:(length(metadata_to_plot) - 1)) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
   }
 }
 ```
@@ -825,152 +640,6 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
-```
-
-## RCA
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-} else {
-  rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-  rca <- dataProject(
-    rca, "Custom", file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"), "spearman"
-  )
-  rca <- computeUMAP(rca)
-  rca <- estimateCellTypeFromProjection(rca)
-  saveRDS(rca, rds, compress = FALSE)
-}
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
-```
-
-## RCA Subset
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "rca_sub.rds", sep = "_"))
-rds2 <- file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_"))
-if (file.exists(rds)) {
-  rca <- readRDS(rds)
-  ref <- readRDS(rds2)
-} else {
-
-  rds <- file.path(cache_dir, "..", "02", "bhaduri_primary_ref.rds")
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- fread(
-      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
-    )
-    gc()
-    rownames(ref) <- ref[ , 1]
-    ref <- ref[ , -1]
-  
-    meta <- read.delim(
-      file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1
-    )
-    meta <- meta[-(which(meta$Type == "Outlier")), ]
-    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
-    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
-  
-    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
-  
-    ref <- SingleCellExperiment(list(normcounts = ref), colData = meta)
-    counts(ref) <- 2 ^ normcounts(ref) - 1
-    rm(meta)
-    gc()
-    saveRDS(ref, rds)
-  }
-  
-  ref <- ref[ , which(ref$Type == "Radial Glia")]
-
-  rds <- file.path(cache_dir, paste(sub_name, "pseudobulk_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    top <- nrow(ref) / 2
-    top <- ref[1:top, ]
-    top <- aggregateAcrossCells(top, top$Subtype, "mean")
-  
-    bottom <- (nrow(ref) / 2) + 1
-    bottom <- ref[bottom:(nrow(ref)), ]
-    bottom <- aggregateAcrossCells(bottom, bottom$Subtype, "mean")
-  
-    ref <- rbind(top, bottom)
-    rm(top, bottom)
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    ref <- readRDS(rds)
-  } else {
-    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
-  
-    ref2 <- ref
-    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
-    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
-    ref <- cbind(ref, ref2)
-    rm(ref2)
-  
-    ref <- buildReferencePanel(counts(ref))
-    saveRDS(ref, rds)
-  }
-
-  rds <- file.path(cache_dir, paste(sub_name, "rca_sub.rds", sep = "_"))
-  if (file.exists(rds)) {
-    rca <- readRDS(rds)
-  } else {
-    rca <- createRCAObject(GetAssayData(sub_seurat, "counts"), GetAssayData(sub_seurat))
-    rca <- dataProject(
-      rca, "Custom", file.path(cache_dir, paste(sub_name, "panel_sub.rds", sep = "_")), "spearman"
-    )
-    rca <- computeUMAP(rca)
-    rca <- estimateCellTypeFromProjection(rca)
-    saveRDS(rca, rds, compress = FALSE)
-  }
-}
-
-rca
-
-sub_seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
-sub_seurat[["rca_umap"]] <- CreateDimReducObject(
-  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(sub_seurat)
-)
-add_df <- data.frame(Embeddings(sub_seurat, "rca_umap"))
-names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
-sub_seurat$rca_umap1 <- add_df$rca_umap1
-sub_seurat$rca_umap2 <- add_df$rca_umap2
-
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(sub_seurat, "rca_umap1", "rca_umap2", "timepoint", "cat")
-
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
-)
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 ```
 
 # References
