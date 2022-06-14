@@ -268,7 +268,7 @@ cluster_pipeline <- function(
 
     # Perform UMAP reduction.
     # -----------------------
-    seurat <- RunUMAP(seurat, dims, reduction, min.dist = 0.75, verbose = FALSE)
+    seurat <- RunUMAP(seurat, dims, reduction, verbose = FALSE)
     add_df <- data.frame(Embeddings(seurat, "umap"))
     names(add_df) <- paste0("umap", seq(ncol(add_df)))
     seurat$umap1 <- add_df$umap1
@@ -277,9 +277,8 @@ cluster_pipeline <- function(
 
     # Perform Louvain clustering.
     # ---------------------------
-    resolution <- (dim(seurat)[2] / 3000) * 0.8 # Default is optimal for 3K cells so we scale it.
     seurat <- FindNeighbors(seurat, reduction, dims, verbose = FALSE)
-    seurat <- FindClusters(seurat, resolution = resolution, verbose = FALSE)
+    seurat <- FindClusters(seurat, verbose = FALSE)
     # ---------------------------
 
     saveRDS(seurat, rds)
