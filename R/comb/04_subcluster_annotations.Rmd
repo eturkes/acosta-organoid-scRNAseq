@@ -84,6 +84,13 @@ if (!dir.exists(cache_dir)) {
 knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 ```
 
+# Prep
+
+```{r}
+timepoints <- vector("list", 2)
+names(timepoints) <- c("D72", "D120")
+```
+
 # Excitatory Neurons
 
 ```{r}
@@ -93,17 +100,15 @@ sub_name <- "Ex"
 ## D72
 
 ```{r}
-timepoint <- "D72"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[1]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[1], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[1], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[1]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -114,17 +119,15 @@ datatable_download(markers)
 ## D120
 
 ```{r}
-timepoint <- "D120"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[2]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[2], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[2], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[2]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -141,17 +144,15 @@ sub_name <- "In"
 ## D72
 
 ```{r}
-timepoint <- "D72"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[1]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[1], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[1], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[1]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -162,17 +163,15 @@ datatable_download(markers)
 ## D120
 
 ```{r}
-timepoint <- "D120"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[2]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[2], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[2], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[2]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -189,17 +188,15 @@ sub_name <- "IPC"
 ## D72
 
 ```{r}
-timepoint <- "D72"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[1]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[1], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[1], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[1]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -210,17 +207,15 @@ datatable_download(markers)
 ## D120
 
 ```{r}
-timepoint <- "D120"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[2]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[2], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[2], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[2]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -237,17 +232,15 @@ sub_name <- "Mu"
 ## D72
 
 ```{r}
-timepoint <- "D72"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[1]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[1], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[1], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[1]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -258,17 +251,15 @@ datatable_download(markers)
 ## D120
 
 ```{r}
-timepoint <- "D120"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[2]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[2], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[2], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[2]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -285,17 +276,15 @@ sub_name <- "RG"
 ## D72
 
 ```{r}
-timepoint <- "D72"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[1]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[1], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[1], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[1]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
@@ -306,17 +295,15 @@ datatable_download(markers)
 ## D120
 
 ```{r}
-timepoint <- "D120"
-
-seurat <- readRDS(
-  file.path(cache_dir, "..", "03", paste(sub_name, timepoint, "seurat.rds", sep = "_"))
+timepoints[[2]] <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, names(timepoints)[2], "seurat.rds", sep = "_"))
 )
 
-rds <- file.path(cache_dir, paste(sub_name, timepoint, "markers.rds", sep = "_"))
+rds <- file.path(cache_dir, paste(sub_name, names(timepoints)[2], "markers.rds", sep = "_"))
 if (file.exists(rds)) {
   markers <- readRDS(rds)
 } else {
-  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  markers <- FindAllMarkers(timepoints[[2]], only.pos = TRUE, verbose = FALSE)
   rownames(markers) <- NULL
   saveRDS(markers, rds)
 }
