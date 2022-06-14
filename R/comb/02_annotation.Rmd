@@ -115,18 +115,18 @@ remove <- c(
   "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
   "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
 )
-markers_trimmed <- markers
+markers <- markers
 for (i in seq_along(remove)) {
-  markers_trimmed <- rapply(
-    markers_trimmed, function(x) ifelse(x == remove[i], "", x), how = "replace")
+  markers <- rapply(
+    markers, function(x) ifelse(x == remove[i], "", x), how = "replace")
 }
-markers_trimmed <- lapply(markers_trimmed, function(x) x[!(x == "")])
+markers <- lapply(markers, function(x) x[!(x == "")])
 remove <- which(
-  names(markers_trimmed) %in% c(
+  names(markers) %in% c(
     "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes"
   )
 )
-markers_trimmed <- markers_trimmed[-remove]
+markers <- markers[-remove]
 
 rds <- file.path(cache_dir, "seurat_pseudobulk.rds")
 if (file.exists(rds)) {
@@ -142,7 +142,7 @@ if (file.exists(rds)) {
 }
 
 gsva <- gsva(
-  logcounts(pseudobulk), markers_trimmed, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
+  logcounts(pseudobulk), markers, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
 )
 gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
 
@@ -179,12 +179,10 @@ seurat <- RenameIdents(
 seurat$cluster_names <- seurat@active.ident
 red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
 
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
-    print(
-      FeaturePlot(seurat, markers_trimmed[[i]], order = TRUE, cols = c("lightgrey", "red"))
-    )
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(names(markers[i]))
+    print(FeaturePlot(seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
   }
 }
 ```
@@ -297,13 +295,12 @@ cat(
 )
 cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(names(markers[i]))
     print(
       FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
+        seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
       )
     )
   }
@@ -421,13 +418,12 @@ cat(
 )
 cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(names(markers[i]))
     print(
       FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
+        seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
       )
     )
   }
@@ -566,13 +562,12 @@ cat(
 )
 cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(names(markers[i]))
     print(
       FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
+        seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
       )
     )
   }
@@ -686,13 +681,12 @@ cat(
 )
 cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(names(markers[i]))
     print(
       FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
+        seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
       )
     )
   }
@@ -807,13 +801,12 @@ cat(
 )
 cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
 
-for (i in seq_along(markers_trimmed)) {
-  if (any(markers_trimmed[[i]] %in% rownames(seurat))) {
-    print(names(markers_trimmed[i]))
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(names(markers[i]))
     print(
       FeaturePlot(
-        seurat, markers_trimmed[[i]], reduction = "rca_umap",
-        order = TRUE, cols = c("lightgrey", "red")
+        seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
       )
     )
   }
