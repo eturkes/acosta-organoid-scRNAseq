@@ -256,7 +256,7 @@ if (file.exists(rds)) {
     rm(ref2)
   
     ref <- buildReferencePanel(counts(ref))
-    saveRDS(ref, rds)
+    file.rename("my_reference_panel.rds", rds)
   }
 
   rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
