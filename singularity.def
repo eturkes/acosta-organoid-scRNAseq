@@ -27,13 +27,15 @@ From: rocker/rstudio:4.2.0
         -e "install.packages('DT')" \
         -e "install.packages('viridis')" \
         -e "install.packages('openxlsx')" \
+        -e "install.packages('filesstrings')" \
         -e "install.packages('BiocManager')" \
         -e "BiocManager::install('SingleCellExperiment')" \
         -e "BiocManager::install('scuttle')" \
         -e "BiocManager::install('DropletUtils')" \
         -e "BiocManager::install('scater')" \
         -e "BiocManager::install('GSVA')" \
-        -e "remotes::install_github('prabhakarlab/RCAv2')"
+        -e "remotes::install_github('prabhakarlab/RCAv2')" \
+        -e "remotes::install_github('xgaoo/ClusterMap')"
     apt-get clean
     rm -Rf \
         /var/lib/apt/lists/ \
