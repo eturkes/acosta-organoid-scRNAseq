@@ -66,7 +66,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 
 packages <- c(
   "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
-  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings"
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings", "patchwork"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 options(future.globals.maxSize = 10485760000)
@@ -278,6 +278,33 @@ cluster_map
 
 files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
 move_files(files, out_dir, TRUE)
+
+cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(cluster_map_groups)) {
+
+  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
+    ) + ggtitle(names(cluster_map_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
 ```
 
 ## Integration
@@ -419,13 +446,6 @@ for (i in seq_along(timepoint_seurat)) {
       )
     }
   }
-
-  for (i in seq_along(markers)) {
-    if (any(markers[[i]] %in% rownames(sub_seurat))) {
-      print(names(markers[i]))
-      print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-    }
-  }
 }
 ```
 
@@ -468,6 +488,33 @@ cluster_map
 
 files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
 move_files(files, out_dir, TRUE)
+
+cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(cluster_map_groups)) {
+
+  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
+    ) + ggtitle(names(cluster_map_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
 ```
 
 # IPC
@@ -547,13 +594,6 @@ for (i in seq_along(timepoint_seurat)) {
       )
     }
   }
-
-  for (i in seq_along(markers)) {
-    if (any(markers[[i]] %in% rownames(sub_seurat))) {
-      print(names(markers[i]))
-      print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-    }
-  }
 }
 ```
 
@@ -596,6 +636,33 @@ cluster_map
 
 files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
 move_files(files, out_dir, TRUE)
+
+cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(cluster_map_groups)) {
+
+  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
+    ) + ggtitle(names(cluster_map_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
 ```
 
 ## Integration
@@ -737,13 +804,6 @@ for (i in seq_along(timepoint_seurat)) {
       )
     }
   }
-
-  for (i in seq_along(markers)) {
-    if (any(markers[[i]] %in% rownames(sub_seurat))) {
-      print(names(markers[i]))
-      print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-    }
-  }
 }
 ```
 
@@ -786,6 +846,33 @@ cluster_map
 
 files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
 move_files(files, out_dir, TRUE)
+
+cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(cluster_map_groups)) {
+
+  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
+    ) + ggtitle(names(cluster_map_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
 ```
 
 # Radial Glia
@@ -865,13 +952,6 @@ for (i in seq_along(timepoint_seurat)) {
       )
     }
   }
-
-  for (i in seq_along(markers)) {
-    if (any(markers[[i]] %in% rownames(sub_seurat))) {
-      print(names(markers[i]))
-      print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-    }
-  }
 }
 ```
 
@@ -914,6 +994,33 @@ cluster_map
 
 files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
 move_files(files, out_dir, TRUE)
+
+cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(cluster_map_groups)) {
+
+  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
+    ) + ggtitle(names(cluster_map_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
 ```
 
 ## Integration
@@ -1055,13 +1162,6 @@ for (i in seq_along(timepoint_seurat)) {
       )
     }
   }
-
-  for (i in seq_along(markers)) {
-    if (any(markers[[i]] %in% rownames(sub_seurat))) {
-      print(names(markers[i]))
-      print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-    }
-  }
 }
 ```
 
@@ -1104,6 +1204,33 @@ cluster_map
 
 files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
 move_files(files, out_dir, TRUE)
+
+cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(cluster_map_groups)) {
+
+  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
+    ) + ggtitle(names(cluster_map_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
 ```
 
 ## Integration
