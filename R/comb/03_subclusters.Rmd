@@ -66,7 +66,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 
 packages <- c(
   "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
-  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings", "patchwork"
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings", "patchwork", "DT"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 options(future.globals.maxSize = 10485760000)
@@ -174,13 +174,6 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
-
-for (i in seq_along(markers)) {
-  if (any(markers[[i]] %in% rownames(sub_seurat))) {
-    print(names(markers[i]))
-    print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-  }
-}
 ```
 
 ### Separated By Timepoint
@@ -229,13 +222,6 @@ for (i in seq_along(timepoint_seurat)) {
       )
     }
   }
-
-  for (i in seq_along(markers)) {
-    if (any(markers[[i]] %in% rownames(sub_seurat))) {
-      print(names(markers[i]))
-      print(FeaturePlot(sub_seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
-    }
-  }
 }
 ```
 
@@ -267,17 +253,14 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
+  cluster_map <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap"
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
 }
-
-cluster_map <- cluster_map(
-  marker_file_list, output = file.path(out_dir, sub_name),
-  single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-  comb_delim = "_", reduction = "umap"
-)
-cluster_map
-
-files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
-move_files(files, out_dir, TRUE)
 
 cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
 for (i in seq_along(cluster_map_groups)) {
@@ -305,68 +288,43 @@ for (i in seq_along(cluster_map_groups)) {
     }
   }
 }
-```
 
-## Integration
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "integrated_seurat.rds", sep = "_"))
+file_list$comb@active.ident <- file_list$comb$cluster_map
+rds <- file.path(cache_dir, "cluster_map_markers.rds")
 if (file.exists(rds)) {
-  integrated_seurat <- readRDS(rds)
+  cluster_map_markers <- readRDS(rds)
 } else {
-
-  DefaultAssay(sub_seurat) <- "RNA"
-  sub_seurat[["SCT"]] <- NULL
-
-  integrated_seurat <- SplitObject(sub_seurat, "sample")
-  integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-  features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-  integrated_seurat <- PrepSCTIntegration(
-    integrated_seurat, anchor.features = features, verbose = FALSE
-  )
-  anchors <- FindIntegrationAnchors(
-    integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-  )
-  integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-  integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-  names(add_df) <- paste0("pca", seq(ncol(add_df)))
-  integrated_seurat$pca1 <- add_df$pca1
-  integrated_seurat$pca2 <- add_df$pca2
-
-  integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-  names(add_df) <- paste0("umap", seq(ncol(add_df)))
-  integrated_seurat$umap1 <- add_df$umap1
-  integrated_seurat$umap2 <- add_df$umap2
-  
-  integrated_seurat <- FindNeighbors(integrated_seurat, dims = 1:30, verbose = FALSE)
-  integrated_seurat <- FindClusters(integrated_seurat, verbose = FALSE)
-
-  saveRDS(integrated_seurat, rds, compress = FALSE)
+  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  saveRDS(cluster_map_markers, rds)
 }
 
-integrated_seurat
+datatable_download(cluster_map_markers)
 
-for (i in 1:length(metadata_to_plot)) {
-  print(names(metadata_to_plot)[i])
-  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend()
-    )
-  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(
-        integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"
-      ) + NoLegend()
-    )
-  } else if ("no_label" %in% metadata_to_plot[[i]]) {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
-  } else {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
-  }
+for (i in unique(cluster_map_markers$cluster)) {
+  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
+  print(datatable_download(sub_markers))
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "bhaduri_primary_rca_Subtype.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(file_list$comb, "counts"), GetAssayData(file_list$comb))
+  rca <- dataProject(
+    rca,
+    "Custom",
+    file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"),
+    min.cell.number.expressing = 0
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+file_list$comb$rca_subclusters <- factor(unlist(rca$cell.Type.Estimate))
+red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ```
 
 # Inhibitory Neuron
@@ -477,17 +435,14 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
+  cluster_map <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap"
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
 }
-
-cluster_map <- cluster_map(
-  marker_file_list, output = file.path(out_dir, sub_name),
-  single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-  comb_delim = "_", reduction = "umap"
-)
-cluster_map
-
-files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
-move_files(files, out_dir, TRUE)
 
 cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
 for (i in seq_along(cluster_map_groups)) {
@@ -515,6 +470,43 @@ for (i in seq_along(cluster_map_groups)) {
     }
   }
 }
+
+file_list$comb@active.ident <- file_list$comb$cluster_map
+rds <- file.path(cache_dir, "cluster_map_markers.rds")
+if (file.exists(rds)) {
+  cluster_map_markers <- readRDS(rds)
+} else {
+  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  saveRDS(cluster_map_markers, rds)
+}
+
+datatable_download(cluster_map_markers)
+
+for (i in unique(cluster_map_markers$cluster)) {
+  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
+  print(datatable_download(sub_markers))
+}
+
+rds <- file.path(cache_dir, paste(sub_name, "bhaduri_primary_rca_Subtype.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(file_list$comb, "counts"), GetAssayData(file_list$comb))
+  rca <- dataProject(
+    rca,
+    "Custom",
+    file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"),
+    min.cell.number.expressing = 0
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+file_list$comb$rca_subclusters <- factor(unlist(rca$cell.Type.Estimate))
+red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ```
 
 # IPC
@@ -625,17 +617,14 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
+  cluster_map <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap"
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
 }
-
-cluster_map <- cluster_map(
-  marker_file_list, output = file.path(out_dir, sub_name),
-  single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-  comb_delim = "_", reduction = "umap"
-)
-cluster_map
-
-files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
-move_files(files, out_dir, TRUE)
 
 cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
 for (i in seq_along(cluster_map_groups)) {
@@ -663,68 +652,43 @@ for (i in seq_along(cluster_map_groups)) {
     }
   }
 }
-```
 
-## Integration
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "integrated_seurat.rds", sep = "_"))
+file_list$comb@active.ident <- file_list$comb$cluster_map
+rds <- file.path(cache_dir, "cluster_map_markers.rds")
 if (file.exists(rds)) {
-  integrated_seurat <- readRDS(rds)
+  cluster_map_markers <- readRDS(rds)
 } else {
-
-  DefaultAssay(sub_seurat) <- "RNA"
-  sub_seurat[["SCT"]] <- NULL
-
-  integrated_seurat <- SplitObject(sub_seurat, "sample")
-  integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-  features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-  integrated_seurat <- PrepSCTIntegration(
-    integrated_seurat, anchor.features = features, verbose = FALSE
-  )
-  anchors <- FindIntegrationAnchors(
-    integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-  )
-  integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-  integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-  names(add_df) <- paste0("pca", seq(ncol(add_df)))
-  integrated_seurat$pca1 <- add_df$pca1
-  integrated_seurat$pca2 <- add_df$pca2
-
-  integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-  names(add_df) <- paste0("umap", seq(ncol(add_df)))
-  integrated_seurat$umap1 <- add_df$umap1
-  integrated_seurat$umap2 <- add_df$umap2
-  
-  integrated_seurat <- FindNeighbors(integrated_seurat, dims = 1:30, verbose = FALSE)
-  integrated_seurat <- FindClusters(integrated_seurat, verbose = FALSE)
-
-  saveRDS(integrated_seurat, rds, compress = FALSE)
+  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  saveRDS(cluster_map_markers, rds)
 }
 
-integrated_seurat
+datatable_download(cluster_map_markers)
 
-for (i in 1:length(metadata_to_plot)) {
-  print(names(metadata_to_plot)[i])
-  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend()
-    )
-  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(
-        integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"
-      ) + NoLegend()
-    )
-  } else if ("no_label" %in% metadata_to_plot[[i]]) {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
-  } else {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
-  }
+for (i in unique(cluster_map_markers$cluster)) {
+  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
+  print(datatable_download(sub_markers))
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "bhaduri_primary_rca_Subtype.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(file_list$comb, "counts"), GetAssayData(file_list$comb))
+  rca <- dataProject(
+    rca,
+    "Custom",
+    file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"),
+    min.cell.number.expressing = 0
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+file_list$comb$rca_subclusters <- factor(unlist(rca$cell.Type.Estimate))
+red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ```
 
 # Mural
@@ -835,17 +799,14 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
+  cluster_map <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap"
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
 }
-
-cluster_map <- cluster_map(
-  marker_file_list, output = file.path(out_dir, sub_name),
-  single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-  comb_delim = "_", reduction = "umap"
-)
-cluster_map
-
-files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
-move_files(files, out_dir, TRUE)
 
 cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
 for (i in seq_along(cluster_map_groups)) {
@@ -873,6 +834,43 @@ for (i in seq_along(cluster_map_groups)) {
     }
   }
 }
+
+file_list$comb@active.ident <- file_list$comb$cluster_map
+rds <- file.path(cache_dir, "cluster_map_markers.rds")
+if (file.exists(rds)) {
+  cluster_map_markers <- readRDS(rds)
+} else {
+  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  saveRDS(cluster_map_markers, rds)
+}
+
+datatable_download(cluster_map_markers)
+
+for (i in unique(cluster_map_markers$cluster)) {
+  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
+  print(datatable_download(sub_markers))
+}
+
+rds <- file.path(cache_dir, paste(sub_name, "bhaduri_primary_rca_Subtype.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(file_list$comb, "counts"), GetAssayData(file_list$comb))
+  rca <- dataProject(
+    rca,
+    "Custom",
+    file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"),
+    min.cell.number.expressing = 0
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+file_list$comb$rca_subclusters <- factor(unlist(rca$cell.Type.Estimate))
+red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ```
 
 # Radial Glia
@@ -983,17 +981,14 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
+  cluster_map <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap"
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
 }
-
-cluster_map <- cluster_map(
-  marker_file_list, output = file.path(out_dir, sub_name),
-  single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-  comb_delim = "_", reduction = "umap"
-)
-cluster_map
-
-files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
-move_files(files, out_dir, TRUE)
 
 cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
 for (i in seq_along(cluster_map_groups)) {
@@ -1021,68 +1016,43 @@ for (i in seq_along(cluster_map_groups)) {
     }
   }
 }
-```
 
-## Integration
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "integrated_seurat.rds", sep = "_"))
+file_list$comb@active.ident <- file_list$comb$cluster_map
+rds <- file.path(cache_dir, "cluster_map_markers.rds")
 if (file.exists(rds)) {
-  integrated_seurat <- readRDS(rds)
+  cluster_map_markers <- readRDS(rds)
 } else {
-
-  DefaultAssay(sub_seurat) <- "RNA"
-  sub_seurat[["SCT"]] <- NULL
-
-  integrated_seurat <- SplitObject(sub_seurat, "sample")
-  integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-  features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-  integrated_seurat <- PrepSCTIntegration(
-    integrated_seurat, anchor.features = features, verbose = FALSE
-  )
-  anchors <- FindIntegrationAnchors(
-    integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-  )
-  integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-  integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-  names(add_df) <- paste0("pca", seq(ncol(add_df)))
-  integrated_seurat$pca1 <- add_df$pca1
-  integrated_seurat$pca2 <- add_df$pca2
-
-  integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-  names(add_df) <- paste0("umap", seq(ncol(add_df)))
-  integrated_seurat$umap1 <- add_df$umap1
-  integrated_seurat$umap2 <- add_df$umap2
-  
-  integrated_seurat <- FindNeighbors(integrated_seurat, dims = 1:30, verbose = FALSE)
-  integrated_seurat <- FindClusters(integrated_seurat, verbose = FALSE)
-
-  saveRDS(integrated_seurat, rds, compress = FALSE)
+  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  saveRDS(cluster_map_markers, rds)
 }
 
-integrated_seurat
+datatable_download(cluster_map_markers)
 
-for (i in 1:length(metadata_to_plot)) {
-  print(names(metadata_to_plot)[i])
-  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend()
-    )
-  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(
-        integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"
-      ) + NoLegend()
-    )
-  } else if ("no_label" %in% metadata_to_plot[[i]]) {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
-  } else {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
-  }
+for (i in unique(cluster_map_markers$cluster)) {
+  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
+  print(datatable_download(sub_markers))
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "bhaduri_primary_rca_Subtype.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(file_list$comb, "counts"), GetAssayData(file_list$comb))
+  rca <- dataProject(
+    rca,
+    "Custom",
+    file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"),
+    min.cell.number.expressing = 0
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+file_list$comb$rca_subclusters <- factor(unlist(rca$cell.Type.Estimate))
+red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ```
 
 # Unclassified
@@ -1193,17 +1163,14 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
+  cluster_map <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap"
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
 }
-
-cluster_map <- cluster_map(
-  marker_file_list, output = file.path(out_dir, sub_name),
-  single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-  comb_delim = "_", reduction = "umap"
-)
-cluster_map
-
-files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
-move_files(files, out_dir, TRUE)
 
 cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
 for (i in seq_along(cluster_map_groups)) {
@@ -1231,68 +1198,43 @@ for (i in seq_along(cluster_map_groups)) {
     }
   }
 }
-```
 
-## Integration
-
-```{r}
-rds <- file.path(cache_dir, paste(sub_name, "integrated_seurat.rds", sep = "_"))
+file_list$comb@active.ident <- file_list$comb$cluster_map
+rds <- file.path(cache_dir, "cluster_map_markers.rds")
 if (file.exists(rds)) {
-  integrated_seurat <- readRDS(rds)
+  cluster_map_markers <- readRDS(rds)
 } else {
-
-  DefaultAssay(sub_seurat) <- "RNA"
-  sub_seurat[["SCT"]] <- NULL
-
-  integrated_seurat <- SplitObject(sub_seurat, "sample")
-  integrated_seurat <- lapply(integrated_seurat, SCTransform, verbose = FALSE)
-  features <- SelectIntegrationFeatures(integrated_seurat, 3000, verbose = FALSE)
-  integrated_seurat <- PrepSCTIntegration(
-    integrated_seurat, anchor.features = features, verbose = FALSE
-  )
-  anchors <- FindIntegrationAnchors(
-    integrated_seurat, normalization.method = "SCT", anchor.features = features, verbose = FALSE
-  )
-  integrated_seurat <- IntegrateData(anchors, normalization.method = "SCT", verbose = FALSE)
-
-  integrated_seurat <- RunPCA(integrated_seurat, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat)[ , 1:2])
-  names(add_df) <- paste0("pca", seq(ncol(add_df)))
-  integrated_seurat$pca1 <- add_df$pca1
-  integrated_seurat$pca2 <- add_df$pca2
-
-  integrated_seurat <- RunUMAP(integrated_seurat, 1:30, verbose = FALSE)
-  add_df <- data.frame(Embeddings(integrated_seurat, "umap"))
-  names(add_df) <- paste0("umap", seq(ncol(add_df)))
-  integrated_seurat$umap1 <- add_df$umap1
-  integrated_seurat$umap2 <- add_df$umap2
-  
-  integrated_seurat <- FindNeighbors(integrated_seurat, dims = 1:30, verbose = FALSE)
-  integrated_seurat <- FindClusters(integrated_seurat, verbose = FALSE)
-
-  saveRDS(integrated_seurat, rds, compress = FALSE)
+  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  saveRDS(cluster_map_markers, rds)
 }
 
-integrated_seurat
+datatable_download(cluster_map_markers)
 
-for (i in 1:length(metadata_to_plot)) {
-  print(names(metadata_to_plot)[i])
-  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend()
-    )
-  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
-    print(
-      red_dim_plot(
-        integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"
-      ) + NoLegend()
-    )
-  } else if ("no_label" %in% metadata_to_plot[[i]]) {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
-  } else {
-    print(red_dim_plot(integrated_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
-  }
+for (i in unique(cluster_map_markers$cluster)) {
+  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
+  print(datatable_download(sub_markers))
 }
+
+rds <- file.path(cache_dir, paste(sub_name, "bhaduri_primary_rca_Subtype.rds", sep = "_"))
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+  rca <- createRCAObject(GetAssayData(file_list$comb, "counts"), GetAssayData(file_list$comb))
+  rca <- dataProject(
+    rca,
+    "Custom",
+    file.path(cache_dir, "..", "02", "bhaduri_primary_panel_Subtype.rds"),
+    min.cell.number.expressing = 0
+  )
+  rca <- computeUMAP(rca)
+  rca <- estimateCellTypeFromProjection(rca)
+  saveRDS(rca, rds, compress = FALSE)
+}
+
+rca
+
+file_list$comb$rca_subclusters <- factor(unlist(rca$cell.Type.Estimate))
+red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ```
 
 # References
