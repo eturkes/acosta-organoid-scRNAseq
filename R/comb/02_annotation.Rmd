@@ -138,7 +138,7 @@ if (file.exists(rds)) {
   dge <- DGEList(counts(pseudobulk))
   dge <- calcNormFactors(dge)
   logcounts(pseudobulk, withDimnames = FALSE) <- edgeR::cpm(dge, log = TRUE, prior.count = 3)
-  saveRDS(pseudobulk, rds)
+  saveRDS(pseudobulk, rds, compress = FALSE)
 }
 
 gsva <- gsva(
@@ -240,7 +240,7 @@ if (file.exists(rds)) {
   
     ref <- rbind(top, bottom)
     rm(top, bottom)
-    saveRDS(ref, rds)
+    saveRDS(ref, rds, compress = FALSE)
   }
 
   rds <- file.path(cache_dir, "bhaduri_primary_panel_Type.rds")

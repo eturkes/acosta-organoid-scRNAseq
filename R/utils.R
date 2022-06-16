@@ -281,7 +281,7 @@ cluster_pipeline <- function(
     seurat <- FindClusters(seurat, verbose = FALSE)
     # ---------------------------
 
-    saveRDS(seurat, rds)
+    saveRDS(seurat, rds, compress = FALSE)
   }
   seurat
 }

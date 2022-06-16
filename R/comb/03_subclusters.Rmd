@@ -295,7 +295,7 @@ if (file.exists(rds)) {
   cluster_map_markers <- readRDS(rds)
 } else {
   cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds)
+  saveRDS(cluster_map_markers, rds, compress = FALSE)
 }
 
 datatable_download(cluster_map_markers)
@@ -477,7 +477,7 @@ if (file.exists(rds)) {
   cluster_map_markers <- readRDS(rds)
 } else {
   cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds)
+  saveRDS(cluster_map_markers, rds, compress = FALSE)
 }
 
 datatable_download(cluster_map_markers)
@@ -659,7 +659,7 @@ if (file.exists(rds)) {
   cluster_map_markers <- readRDS(rds)
 } else {
   cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds)
+  saveRDS(cluster_map_markers, rds, compress = FALSE)
 }
 
 datatable_download(cluster_map_markers)
@@ -841,7 +841,7 @@ if (file.exists(rds)) {
   cluster_map_markers <- readRDS(rds)
 } else {
   cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds)
+  saveRDS(cluster_map_markers, rds, compress = FALSE)
 }
 
 datatable_download(cluster_map_markers)
@@ -1023,7 +1023,7 @@ if (file.exists(rds)) {
   cluster_map_markers <- readRDS(rds)
 } else {
   cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds)
+  saveRDS(cluster_map_markers, rds, compress = FALSE)
 }
 
 datatable_download(cluster_map_markers)
@@ -1205,7 +1205,7 @@ if (file.exists(rds)) {
   cluster_map_markers <- readRDS(rds)
 } else {
   cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds)
+  saveRDS(cluster_map_markers, rds, compress = FALSE)
 }
 
 datatable_download(cluster_map_markers)
