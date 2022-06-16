@@ -150,7 +150,7 @@ markers <- markers[-remove]
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_clusters == "Excitatory Neuron ")]
+sub_seurat <- seurat[ , which(seurat$rca_clusters_pruned == "Excitatory Neuron ")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
@@ -332,7 +332,7 @@ red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_clusters == "Inhibitory Neuron")]
+sub_seurat <- seurat[ , which(seurat$rca_clusters_pruned == "Inhibitory Neuron")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
@@ -514,7 +514,7 @@ red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_clusters == "IPC")]
+sub_seurat <- seurat[ , which(seurat$rca_clusters_pruned == "IPC")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
@@ -696,7 +696,7 @@ red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_clusters == "Mural")]
+sub_seurat <- seurat[ , which(seurat$rca_clusters_pruned == "Mural")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
@@ -878,7 +878,7 @@ red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_clusters == "Radial Glia")]
+sub_seurat <- seurat[ , which(seurat$rca_clusters_pruned == "Radial Glia")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
@@ -1060,7 +1060,7 @@ red_dim_plot(file_list$comb, "umap1", "umap2", "rca_subclusters", "cat")
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_clusters == "Unclassified")]
+sub_seurat <- seurat[ , which(seurat$rca_clusters_pruned == "Unclassified")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
