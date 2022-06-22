@@ -66,7 +66,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 
 packages <- c(
   "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
-  "data.table", "GSVA", "edgeR", "ComplexHeatmap"
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "patchwork"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
@@ -181,8 +181,13 @@ red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
 
 for (i in seq_along(markers)) {
   if (any(markers[[i]] %in% rownames(seurat))) {
-    print(names(markers[i]))
-    print(FeaturePlot(seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")))
+    print(
+      FeaturePlot(seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")) +
+        plot_annotation(
+          names(markers)[i],
+          theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+        )
+    )
   }
 }
 ```
@@ -266,10 +271,12 @@ if (file.exists(rds)) {
     rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
     rca <- dataProject(
       rca, "Custom",
-      file.path(cache_dir, "bhaduri_primary_panel_Type.rds"), min.cell.number.expressing = 0
+      file.path(cache_dir, "bhaduri_primary_panel_Type.rds"), "spearman",
+      min.cell.number.expressing = 0
     )
     rca <- computeUMAP(rca)
     rca <- estimateCellTypeFromProjection(rca, cSCompute = TRUE)
+    rca <- dataSClust(rca, nPCs = 7, corMeth = "spearman")
     saveRDS(rca, rds, compress = FALSE)
   }
 }
@@ -277,7 +284,9 @@ if (file.exists(rds)) {
 rca
 
 seurat$rca_confidence <- unlist(rca$cScore)
-seurat$rca_clusters <- factor(unlist(rca$cell.Type.Estimate))
+seurat$rca_names <- factor(unlist(rca$cell.Type.Estimate))
+seurat$rca_clusters <- rca$clustering.out$cellTree
+
 seurat[["rca_umap"]] <- CreateDimReducObject(
   as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
 )
@@ -286,6 +295,7 @@ names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
 seurat$rca_umap1 <- add_df$rca_umap1
 seurat$rca_umap2 <- add_df$rca_umap2
 
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_names", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
@@ -308,26 +318,26 @@ for (i in seq_along(markers)) {
   }
 }
 
-rca_MAD <- vector("list", length(unique(seurat$rca_clusters)))
-names(rca_MAD) <- unique(seurat$rca_clusters)
+rca_MAD <- vector("list", length(unique(seurat$rca_names)))
+names(rca_MAD) <- unique(seurat$rca_names)
 for (i in seq_along(rca_MAD)) {
-  cells <- names(seurat$rca_clusters[seurat$rca_clusters == names(rca_MAD)[i]])
+  cells <- names(seurat$rca_names[seurat$rca_names == names(rca_MAD)[i]])
   conf <- seurat$rca_confidence[names(seurat$rca_confidence) %in% cells]
 
   med <- median(conf)
   MAD <- mad(conf, med)
-  thresh <- med - 2 * MAD
+  thresh <- med - 2.5 * MAD
   
   rca_MAD[[i]] <- names(conf[conf < thresh])
 }
 rca_MAD
 
 rename <- which(colnames(seurat) %in% unlist(rca_MAD))
-seurat$rca_clusters_pruned <- factor(
-  replace(as.character(seurat$rca_clusters), rename, "Unclassifed")
+seurat$rca_names_pruned <- factor(
+  replace(as.character(seurat$rca_names), rename, "Unclassifed")
 )
 
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters_pruned", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_names_pruned", "cat")
 DimPlot(seurat, reduction = "rca_umap", cells.highlight = unlist(rca_MAD))
 
 rds <- file.path(cache_dir, "rca_seurat.rds")
