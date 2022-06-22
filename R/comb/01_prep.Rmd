@@ -147,6 +147,7 @@ if (file.exists(rds)) {
     rep(sub("\\/.*", "", file_list[12]), ncol(files[[12]]))
   )
   seurat$timepoint <- sub("_.*", "", seurat$sample)
+  seurat$genotype <- sub("^(?:[^_]+_){1}([^_]+).*", "\\1", seurat$sample)
 
   saveRDS(seurat, rds, compress = FALSE)
 }
