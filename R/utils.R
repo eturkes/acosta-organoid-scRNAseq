@@ -160,13 +160,15 @@ cluster_pipeline <- function(
       # ---------------------------------------------------------------------------------
       parallel_plan(seurat, parallel_override)
       seurat <- suppressWarnings(
-        SCTransform(seurat, vars.to.regress = vars_to_regress, verbose = FALSE)
+        SCTransform(
+          seurat, vars.to.regress = vars_to_regress, verbose = FALSE, return.only.var.genes = FALSE
+        )
       )
       # ---------------------------------------------------------------------------------
 
       # Perform PCA.
       # ------------
-      seurat <- RunPCA(seurat, verbose = FALSE)
+      seurat <- RunPCA(seurat, verbose = FALSE, features = rownames(seurat))
       add_df <- data.frame(Embeddings(seurat)[ , 1:2])
       names(add_df) <- paste0("pca", seq(ncol(add_df)))
       seurat$pca1 <- add_df$pca1
