@@ -300,6 +300,7 @@ red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "genotype", "cat")
 
 cat(
   length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
