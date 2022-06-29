@@ -149,6 +149,15 @@ if (file.exists(rds)) {
   seurat$timepoint <- sub("_.*", "", seurat$sample)
   seurat$genotype <- sub("^(?:[^_]+_){1}([^_]+).*", "\\1", seurat$sample)
 
+  mito <- grep("^MT-", rownames(seurat), TRUE)
+  ribo <- grep("^RP[SL][[:digit:]]", rownames(seurat), TRUE)
+
+  sce <- as.SingleCellExperiment(seurat)
+  sce <- addPerCellQC(sce, list(mito = mito, ribo = ribo))
+  seurat$subsets_mito_percent <- sce$subsets_mito_percent
+  seurat$subsets_ribo_percent <- sce$subsets_ribo_percent
+  rm(sce)
+
   saveRDS(seurat, rds, compress = FALSE)
 }
 ```
@@ -194,6 +203,11 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+print("subsets_mito_percent")
+red_dim_plot(seurat, "umap1", "umap2", "subsets_mito_percent", "cont")
+print("subsets_ribo_percent")
+red_dim_plot(seurat, "umap1", "umap2", "subsets_ribo_percent", "cont")
 ```
 
 # References
