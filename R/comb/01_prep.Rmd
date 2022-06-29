@@ -158,6 +158,11 @@ if (file.exists(rds)) {
   seurat$subsets_ribo_percent <- sce$subsets_ribo_percent
   rm(sce)
 
+  remove <- names(seurat@meta.data)[grep("SCT_snn", names(seurat@meta.data))]
+  for (name in remove) {
+    seurat[[name]] <- NULL
+  }
+
   saveRDS(seurat, rds, compress = FALSE)
 }
 ```
