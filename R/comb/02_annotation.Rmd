@@ -113,7 +113,7 @@ markers <- lapply(markers, function(x) x[!(x == "")])
 remove <- c(
   "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
   "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
-  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
+  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6", "DLX2", "ERBB4", "SOX5"
 )
 markers <- markers
 for (i in seq_along(remove)) {
@@ -155,6 +155,24 @@ heatmap <- Heatmap(
   heatmap_legend_param = list(title = "SSGSEA enrichment", title_position = "leftcenter-rot"))
 draw(heatmap)
 
+plots <- FeaturePlot(
+  seurat, c("SLC17A7", "GAD1"), order = TRUE, blend = TRUE,
+  combine = FALSE, blend.threshold = 0, max.cutoff = "q10"
+)
+CombinePlots(plots[3:4], legend = "none") + NoLegend()
+
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(
+      FeaturePlot(seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")) +
+        plot_annotation(
+          names(markers)[i],
+          theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+        )
+    )
+  }
+}
+
 seurat@active.ident <- seurat$seurat_clusters
 seurat <- RenameIdents(
   seurat,
@@ -178,18 +196,6 @@ seurat <- RenameIdents(
 )
 seurat$cluster_names <- seurat@active.ident
 red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
-
-for (i in seq_along(markers)) {
-  if (any(markers[[i]] %in% rownames(seurat))) {
-    print(
-      FeaturePlot(seurat, markers[[i]], order = TRUE, cols = c("lightgrey", "red")) +
-        plot_annotation(
-          names(markers)[i],
-          theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
-        )
-    )
-  }
-}
 ```
 
 # RCAv2
@@ -200,10 +206,8 @@ for (i in seq_along(markers)) {
 
 ```{r}
 rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
-rds2 <- file.path(cache_dir, "bhaduri_primary_panel_Type.rds")
 if (file.exists(rds)) {
   rca <- readRDS(rds)
-  ref <- readRDS(rds2)
 } else {
 
   rds <- file.path(cache_dir, "bhaduri_primary_ref.rds")
@@ -270,22 +274,26 @@ if (file.exists(rds)) {
   } else {
     rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
     rca <- dataProject(
-      rca, "Custom",
-      file.path(cache_dir, "bhaduri_primary_panel_Type.rds"), "spearman",
-      min.cell.number.expressing = 0
+      rca, "Custom", file.path(cache_dir, "bhaduri_primary_panel_Type.rds"),
+      "spearman", min.cell.number.expressing = 0
     )
     rca <- computeUMAP(rca)
-    rca <- estimateCellTypeFromProjection(rca, cSCompute = TRUE)
-    rca <- dataSClust(rca, nPCs = 7, corMeth = "spearman")
     saveRDS(rca, rds, compress = FALSE)
   }
 }
 
 rca
 
-seurat$rca_confidence <- unlist(rca$cScore)
-seurat$rca_names <- factor(unlist(rca$cell.Type.Estimate))
-seurat$rca_clusters <- rca$clustering.out$cellTree
+set.seed(1)
+heatmap <- Heatmap(
+  as.matrix(rca$projection.data),
+  column_km = 5,
+  show_column_names = FALSE,
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  row_names_max_width = max_text_width(rownames(as.matrix(rca$projection.data))),
+  heatmap_legend_param = list(title = "ssGSEA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
 
 seurat[["rca_umap"]] <- CreateDimReducObject(
   as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
@@ -295,51 +303,87 @@ names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
 seurat$rca_umap1 <- add_df$rca_umap1
 seurat$rca_umap2 <- add_df$rca_umap2
 
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_names", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_clusters", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+rca_seurat <- CreateAssayObject(data = rca$projection.data)
+seurat[["RCA"]] <- rca_seurat
+DefaultAssay(seurat) <- "RCA"
+
+seurat <- FindNeighbors(seurat, NULL, NULL, features = rownames(seurat), verbose = FALSE)
+seurat <- FindClusters(seurat, resolution = 5.5, verbose = FALSE)
+DefaultAssay(seurat) <- "SCT"
+
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "genotype", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
 
-cat(
-  length(unique(unlist(rca$cell.Type.Estimate))), "cell-types found:",
-  unique(unlist(rca$cell.Type.Estimate))
+plots <- FeaturePlot(
+  seurat, c("SLC17A7", "GAD1"), order = TRUE, blend = TRUE,
+  combine = FALSE, blend.threshold = 0, max.cutoff = "q10", reduction = "rca_umap"
 )
-cat("Out of", length(colnames(ref)), "possible:", colnames(ref))
+CombinePlots(plots[3:4], legend = "none") + NoLegend()
 
 for (i in seq_along(markers)) {
   if (any(markers[[i]] %in% rownames(seurat))) {
-    print(names(markers[i]))
     print(
       FeaturePlot(
         seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
-      )
+      ) +
+        plot_annotation(
+          names(markers)[i],
+          theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+        )
     )
   }
 }
 
-rca_MAD <- vector("list", length(unique(seurat$rca_names)))
-names(rca_MAD) <- unique(seurat$rca_names)
-for (i in seq_along(rca_MAD)) {
-  cells <- names(seurat$rca_names[seurat$rca_names == names(rca_MAD)[i]])
-  conf <- seurat$rca_confidence[names(seurat$rca_confidence) %in% cells]
-
-  med <- median(conf)
-  MAD <- mad(conf, med)
-  thresh <- med - 2.5 * MAD
-  
-  rca_MAD[[i]] <- names(conf[conf < thresh])
-}
-rca_MAD
-
-rename <- which(colnames(seurat) %in% unlist(rca_MAD))
-seurat$rca_names_pruned <- factor(
-  replace(as.character(seurat$rca_names), rename, "Unclassifed")
+seurat@active.ident <- seurat$seurat_clusters
+seurat <- RenameIdents(
+  seurat,
+  "0" = "Radial Glia", "1" = "Excitatory Neuron",
+  "2" = "Unclassified", "3" = "Excitatory Neuron",
+  "4" = "Excitatory Neuron", "5" = "Excitatory Neuron",
+  "6" = "Unclassified", "7" = "IPC",
+  "8" = "Excitatory Neuron", "9" = "Inhibitory Neuron",
+  "10" = "Excitatory Neuron", "11" = "Radial Glia",
+  "12" = "Unclassified", "13" = "Radial Glia",
+  "14" = "Radial Glia", "15" = "Excitatory Neuron",
+  "16" = "Radial Glia", "17" = "Unclassified",
+  "18" = "Inhibitory Neuron", "19" = "Radial Glia",
+  "20" = "Radial Glia", "21" = "Inhibitory Neuron",
+  "22" = "Excitatory Neuron", "23" = "IPC",
+  "24" = "Excitatory Neuron", "25" = "Radial Glia",
+  "26" = "Excitatory Neuron", "27" = "Inhibitory Neuron",
+  "28" = "Radial Glia", "29" = "Excitatory Neuron",
+  "30" = "IPC", "31" = "Radial Glia",
+  "32" = "Radial Glia", "33" = "Excitatory Neuron",
+  "34" = "Inhibitory Neuron", "35" = "Excitatory Neuron",
+  "36" = "Inhibitory Neuron", "37" = "Radial Glia",
+  "38" = "Excitatory Neuron", "39" = "Excitatory Neuron",
+  "40" = "IPC", "41" = "Excitatory Neuron",
+  "42" = "Excitatory Neuron", "43" = "Radial Glia",
+  "44" = "Excitatory Neuron", "45" = "Radial Glia",
+  "46" = "IPC", "47" = "Inhibitory Neuron",
+  "48" = "Radial Glia", "49" = "Excitatory Neuron",
+  "50" = "Inhibitory Neuron", "51" = "IPC",
+  "52" = "Excitatory Neuron", "53" = "Radial Glia",
+  "54" = "Excitatory Neuron", "55" = "Radial Glia",
+  "56" = "Excitatory Neuron", "57" = "Excitatory Neuron",
+  "58" = "Radial Glia", "59" = "Inhibitory Neuron",
+  "60" = "Mural", "61" = "Radial Glia",
+  "62" = "Radial Glia", "63" = "Unclassified",
+  "64" = "Excitatory Neuron", "65" = "Inhibitory Neuron",
+  "66" = "Mural", "67" = "IPC",
+  "68" = "Radial Glia", "69" = "Radial Glia",
+  "70" = "Mural", "71" = "Excitatory Neuron",
+  "72" = "Radial Glia", "73" = "Radial Glia",
+  "74" = "Mural"
 )
-
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_names_pruned", "cat")
-DimPlot(seurat, reduction = "rca_umap", cells.highlight = unlist(rca_MAD))
+seurat$cluster_names <- seurat@active.ident
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
 
 rds <- file.path(cache_dir, "rca_seurat.rds")
 if (!file.exists(rds)) {
