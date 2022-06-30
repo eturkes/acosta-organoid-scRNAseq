@@ -174,7 +174,7 @@ rds <- file.path(cache_dir, "seurat_merged_processed.rds")
 if (file.exists(rds)) {
   seurat <- readRDS(rds)
 } else {
-  seurat <- suppressWarnings(SCTransform(seurat, verbose = FALSE))
+  seurat <- suppressWarnings(SCTransform(seurat, vst.flavor = "v2", verbose = FALSE))
 
   seurat <- RunPCA(seurat, verbose = FALSE)
   add_df <- data.frame(Embeddings(seurat)[ , 1:2])
