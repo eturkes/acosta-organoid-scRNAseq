@@ -66,21 +66,22 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 
 packages <- c(
   "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
-  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings", "patchwork", "DT"
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings", "patchwork", "DT",
+  "viridis"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 options(future.globals.maxSize = 10485760000)
 source(file.path("..", "utils.R"))
 
 protocol <- c("human", "droplet", "single-cell", "umis") # See `cluster_pipeline` in `utils.R`.
-vars_to_regress <- NULL # See `cluster_pipeline` in `utils.R`.
+vars_to_regress <- NULL # See `cluster_pipeline`.
 parallel_override <- 0 # See `parallel_plan` in `utils.R`.
 
 # Metadata to plot after dimensionality reduction and clustering.
 # Values in list can include "no_legend and/or "no_label" to exclude those.
 # -------------------------------------------------------------------------
-metadata_to_plot <- vector("list", 3)
-names(metadata_to_plot) <- c("seurat_clusters", "sample", "timepoint")
+metadata_to_plot <- vector("list", 4)
+names(metadata_to_plot) <- c("seurat_clusters", "sample", "timepoint", "genotype")
 # -------------------------------------------------------------------------
 
 analysis_no <- 3
@@ -90,7 +91,7 @@ results_dir <- file.path("..", "..", "results")
 
 # Unique cache directory for each analysis number.
 # ------------------------------------------------
-cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+cache_dir <- file.path("..", "..", "cache", data_name, "03")
 if (!dir.exists(cache_dir)) {
   dir.create(cache_dir, recursive = TRUE)
 }
@@ -105,15 +106,7 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 seurat <- readRDS(file.path(cache_dir, "..", "02", "rca_seurat.rds"))
 seurat
 
-table(seurat$rca_names)
-remove_clusters <- which(table(seurat$rca_names) < 100)
-remove <- which(seurat$rca_names %in% names(remove_clusters))
-cat("Removing", length(remove), "cells across", names(remove_clusters), "cell-types.")
-
-seurat <- seurat[ , -remove]
-seurat
-
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "rca_names_pruned", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
 
 markers <- read.delim(
   file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
@@ -129,7 +122,7 @@ markers <- lapply(markers, function(x) x[!(x == "")])
 remove <- c(
   "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
   "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
-  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6"
+  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6", "DLX2", "ERBB4", "SOX5"
 )
 markers <- markers
 for (i in seq_along(remove)) {
@@ -150,7 +143,7 @@ markers <- markers[-remove]
 ## Standard Pipeline
 
 ```{r}
-sub_seurat <- seurat[ , which(seurat$rca_names_pruned == "Excitatory Neuron ")]
+sub_seurat <- seurat[ , which(seurat$cluster_names == "Excitatory Neuron")]
 
 DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
@@ -174,9 +167,14 @@ for (i in 1:length(metadata_to_plot)) {
     print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
   }
 }
+
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
 ```
 
-### Separated By Timepoint
+## Separated By Timepoint
 
 ```{r}
 timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
@@ -190,19 +188,7 @@ for (i in seq_along(timepoint_seurat)) {
   )
   print(timepoint_seurat[[i]])
 
-  csv <- file.path(
-    cache_dir,
-    paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), "cluster_markers.csv", sep = "_")
-  )
-  if (file.exists(csv)) {
-    cluster_markers <- read.csv(csv)
-  } else {
-    cluster_markers <- FindAllMarkers(timepoint_seurat[[i]], only.pos = TRUE, verbose = FALSE)
-    write.csv(cluster_markers, csv)
-  }
-  head(cluster_markers)
-
-  for (j in 1:(length(metadata_to_plot) - 1)) {
+  for (j in 1:(length(metadata_to_plot))) {
     print(names(metadata_to_plot)[j])
     if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
       print(
@@ -225,12 +211,277 @@ for (i in seq_along(timepoint_seurat)) {
 }
 ```
 
+## Separated By Genotype
+
+### Day 120
+
+```{r}
+D120_genotype_seurat <- subset(sub_seurat, timepoint == "D120")
+D120_genotype_seurat <- SplitObject(D120_genotype_seurat, "genotype")
+
+for (i in seq_along(D120_genotype_seurat)) {
+  DefaultAssay(D120_genotype_seurat[[i]]) <- "RNA"
+  D120_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+    unique(D120_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D120_genotype_seurat[[i]] <- cluster_pipeline(
+    D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D120_genotype_seurat[[i]])
+
+  csv <- file.path(
+    cache_dir,
+    paste(
+      sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+      unique(D120_genotype_seurat[[i]]$genotype), "cluster_markers.csv",
+      sep = "_"
+    )
+  )
+  if (!file.exists(csv)) {
+    cluster_markers <- FindAllMarkers(D120_genotype_seurat[[i]], only.pos = TRUE, verbose = FALSE)
+    write.csv(cluster_markers, csv)
+  }
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+### Day 72
+
+```{r}
+D72_genotype_seurat <- subset(sub_seurat, timepoint == "D72")
+D72_genotype_seurat <- SplitObject(D72_genotype_seurat, "genotype")
+
+for (i in seq_along(D72_genotype_seurat)) {
+  DefaultAssay(D72_genotype_seurat[[i]]) <- "RNA"
+  D72_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+    unique(D72_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D72_genotype_seurat[[i]] <- cluster_pipeline(
+    D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D72_genotype_seurat[[i]])
+
+  csv <- file.path(
+    cache_dir,
+    paste(
+      sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+      unique(D72_genotype_seurat[[i]]$genotype), "cluster_markers.csv",
+      sep = "_"
+    )
+  )
+  if (file.exists(csv)) {
+    cluster_markers <- read.csv(csv)
+  } else {
+    cluster_markers <- FindAllMarkers(D72_genotype_seurat[[i]], only.pos = TRUE, verbose = FALSE)
+    write.csv(cluster_markers, csv)
+  }
+  head(cluster_markers)
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
 ## ClusterMap
+
+### Day 120
 
 ```{r}
 marker_file_list <- c(
-  D120 = file.path(cache_dir, paste(sub_name, "D120", "cluster_markers.csv", sep = "_")),
-  D72 = file.path(cache_dir, paste(sub_name, "D72", "cluster_markers.csv", sep = "_"))
+  HET = file.path(cache_dir, paste(sub_name, "D120", "HET", "cluster_markers.csv", sep = "_")),
+  HOM = file.path(cache_dir, paste(sub_name, "D120", "HOM", "cluster_markers.csv", sep = "_")),
+  WT = file.path(cache_dir, paste(sub_name, "D120", "WT", "cluster_markers.csv", sep = "_"))
+)
+
+file_list <- list(
+  HET = D120_genotype_seurat[[1]], HOM = D120_genotype_seurat[[2]],
+  WT = D120_genotype_seurat[[3]], comb = timepoint_seurat$D120
+)
+for (i in seq_along(file_list)) {
+  file_list[[i]][["tsne"]] <- CreateDimReducObject(
+    Embeddings(file_list[[i]], "umap"), key = "tsne_", assay = DefaultAssay(file_list[[i]])
+  )
+  if (names(file_list)[i] == "comb") {
+    file_list[[i]] <- RenameCells(
+      file_list[[i]], new.names = c(
+        paste(names(file_list)[1], colnames(file_list[[1]]), sep = "_"),
+        paste(names(file_list)[2], colnames(file_list[[2]]), sep = "_"),
+        paste(names(file_list)[3], colnames(file_list[[3]]), sep = "_")
+      )
+    )
+  }
+}
+
+out_dir <- file.path(
+  results_dir, data_name, paste0("0", analysis_no, "-", sub_name, "-", "D120", "-", "clustermap")
+)
+if (!dir.exists(out_dir)) {
+  dir.create(out_dir, recursive = TRUE)
+  clustermap <- cluster_map(
+    marker_file_list,
+    output = file.path(out_dir, paste(sub_name, "D120", sep = ".")),
+    single_obj_list = c(HET = file_list$HET, HOM = file_list$HOM, WT = file_list$WT),
+    comb_obj = file_list$comb,
+    comb_delim = "_",
+    reduction = "umap",
+    edge_cutoff = 0.2
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
+}
+
+clustermap_groups <- readRDS(
+  file.path(out_dir, paste(sub_name, "D120", "new.group.list.RDS", sep = "."))
+)
+for (i in seq_along(clustermap_groups)) {
+  file_list[[names(clustermap_groups)[i]]]$clustermap <- clustermap_groups[[i]]
+  print(
+    red_dim_plot(
+      file_list[[names(clustermap_groups)[i]]], "umap1", "umap2", "clustermap", "cat"
+    ) + ggtitle(names(clustermap_groups)[i])
+  )
+}
+timepoint_seurat$D120$clustermap <- file_list$comb$clustermap
+timepoint_seurat$D120@active.ident <- timepoint_seurat$D120$clustermap
+file_list$comb@active.ident <- file_list$comb$clustermap
+
+csv <- file.path(cache_dir, paste(sub_name, "D120", "clustermap", "markers.csv", sep = "_"))
+if (file.exists(csv)) {
+  clustermap_markers <- read.csv(csv, row.names = 1)
+} else {
+  clustermap_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  write.csv(clustermap_markers, csv)
+}
+
+datatable_download(clustermap_markers)
+```
+
+### Day 72
+
+```{r}
+marker_file_list <- c(
+  HET = file.path(cache_dir, paste(sub_name, "D72", "HET", "cluster_markers.csv", sep = "_")),
+  HOM = file.path(cache_dir, paste(sub_name, "D72", "HOM", "cluster_markers.csv", sep = "_")),
+  WT = file.path(cache_dir, paste(sub_name, "D72", "WT", "cluster_markers.csv", sep = "_"))
+)
+
+file_list <- list(
+  HET = D72_genotype_seurat[[1]], HOM = D72_genotype_seurat[[2]],
+  WT = D72_genotype_seurat[[3]], comb = timepoint_seurat$D72
+)
+for (i in seq_along(file_list)) {
+  file_list[[i]][["tsne"]] <- CreateDimReducObject(
+    Embeddings(file_list[[i]], "umap"), key = "tsne_", assay = DefaultAssay(file_list[[i]])
+  )
+  if (names(file_list)[i] == "comb") {
+    file_list[[i]] <- RenameCells(
+      file_list[[i]], new.names = c(
+        paste(names(file_list)[1], colnames(file_list[[1]]), sep = "_"),
+        paste(names(file_list)[2], colnames(file_list[[2]]), sep = "_"),
+        paste(names(file_list)[3], colnames(file_list[[3]]), sep = "_")
+      )
+    )
+  }
+}
+
+out_dir <- file.path(
+  results_dir, data_name, paste0("0", analysis_no, "-", sub_name, "-", "D72", "-", "clustermap")
+)
+if (!dir.exists(out_dir)) {
+  dir.create(out_dir, recursive = TRUE)
+  clustermap <- cluster_map(
+    marker_file_list,
+    output = file.path(out_dir, paste(sub_name, "D72", sep = ".")),
+    single_obj_list = c(HET = file_list$HET, HOM = file_list$HOM, WT = file_list$WT),
+    comb_obj = file_list$comb,
+    comb_delim = "_",
+    reduction = "umap",
+    edge_cutoff = 0.2
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
+}
+
+clustermap_groups <- readRDS(
+  file.path(out_dir, paste(sub_name, "D72", "new.group.list.RDS", sep = "."))
+)
+for (i in seq_along(clustermap_groups)) {
+  file_list[[names(clustermap_groups)[i]]]$clustermap <- clustermap_groups[[i]]
+  print(
+    red_dim_plot(
+      file_list[[names(clustermap_groups)[i]]], "umap1", "umap2", "clustermap", "cat"
+    ) + ggtitle(names(clustermap_groups)[i])
+  )
+}
+timepoint_seurat$D72$clustermap <- file_list$comb$clustermap
+timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
+file_list$comb@active.ident <- file_list$comb$clustermap
+
+csv <- file.path(cache_dir, paste(sub_name, "D72", "clustermap", "markers.csv", sep = "_"))
+if (file.exists(csv)) {
+  clustermap_markers <- read.csv(csv, row.names = 1)
+} else {
+  clustermap_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  write.csv(clustermap_markers, csv)
+}
+
+datatable_download(clustermap_markers)
+```
+
+### All
+
+```{r}
+marker_file_list <- c(
+  D120 = file.path(cache_dir, paste(sub_name, "D120", "clustermap_markers.csv", sep = "_")),
+  D72 = file.path(cache_dir, paste(sub_name, "D72", "clustermap_markers.csv", sep = "_"))
 )
 
 file_list <- list(D120 = timepoint_seurat[[1]], D72 = timepoint_seurat[[2]], comb = sub_seurat)
@@ -253,31 +504,32 @@ out_dir <- file.path(
 )
 if (!dir.exists(out_dir)) {
   dir.create(out_dir, recursive = TRUE)
-  cluster_map <- cluster_map(
+  clustermap <- cluster_map(
     marker_file_list, output = file.path(out_dir, sub_name),
     single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
-    comb_delim = "_", reduction = "umap"
+    comb_delim = "_", reduction = "umap",
+    edge_cutoff = 0.1
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
 }
 
-cluster_map_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
-for (i in seq_along(cluster_map_groups)) {
+clustermap_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(clustermap_groups)) {
 
-  file_list[[names(cluster_map_groups)[i]]]$cluster_map <- cluster_map_groups[[i]]
+  file_list[[names(clustermap_groups)[i]]]$clustermap <- clustermap_groups[[i]]
 
   print(
     red_dim_plot(
-      file_list[[names(cluster_map_groups)[i]]], "umap1", "umap2", "cluster_map", "cat"
-    ) + ggtitle(names(cluster_map_groups)[i])
+      file_list[[names(clustermap_groups)[i]]], "umap1", "umap2", "clustermap", "cat"
+    ) + ggtitle(names(clustermap_groups)[i])
   )
 
   for (j in seq_along(markers)) {
-    if (any(markers[[j]] %in% rownames(file_list[[names(cluster_map_groups)[i]]]))) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(clustermap_groups)[i]]]))) {
       print(
         FeaturePlot(
-          file_list[[names(cluster_map_groups)[i]]], markers[[j]],
+          file_list[[names(clustermap_groups)[i]]], markers[[j]],
           order = TRUE, cols = c("lightgrey", "red")
         ) +
           plot_annotation(
@@ -287,23 +539,20 @@ for (i in seq_along(cluster_map_groups)) {
       )
     }
   }
-}
 
-file_list$comb@active.ident <- file_list$comb$cluster_map
-rds <- file.path(cache_dir, "cluster_map_markers.rds")
+}
+sub_seurat$clustermap <- file_list$comb$clustermap
+sub_seurat@active.ident <- sub_seurat$clustermap
+
+rds <- file.path(cache_dir, paste(sub_name, "clustermap_markers.rds", sep = "_"))
 if (file.exists(rds)) {
-  cluster_map_markers <- readRDS(rds)
+  clustermap_markers <- readRDS(rds)
 } else {
-  cluster_map_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
-  saveRDS(cluster_map_markers, rds, compress = FALSE)
+  clustermap_markers <- FindAllMarkers(sub_seurat, only.pos = TRUE, verbose = FALSE)
+  saveRDS(clustermap_markers, rds, compress = FALSE)
 }
 
-datatable_download(cluster_map_markers)
-
-for (i in unique(cluster_map_markers$cluster)) {
-  sub_markers <- cluster_map_markers[cluster_map_markers$cluster == i, ]
-  print(datatable_download(sub_markers))
-}
+datatable_download(clustermap_markers)
 ```
 
 # References

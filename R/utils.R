@@ -161,14 +161,15 @@ cluster_pipeline <- function(
       parallel_plan(seurat, parallel_override)
       seurat <- suppressWarnings(
         SCTransform(
-          seurat, vars.to.regress = vars_to_regress, verbose = FALSE, return.only.var.genes = FALSE
+          seurat, vars.to.regress = vars_to_regress, vst.flavor = "v2",
+          return.only.var.genes = FALSE, verbose = FALSE
         )
       )
       # ---------------------------------------------------------------------------------
 
       # Perform PCA.
       # ------------
-      seurat <- RunPCA(seurat, verbose = FALSE, features = rownames(seurat))
+      seurat <- RunPCA(seurat, features = rownames(seurat), verbose = FALSE)
       add_df <- data.frame(Embeddings(seurat)[ , 1:2])
       names(add_df) <- paste0("pca", seq(ncol(add_df)))
       seurat$pca1 <- add_df$pca1
@@ -279,8 +280,9 @@ cluster_pipeline <- function(
 
     # Perform Louvain clustering.
     # ---------------------------
+    resolution <- (dim(seurat)[2] / 3000) * 0.8 # Default is optimal for 3K cells so we scale it.
     seurat <- FindNeighbors(seurat, reduction, dims, verbose = FALSE)
-    seurat <- FindClusters(seurat, verbose = FALSE)
+    seurat <- FindClusters(seurat, resolution = resolution, verbose = FALSE)
     # ---------------------------
 
     saveRDS(seurat, rds, compress = FALSE)
