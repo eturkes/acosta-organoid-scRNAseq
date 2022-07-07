@@ -66,7 +66,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 
 packages <- c(
   "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
-  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "patchwork"
+  "data.table", "GSVA", "edgeR", "ComplexHeatmap", "patchwork", "viridis"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
