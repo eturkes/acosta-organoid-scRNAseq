@@ -1,0 +1,417 @@
+---
+title: "04 DEGs - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "04_DEGs.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we subcluster annotated cell-types
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Hongjun Fu, Ohio
+#    State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c(
+  "conflicted", "Seurat", "scuttle", "edgeR", "DT", "ComplexHeatmap"
+)
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+conflict_prefer("cpm", "edgeR", quiet = TRUE)
+
+analysis_no <- 4
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, "03")
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 150)
+```
+
+# Excitatory Neuron
+
+```{r}
+sub_name <- "Ex"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(
+  HOM-HET, HET-WT, HOM-WT, levels = design
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(
+  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+) + RotatedAxis()
+VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(
+  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+) + RotatedAxis()
+VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(
+  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+) + RotatedAxis()
+VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(
+  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+) + RotatedAxis()
+VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+```
+
+### Ex Upper Layer 1
+
+```{r}
+sub_seurat <- subset(seurat_list[[seurat_idx]], clustermap_names == "Ex Upper Layer 1")
+
+sce <- SingleCellExperiment(list(counts = GetAssayData(sub_seurat, slot = "counts")))
+sce$sample <- sub_seurat$sample
+sce$genotype <- sub_seurat$genotype
+sce$clustermap_names <- sub_seurat$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(
+  HOM-HET, HET-WT, HOM-WT, levels = design
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(sub_seurat, features = rownames(all), cols = c("blue", "red")) + RotatedAxis()
+VlnPlot(sub_seurat, rownames(all))
+
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
+VlnPlot(sub_seurat, rownames(all)[1:12])
+
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
+VlnPlot(sub_seurat, rownames(all)[1:12])
+
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
+VlnPlot(sub_seurat, rownames(all)[1:12])
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
