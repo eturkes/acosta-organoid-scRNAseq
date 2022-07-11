@@ -80,6 +80,8 @@ parallel_override <- 0 # See `parallel_plan` in `utils.R`.
 # -------------------------------------------------------------------------
 metadata_to_plot <- vector("list", 4)
 names(metadata_to_plot) <- c("seurat_clusters", "sample", "timepoint", "genotype")
+metadata_to_plot[[3]] <- c("no_label")
+metadata_to_plot[[4]] <- c("no_label")
 # -------------------------------------------------------------------------
 
 analysis_no <- 1

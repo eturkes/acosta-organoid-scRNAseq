@@ -313,7 +313,8 @@ DefaultAssay(seurat) <- "SCT"
 
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "seurat_clusters", "cat")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "sample", "cat")
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "genotype", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "genotype")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "timepoint")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subsets_mito_percent", "cont") +
   ggtitle("Mito Percentage")
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subsets_ribo_percent", "cont") +
