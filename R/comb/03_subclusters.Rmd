@@ -122,7 +122,7 @@ markers <- lapply(markers, function(x) x[!(x == "")])
 remove <- c(
   "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
   "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
-  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6", "DLX2", "ERBB4", "SOX5"
+  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6", "DLX2", "ERBB4", "SOX5", "BCL11B"
 )
 markers <- markers
 for (i in seq_along(remove)) {
@@ -136,6 +136,9 @@ remove <- which(
   )
 )
 markers <- markers[-remove]
+
+final_annotations <- c()
+cell_order <- c()
 ```
 
 # Excitatory Neuron
@@ -303,7 +306,6 @@ for (i in seq_along(D72_genotype_seurat)) {
     cluster_markers <- FindAllMarkers(D72_genotype_seurat[[i]], only.pos = TRUE, verbose = FALSE)
     write.csv(cluster_markers, csv)
   }
-  head(cluster_markers)
 
   for (j in 1:(length(metadata_to_plot))) {
     print(names(metadata_to_plot)[j])
@@ -372,7 +374,7 @@ if (!dir.exists(out_dir)) {
     comb_obj = file_list$comb,
     comb_delim = "_",
     reduction = "umap",
-    edge_cutoff = 0.2
+    edge_cutoff = 0.1
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -444,7 +446,7 @@ if (!dir.exists(out_dir)) {
     comb_obj = file_list$comb,
     comb_delim = "_",
     reduction = "umap",
-    edge_cutoff = 0.2
+    edge_cutoff = 0.1
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -553,6 +555,1430 @@ if (file.exists(rds)) {
 }
 
 datatable_download(clustermap_markers)
+```
+
+## Annotations
+
+```{r}
+file_list$D120@active.ident <- timepoint_seurat$D120$clustermap
+timepoint_seurat$D120 <- RenameIdents(
+  timepoint_seurat$D120,
+  "1" = "Ex Deep Layer 2", "2" = "Ex Upper Layer 9",
+  "3" = "Ex Upper Layer 1", "4" = "Ex Upper Layer 8",
+  "5" = "Ex Upper Layer 6", "6" = "Ex Upper Layer 4",
+  "7" = "Ex Upper Layer 2", "8" = "Ex Upper Layer 2",
+  "9" = "Ex Deep Layer 4", "10" = "Ex Deep Layer 1",
+  "11" = "Ex Upper Layer 7", "12" = "Ex Unclassified 1",
+  "13" = "Ex Newborn 2", "14" = "Ex Deep Layer 3",
+  "15" = "Ex Newborn 1", "16" = "Ex Upper Layer 3",
+  "17" = "Ex Deep Layer 5", "18" = "Ex Upper Layer 5"
+)
+timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D120")
+
+timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
+timepoint_seurat$D72 <- RenameIdents(
+  timepoint_seurat$D72,
+  "1" = "Ex Deep Layer 3", "2" = "Ex Unclassified 1",
+  "3" = "Ex Upper Layer 1", "4" = "Ex Deep Layer 2",
+  "5" = "Ex Unclassified 2", "6" = "Ex Unclassified 4",
+  "7" = "Ex Newborn 1", "8" = "Ex Unclassified 5",
+  "9" = "Ex Newborn 2", "10" = "Ex Unclassified 3",
+  "11" = "Ex Deep Layer 4", "12" = "Ex Deep Layer 1",
+  "13" = "Ex Unclassified 6"
+)
+timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D72")
+
+sub_seurat$clustermap_genotype_names <- factor(
+  sub(
+    "\\s+[^ ]+$", "",
+    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
+  )
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+  ggtitle("D120 + D72")
+
+rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
+if (!file.exists(rds)) {
+  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
+  saveRDS(file_list, rds, compress = FALSE)
+}
+
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+cell_order <- c(cell_order, colnames(sub_seurat))
+```
+
+# Radial Glia
+
+## Standard Pipeline
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$cluster_names == "Radial Glia")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "RG"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+sub_seurat
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
+```
+
+## Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+## Separated By Genotype
+
+### Day 120
+
+```{r}
+D120_genotype_seurat <- subset(sub_seurat, timepoint == "D120")
+D120_genotype_seurat <- SplitObject(D120_genotype_seurat, "genotype")
+
+for (i in seq_along(D120_genotype_seurat)) {
+  DefaultAssay(D120_genotype_seurat[[i]]) <- "RNA"
+  D120_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+    unique(D120_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D120_genotype_seurat[[i]] <- cluster_pipeline(
+    D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D120_genotype_seurat[[i]])
+
+  csv <- file.path(
+    cache_dir,
+    paste(
+      sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+      unique(D120_genotype_seurat[[i]]$genotype), "cluster_markers.csv",
+      sep = "_"
+    )
+  )
+  if (!file.exists(csv)) {
+    cluster_markers <- FindAllMarkers(D120_genotype_seurat[[i]], only.pos = TRUE, verbose = FALSE)
+    write.csv(cluster_markers, csv)
+  }
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+### Day 72
+
+```{r}
+D72_genotype_seurat <- subset(sub_seurat, timepoint == "D72")
+D72_genotype_seurat <- SplitObject(D72_genotype_seurat, "genotype")
+
+for (i in seq_along(D72_genotype_seurat)) {
+  DefaultAssay(D72_genotype_seurat[[i]]) <- "RNA"
+  D72_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+    unique(D72_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D72_genotype_seurat[[i]] <- cluster_pipeline(
+    D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D72_genotype_seurat[[i]])
+
+  csv <- file.path(
+    cache_dir,
+    paste(
+      sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+      unique(D72_genotype_seurat[[i]]$genotype), "cluster_markers.csv",
+      sep = "_"
+    )
+  )
+  if (file.exists(csv)) {
+    cluster_markers <- read.csv(csv)
+  } else {
+    cluster_markers <- FindAllMarkers(D72_genotype_seurat[[i]], only.pos = TRUE, verbose = FALSE)
+    write.csv(cluster_markers, csv)
+  }
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+## ClusterMap
+
+### Day 120
+
+```{r}
+marker_file_list <- c(
+  HET = file.path(cache_dir, paste(sub_name, "D120", "HET", "cluster_markers.csv", sep = "_")),
+  HOM = file.path(cache_dir, paste(sub_name, "D120", "HOM", "cluster_markers.csv", sep = "_")),
+  WT = file.path(cache_dir, paste(sub_name, "D120", "WT", "cluster_markers.csv", sep = "_"))
+)
+
+file_list <- list(
+  HET = D120_genotype_seurat[[1]], HOM = D120_genotype_seurat[[2]],
+  WT = D120_genotype_seurat[[3]], comb = timepoint_seurat$D120
+)
+for (i in seq_along(file_list)) {
+  file_list[[i]][["tsne"]] <- CreateDimReducObject(
+    Embeddings(file_list[[i]], "umap"), key = "tsne_", assay = DefaultAssay(file_list[[i]])
+  )
+  if (names(file_list)[i] == "comb") {
+    file_list[[i]] <- RenameCells(
+      file_list[[i]], new.names = c(
+        paste(names(file_list)[1], colnames(file_list[[1]]), sep = "_"),
+        paste(names(file_list)[2], colnames(file_list[[2]]), sep = "_"),
+        paste(names(file_list)[3], colnames(file_list[[3]]), sep = "_")
+      )
+    )
+  }
+}
+
+out_dir <- file.path(
+  results_dir, data_name, paste0("0", analysis_no, "-", sub_name, "-", "D120", "-", "clustermap")
+)
+if (!dir.exists(out_dir)) {
+  dir.create(out_dir, recursive = TRUE)
+  clustermap <- cluster_map(
+    marker_file_list,
+    output = file.path(out_dir, paste(sub_name, "D120", sep = ".")),
+    single_obj_list = c(HET = file_list$HET, HOM = file_list$HOM, WT = file_list$WT),
+    comb_obj = file_list$comb,
+    comb_delim = "_",
+    reduction = "umap",
+    edge_cutoff = 0.1
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
+}
+
+clustermap_groups <- readRDS(
+  file.path(out_dir, paste(sub_name, "D120", "new.group.list.RDS", sep = "."))
+)
+for (i in seq_along(clustermap_groups)) {
+  file_list[[names(clustermap_groups)[i]]]$clustermap <- clustermap_groups[[i]]
+  print(
+    red_dim_plot(
+      file_list[[names(clustermap_groups)[i]]], "umap1", "umap2", "clustermap", "cat"
+    ) + ggtitle(names(clustermap_groups)[i])
+  )
+}
+timepoint_seurat$D120$clustermap <- file_list$comb$clustermap
+timepoint_seurat$D120@active.ident <- timepoint_seurat$D120$clustermap
+file_list$comb@active.ident <- file_list$comb$clustermap
+
+csv <- file.path(cache_dir, paste(sub_name, "D120", "clustermap", "markers.csv", sep = "_"))
+if (file.exists(csv)) {
+  clustermap_markers <- read.csv(csv, row.names = 1)
+} else {
+  clustermap_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  write.csv(clustermap_markers, csv)
+}
+
+datatable_download(clustermap_markers)
+```
+
+### Day 72
+
+```{r}
+marker_file_list <- c(
+  HET = file.path(cache_dir, paste(sub_name, "D72", "HET", "cluster_markers.csv", sep = "_")),
+  HOM = file.path(cache_dir, paste(sub_name, "D72", "HOM", "cluster_markers.csv", sep = "_")),
+  WT = file.path(cache_dir, paste(sub_name, "D72", "WT", "cluster_markers.csv", sep = "_"))
+)
+
+file_list <- list(
+  HET = D72_genotype_seurat[[1]], HOM = D72_genotype_seurat[[2]],
+  WT = D72_genotype_seurat[[3]], comb = timepoint_seurat$D72
+)
+for (i in seq_along(file_list)) {
+  file_list[[i]][["tsne"]] <- CreateDimReducObject(
+    Embeddings(file_list[[i]], "umap"), key = "tsne_", assay = DefaultAssay(file_list[[i]])
+  )
+  if (names(file_list)[i] == "comb") {
+    file_list[[i]] <- RenameCells(
+      file_list[[i]], new.names = c(
+        paste(names(file_list)[1], colnames(file_list[[1]]), sep = "_"),
+        paste(names(file_list)[2], colnames(file_list[[2]]), sep = "_"),
+        paste(names(file_list)[3], colnames(file_list[[3]]), sep = "_")
+      )
+    )
+  }
+}
+
+out_dir <- file.path(
+  results_dir, data_name, paste0("0", analysis_no, "-", sub_name, "-", "D72", "-", "clustermap")
+)
+if (!dir.exists(out_dir)) {
+  dir.create(out_dir, recursive = TRUE)
+  clustermap <- cluster_map(
+    marker_file_list,
+    output = file.path(out_dir, paste(sub_name, "D72", sep = ".")),
+    single_obj_list = c(HET = file_list$HET, HOM = file_list$HOM, WT = file_list$WT),
+    comb_obj = file_list$comb,
+    comb_delim = "_",
+    reduction = "umap",
+    edge_cutoff = 0.1
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
+}
+
+clustermap_groups <- readRDS(
+  file.path(out_dir, paste(sub_name, "D72", "new.group.list.RDS", sep = "."))
+)
+for (i in seq_along(clustermap_groups)) {
+  file_list[[names(clustermap_groups)[i]]]$clustermap <- clustermap_groups[[i]]
+  print(
+    red_dim_plot(
+      file_list[[names(clustermap_groups)[i]]], "umap1", "umap2", "clustermap", "cat"
+    ) + ggtitle(names(clustermap_groups)[i])
+  )
+}
+timepoint_seurat$D72$clustermap <- file_list$comb$clustermap
+timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
+file_list$comb@active.ident <- file_list$comb$clustermap
+
+csv <- file.path(cache_dir, paste(sub_name, "D72", "clustermap", "markers.csv", sep = "_"))
+if (file.exists(csv)) {
+  clustermap_markers <- read.csv(csv, row.names = 1)
+} else {
+  clustermap_markers <- FindAllMarkers(file_list$comb, only.pos = TRUE, verbose = FALSE)
+  write.csv(clustermap_markers, csv)
+}
+
+datatable_download(clustermap_markers)
+```
+
+### All
+
+```{r}
+marker_file_list <- c(
+  D120 = file.path(cache_dir, paste(sub_name, "D120", "clustermap_markers.csv", sep = "_")),
+  D72 = file.path(cache_dir, paste(sub_name, "D72", "clustermap_markers.csv", sep = "_"))
+)
+
+file_list <- list(D120 = timepoint_seurat[[1]], D72 = timepoint_seurat[[2]], comb = sub_seurat)
+for (i in seq_along(file_list)) {
+  file_list[[i]][["tsne"]] <- CreateDimReducObject(
+    Embeddings(file_list[[i]], "umap"), key = "tsne_", assay = DefaultAssay(file_list[[i]])
+  )
+  if (names(file_list)[i] == "comb") {
+    file_list[[i]] <- RenameCells(
+      file_list[[i]], new.names = c(
+        paste(names(file_list)[1], colnames(file_list[[1]]), sep = "_"),
+        paste(names(file_list)[2], colnames(file_list[[2]]), sep = "_")
+      )
+    )
+  }
+}
+
+out_dir <- file.path(
+  results_dir, data_name, paste0("0", analysis_no, "-", sub_name, "-", "clustermap")
+)
+if (!dir.exists(out_dir)) {
+  dir.create(out_dir, recursive = TRUE)
+  clustermap <- cluster_map(
+    marker_file_list, output = file.path(out_dir, sub_name),
+    single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
+    comb_delim = "_", reduction = "umap",
+    edge_cutoff = 0.1
+  )
+  files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
+  move_files(files, out_dir, TRUE)
+}
+
+clustermap_groups <- readRDS(file.path(out_dir, paste(sub_name, "new.group.list.RDS", sep = ".")))
+for (i in seq_along(clustermap_groups)) {
+
+  file_list[[names(clustermap_groups)[i]]]$clustermap <- clustermap_groups[[i]]
+
+  print(
+    red_dim_plot(
+      file_list[[names(clustermap_groups)[i]]], "umap1", "umap2", "clustermap", "cat"
+    ) + ggtitle(names(clustermap_groups)[i])
+  )
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(file_list[[names(clustermap_groups)[i]]]))) {
+      print(
+        FeaturePlot(
+          file_list[[names(clustermap_groups)[i]]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+
+}
+sub_seurat$clustermap <- file_list$comb$clustermap
+sub_seurat@active.ident <- sub_seurat$clustermap
+
+rds <- file.path(cache_dir, paste(sub_name, "clustermap_markers.rds", sep = "_"))
+if (file.exists(rds)) {
+  clustermap_markers <- readRDS(rds)
+} else {
+  clustermap_markers <- FindAllMarkers(sub_seurat, only.pos = TRUE, verbose = FALSE)
+  saveRDS(clustermap_markers, rds, compress = FALSE)
+}
+
+datatable_download(clustermap_markers)
+```
+
+## Annotations
+
+```{r}
+timepoint_seurat$D120@active.ident <- timepoint_seurat$D120$clustermap
+timepoint_seurat$D120 <- RenameIdents(
+  timepoint_seurat$D120,
+  "1" = "RG Early 01", "2" = "RG Late 08",
+  "3" = "RG Unclassified 01", "4" = "RG Late 03",
+  "5" = "RG Late 04", "6" = "RG Late 01",
+  "7" = "RG Late 05", "8" = "RG OPC 01",
+  "9" = "RG Late 07", "10" = "RG Unclassified 02",
+  "11" = "RG Late 02", "12" = "RG Late 06",
+  "13" = "RG Astrocyte 01"
+)
+timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D120")
+
+timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
+timepoint_seurat$D72 <- RenameIdents(
+  timepoint_seurat$D72,
+  "1" = "RG Unclassified 01", "2" = "RG Late 07",
+  "3" = "RG Early 01", "4" = "RG Early 02",
+  "5" = "RG Late 06", "6" = "RG Unclassified 11",
+  "7" = "RG Late 09", "8" = "RG Late 01",
+  "9" = "RG Unclassified 06", "10" = "RG Unclassified 05",
+  "11" = "RG Late 02", "12" = "RG Unclassified 04",
+  "13" = "RG Late 03", "14" = "RG Unclassified 13",
+  "15" = "RG Unclassified 10", "16" = "RG Late 08",
+  "17" = "RG Unclassified 08", "18" = "RG Unclassified 07",
+  "19" = "RG Unclassified 09", "20" = "RG Early 03",
+  "21" = "RG Unclassified 03", "22" = "RG Unclassified 12",
+  "23" = "RG Late 04", "24" = "RG Late 05",
+  "25" = "RG Unclassified 02"
+)
+timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D72")
+
+sub_seurat$clustermap_genotype_names <- factor(
+  sub(
+    "\\s+[^ ]+$", "",
+    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
+  )
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+  ggtitle("D120 + D72")
+
+rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
+if (!file.exists(rds)) {
+  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
+  saveRDS(file_list, rds, compress = FALSE)
+}
+
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+cell_order <- c(cell_order, colnames(sub_seurat))
+```
+
+# IPC
+
+## Standard Pipeline
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$cluster_names == "IPC")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "IPC"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+sub_seurat
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
+```
+
+## Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(timepoint_seurat[[i]]))) {
+      print(
+        FeaturePlot(
+          timepoint_seurat[[i]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
+```
+
+## Separated By Genotype
+
+### Day 120
+
+```{r}
+D120_genotype_seurat <- subset(sub_seurat, timepoint == "D120")
+D120_genotype_seurat <- SplitObject(D120_genotype_seurat, "genotype")
+
+for (i in seq_along(D120_genotype_seurat)) {
+  DefaultAssay(D120_genotype_seurat[[i]]) <- "RNA"
+  D120_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+    unique(D120_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D120_genotype_seurat[[i]] <- cluster_pipeline(
+    D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D120_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+### Day 72
+
+```{r}
+D72_genotype_seurat <- subset(sub_seurat, timepoint == "D72")
+D72_genotype_seurat <- SplitObject(D72_genotype_seurat, "genotype")
+
+for (i in seq_along(D72_genotype_seurat)) {
+  DefaultAssay(D72_genotype_seurat[[i]]) <- "RNA"
+  D72_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+    unique(D72_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D72_genotype_seurat[[i]] <- cluster_pipeline(
+    D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D72_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+## Annotations
+
+```{r}
+timepoint_seurat$D120 <- RenameIdents(
+  timepoint_seurat$D120,
+  "0" = "IPC 03", "1" = "IPC 06",
+  "2" = "IPC 04", "3" = "IPC 02",
+  "4" = "IPC 07", "5" = "IPC 05",
+  "6" = "IPC 01", "7" = "IPC 08"
+)
+timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D120")
+
+timepoint_seurat$D72 <- RenameIdents(
+  timepoint_seurat$D72,
+  "0" = "IPC 10", "1" = "IPC 08",
+  "2" = "IPC 07", "3" = "IPC 02",
+  "4" = "IPC 03", "5" = "IPC 06",
+  "6" = "IPC 01", "7" = "IPC 09",
+  "8" = "IPC 05", "9" = "IPC 04"
+)
+timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D72")
+
+sub_seurat$clustermap_genotype_names <- factor(
+  sub(
+    "\\s+[^ ]+$", "",
+    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
+  )
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+  ggtitle("D120 + D72")
+
+rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
+if (!file.exists(rds)) {
+  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
+  saveRDS(file_list, rds, compress = FALSE)
+}
+
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+cell_order <- c(cell_order, colnames(sub_seurat))
+```
+
+# Inhibitory Neuron
+
+## Standard Pipeline
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$cluster_names == "Inhibitory Neuron")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "In"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+sub_seurat
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
+```
+
+## Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(timepoint_seurat[[i]]))) {
+      print(
+        FeaturePlot(
+          timepoint_seurat[[i]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
+```
+
+## Separated By Genotype
+
+### Day 120
+
+```{r}
+D120_genotype_seurat <- subset(sub_seurat, timepoint == "D120")
+D120_genotype_seurat <- SplitObject(D120_genotype_seurat, "genotype")
+
+for (i in seq_along(D120_genotype_seurat)) {
+  DefaultAssay(D120_genotype_seurat[[i]]) <- "RNA"
+  D120_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+    unique(D120_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D120_genotype_seurat[[i]] <- cluster_pipeline(
+    D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D120_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+### Day 72
+
+```{r}
+D72_genotype_seurat <- subset(sub_seurat, timepoint == "D72")
+D72_genotype_seurat <- SplitObject(D72_genotype_seurat, "genotype")
+
+for (i in seq_along(D72_genotype_seurat)) {
+  DefaultAssay(D72_genotype_seurat[[i]]) <- "RNA"
+  D72_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+    unique(D72_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D72_genotype_seurat[[i]] <- cluster_pipeline(
+    D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D72_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+## Annotations
+
+```{r}
+timepoint_seurat$D120 <- RenameIdents(
+  timepoint_seurat$D120,
+  "0" = "In Unclassified 01", "1" = "In 02",
+  "2" = "In 01", "3" = "In 03"
+)
+timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D120")
+
+timepoint_seurat$D72 <- RenameIdents(
+  timepoint_seurat$D72,
+  "0" = "In 02", "1" = "In 13",
+  "2" = "In Unclassified 01", "3" = "In 11",
+  "4" = "In 07", "5" = "In 05",
+  "6" = "In 10", "7" = "In 01",
+  "8" = "In Unclassified 03", "9" = "In 06",
+  "10" = "In 09", "11" = "In 08",
+  "12" = "In Unclassified 02", "13" = "In 12",
+  "14" = "In 04", "15" = "In 03"
+)
+timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D72")
+
+sub_seurat$clustermap_genotype_names <- factor(
+  sub(
+    "\\s+[^ ]+$", "",
+    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
+  )
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+  ggtitle("D120 + D72")
+
+rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
+if (!file.exists(rds)) {
+  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
+  saveRDS(file_list, rds, compress = FALSE)
+}
+
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+cell_order <- c(cell_order, colnames(sub_seurat))
+```
+
+# Mural
+
+## Standard Pipeline
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$cluster_names == "Mural")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "Mu"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+sub_seurat
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
+```
+
+## Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(timepoint_seurat[[i]]))) {
+      print(
+        FeaturePlot(
+          timepoint_seurat[[i]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
+```
+
+## Separated By Genotype
+
+### Day 120
+
+```{r}
+D120_genotype_seurat <- subset(sub_seurat, timepoint == "D120")
+D120_genotype_seurat <- SplitObject(D120_genotype_seurat, "genotype")
+
+for (i in seq_along(D120_genotype_seurat)) {
+  DefaultAssay(D120_genotype_seurat[[i]]) <- "RNA"
+  D120_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+    unique(D120_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D120_genotype_seurat[[i]] <- cluster_pipeline(
+    D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D120_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+### Day 72
+
+```{r}
+D72_genotype_seurat <- subset(sub_seurat, timepoint == "D72")
+D72_genotype_seurat <- SplitObject(D72_genotype_seurat, "genotype")
+
+for (i in seq_along(D72_genotype_seurat)) {
+  DefaultAssay(D72_genotype_seurat[[i]]) <- "RNA"
+  D72_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+    unique(D72_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D72_genotype_seurat[[i]] <- cluster_pipeline(
+    D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D72_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+## Annotations
+
+```{r}
+timepoint_seurat$D120 <- RenameIdents(
+  timepoint_seurat$D120,
+  "0" = "Mu 01"
+)
+timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D120")
+
+timepoint_seurat$D72 <- RenameIdents(
+  timepoint_seurat$D72,
+  "0" = "Mu 02", "1" = "Mu 01"
+)
+timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D72")
+
+sub_seurat$clustermap_genotype_names <- factor(
+  sub(
+    "\\s+[^ ]+$", "",
+    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
+  )
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+  ggtitle("D120 + D72")
+
+rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
+if (!file.exists(rds)) {
+  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
+  saveRDS(file_list, rds, compress = FALSE)
+}
+
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+cell_order <- c(cell_order, colnames(sub_seurat))
+```
+
+# Unclassified
+
+## Standard Pipeline
+
+```{r}
+sub_seurat <- seurat[ , which(seurat$cluster_names == "Unclassified")]
+
+DefaultAssay(sub_seurat) <- "RNA"
+sub_seurat[["SCT"]] <- NULL
+sub_name <- "Unc"
+sub_seurat <- cluster_pipeline(
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+)
+sub_seurat
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(sub_seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_mito_percent", "cont") +
+  ggtitle("Mito Percentage")
+red_dim_plot(sub_seurat, "umap1", "umap2", "subsets_ribo_percent", "cont") +
+  ggtitle("Ribo Percentage")
+```
+
+## Separated By Timepoint
+
+```{r}
+timepoint_seurat <- SplitObject(sub_seurat, "timepoint")
+
+for (i in seq_along(timepoint_seurat)) {
+  DefaultAssay(timepoint_seurat[[i]]) <- "RNA"
+  timepoint_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
+  timepoint_seurat[[i]] <- cluster_pipeline(
+    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+  )
+  print(timepoint_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat") +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(timepoint_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+
+  for (j in seq_along(markers)) {
+    if (any(markers[[j]] %in% rownames(timepoint_seurat[[i]]))) {
+      print(
+        FeaturePlot(
+          timepoint_seurat[[i]], markers[[j]],
+          order = TRUE, cols = c("lightgrey", "red")
+        ) +
+          plot_annotation(
+            names(markers)[j],
+            theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+          )
+      )
+    }
+  }
+}
+```
+
+## Separated By Genotype
+
+### Day 120
+
+```{r}
+D120_genotype_seurat <- subset(sub_seurat, timepoint == "D120")
+D120_genotype_seurat <- SplitObject(D120_genotype_seurat, "genotype")
+
+for (i in seq_along(D120_genotype_seurat)) {
+  DefaultAssay(D120_genotype_seurat[[i]]) <- "RNA"
+  D120_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D120_genotype_seurat[[i]]$timepoint),
+    unique(D120_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D120_genotype_seurat[[i]] <- cluster_pipeline(
+    D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D120_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D120_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+### Day 72
+
+```{r}
+D72_genotype_seurat <- subset(sub_seurat, timepoint == "D72")
+D72_genotype_seurat <- SplitObject(D72_genotype_seurat, "genotype")
+
+for (i in seq_along(D72_genotype_seurat)) {
+  DefaultAssay(D72_genotype_seurat[[i]]) <- "RNA"
+  D72_genotype_seurat[[i]][["SCT"]] <- NULL
+  save_name <- paste(
+    sub_name, unique(D72_genotype_seurat[[i]]$timepoint),
+    unique(D72_genotype_seurat[[i]]$genotype), sep = "_"
+  )
+  D72_genotype_seurat[[i]] <- cluster_pipeline(
+    D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE
+  )
+  print(D72_genotype_seurat[[i]])
+
+  for (j in 1:(length(metadata_to_plot))) {
+    print(names(metadata_to_plot)[j])
+    if ("no_legend" %in% metadata_to_plot[[j]] && "no_label" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]) +
+          NoLegend()
+      )
+    } else if ("no_legend" %in% metadata_to_plot[[j]]) {
+      print(
+        red_dim_plot(
+          D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat"
+        ) +
+          NoLegend()
+      )
+    } else if ("no_label" %in% metadata_to_plot[[j]]) {
+      print(red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j]))
+    } else {
+      print(
+        red_dim_plot(D72_genotype_seurat[[i]], "umap1", "umap2", names(metadata_to_plot)[j], "cat")
+      )
+    }
+  }
+}
+```
+
+## Annotations
+
+```{r}
+timepoint_seurat$D120 <- RenameIdents(
+  timepoint_seurat$D120,
+  "0" = "Unc 05", "1" = "Unc 04",
+  "2" = "Unc 01", "3" = "Unc 03",
+  "4" = "Unc 02", "5" = "In 05"
+)
+timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D120")
+
+timepoint_seurat$D72 <- RenameIdents(
+  timepoint_seurat$D72,
+  "0" = "Unc 02", "1" = "Unc 04",
+  "2" = "Unc 03", "3" = "Unc 01"
+)
+timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+  ggtitle("D72")
+
+sub_seurat$clustermap_genotype_names <- factor(
+  sub(
+    "\\s+[^ ]+$", "",
+    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
+  )
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+  ggtitle("D120 + D72")
+
+rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
+if (!file.exists(rds)) {
+  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
+  saveRDS(file_list, rds, compress = FALSE)
+}
+
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+cell_order <- c(cell_order, colnames(sub_seurat))
+```
+
+# Final Annotations
+
+```{r}
+final_annotations <- final_annotations[match(colnames(seurat), cell_order)]
+
+seurat$subclusters <- factor(final_annotations)
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters", "cat")
+
+rds <- file.path(cache_dir, "seurat.rds")
+if (!file.exists(rds)) {
+  saveRDS(seurat, rds, compress = FALSE)
+}
 ```
 
 # References
