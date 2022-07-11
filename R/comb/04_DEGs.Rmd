@@ -124,9 +124,7 @@ logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
 design <- model.matrix(~ 0 + sce$genotype)
 colnames(design) <- unique(sce$genotype)
 fit <- lmFit(logcounts(sce), design)
-contrast_mat <- makeContrasts(
-  HOM-HET, HET-WT, HOM-WT, levels = design
-)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
 cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
 tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
 ```
@@ -395,9 +393,7 @@ logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
 design <- model.matrix(~ 0 + sce$genotype)
 colnames(design) <- unique(sce$genotype)
 fit <- lmFit(logcounts(sce), design)
-contrast_mat <- makeContrasts(
-  HOM-HET, HET-WT, HOM-WT, levels = design
-)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
 cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
 tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
 ```
