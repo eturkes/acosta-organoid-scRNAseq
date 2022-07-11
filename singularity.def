@@ -27,6 +27,7 @@ From: rocker/rstudio:4.2.0
         -e "install.packages('viridis')" \
         -e "install.packages('openxlsx')" \
         -e "install.packages('filesstrings')" \
+        -e "install.packages('VennDiagram')" \
         -e "install.packages('BiocManager')" \
         -e "BiocManager::install('SingleCellExperiment')" \
         -e "BiocManager::install('scuttle')" \

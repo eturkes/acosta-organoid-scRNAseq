@@ -64,7 +64,9 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c("conflicted", "Seurat", "scuttle", "edgeR", "DT", "ComplexHeatmap")
+packages <- c(
+  "conflicted", "Seurat", "scuttle", "edgeR", "DT", "ComplexHeatmap", "VennDiagram", "RColorBrewer"
+)
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
 conflict_prefer("cpm", "edgeR", quiet = TRUE)
@@ -357,6 +359,22 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
+**Comparison with `Seurat::FindClusters`: HOM-WT**
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
 ### Ex Upper Layer 1
 
 ```{r}
@@ -598,6 +616,22 @@ draw(
 
 DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
 VlnPlot(sub_seurat, rownames(all)[1:12])
+```
+
+**Comparison with `Seurat::FindClusters`: HOM-WT**
+
+```{r}
+seurat_DEGs <- FindMarkers(sub_seurat, "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+VlnPlot(sub_seurat, rownames(seurat_DEGs)[1:12])
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
 ```
 
 # References
