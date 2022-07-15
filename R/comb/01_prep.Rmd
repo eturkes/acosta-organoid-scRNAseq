@@ -211,6 +211,10 @@ for (i in 1:length(metadata_to_plot)) {
   }
 }
 
+print("nFeature_SCT")
+red_dim_plot(seurat, "umap1", "umap2", "nFeature_SCT", "cont")
+print("nCount_SCT")
+red_dim_plot(seurat, "umap1", "umap2", "nCount_SCT", "cont")
 print("subsets_mito_percent")
 red_dim_plot(seurat, "umap1", "umap2", "subsets_mito_percent", "cont")
 print("subsets_ribo_percent")
