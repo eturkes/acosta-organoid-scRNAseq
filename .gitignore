@@ -7,8 +7,6 @@
 # Container files
 *.sif
 nohup.out
-/run
-/var-lib-rstudio-server
 
 # History files
 .Rhistory
