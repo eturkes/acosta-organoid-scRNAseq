@@ -1,7 +1,7 @@
 # Acosta Organoid scRNAseq
 #### *This analysis is a work-in-progress*
 
-Analysis of organoid lines modeling Alzheimer's Disease.
+Analysis of organoid lines modeling FTD with Alzheimer's-like phenotype.
 This repo contains all code to reproduce the analysis.
 Required data however, are currently stored on OSC, they are described in this README.
 
