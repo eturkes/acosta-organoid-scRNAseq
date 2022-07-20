@@ -56,7 +56,12 @@ With the `storage` dir, one can also see all already computed results in the `re
 
 With the project structure in place, one should should make sure Apptainer is installed or attempt to install packages from `singularity.def` manually.
 Instructions for installing Apptainer for different OS can be found on their [website](https://apptainer.org/).
-The image for this analysis can then be pulled by running `apptainer pull library://eturkes/acosta-organoid-scrnaseq/acosta-organoid-scrnaseq:v1` in a command-line interface.
+The image for this analysis can then be pulled by running the following in a command-line interface:
+
+```
+apptainer pull library://eturkes/acosta-organoid-scrnaseq/acosta-organoid-scrnaseq:v1
+```
+
 Once downloaded, the following command will launch an Apptainer instance of RStudio Server with access to the current project:
 
 ```
