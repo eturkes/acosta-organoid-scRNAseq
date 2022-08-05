@@ -148,7 +148,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -164,10 +168,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(
-  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
-) + RotatedAxis()
-VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HET-WT, HOM-WT
@@ -186,7 +197,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -202,10 +217,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(
-  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
-) + RotatedAxis()
-VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HOM-HET, HOM-WT
@@ -224,7 +246,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -240,10 +266,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(
-  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
-) + RotatedAxis()
-VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HOM-HET
@@ -262,7 +295,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -278,10 +315,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(
-  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
-) + RotatedAxis()
-VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HET-WT
@@ -300,7 +344,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -316,10 +364,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(
-  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
-) + RotatedAxis()
-VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HOM-WT
@@ -338,7 +393,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -354,10 +413,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(
-  seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
-) + RotatedAxis()
-VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### Using `Seurat::FindClusters` for HOM-WT
@@ -365,7 +431,11 @@ VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```{r}
 seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
 datatable_download_exp(seurat_DEGs)
-VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
 
 grid.newpage()
 plot <- venn.diagram(
@@ -435,7 +505,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -451,8 +525,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
-VlnPlot(sub_seurat, rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HET-WT, HOM-WT
@@ -471,7 +554,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -487,8 +574,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
-VlnPlot(sub_seurat, rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HOM-HET, HOM-WT
@@ -507,7 +603,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -523,8 +623,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
-VlnPlot(sub_seurat, rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HOM-HET
@@ -543,7 +652,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -559,8 +672,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
-VlnPlot(sub_seurat, rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HET-WT
@@ -579,7 +701,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -595,8 +721,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
-VlnPlot(sub_seurat, rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### HOM-WT
@@ -615,7 +750,11 @@ if (length(all) > 0) {
 
 datatable_download_exp(all)
 
-mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
 mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 set.seed(1)
 draw(
@@ -631,8 +770,17 @@ draw(
   heatmap_legend_side = "top"
 )
 
-DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + RotatedAxis()
-VlnPlot(sub_seurat, rownames(all)[1:12])
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
 ```
 
 #### Using `Seurat::FindClusters` for HOM-WT
@@ -640,7 +788,3875 @@ VlnPlot(sub_seurat, rownames(all)[1:12])
 ```{r}
 seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
 datatable_download_exp(seurat_DEGs)
-VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+# Radial Glia
+
+```{r}
+sub_name <- "RG"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+# IPC
+
+```{r}
+sub_name <- "IPC"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+# Inhibitory Neuron
+
+```{r}
+sub_name <- "In"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+# Mural
+
+```{r}
+sub_name <- "Mu"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+# Unclassified
+
+```{r}
+sub_name <- "Unc"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(all), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+#### Using a simpler limma model for HOM-WT
+
+```{r}
+contrast_mat <- makeContrasts(HOM-HET, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
+datatable_download_exp(results)
+
+grid.newpage()
+plot <- venn.diagram(
+  list(rownames(results), rownames(seurat_DEGs)), NULL,
+  TRUE, category.names = c("Limma Trend", "Seurat FindClusters"),
+  fill = brewer.pal(3, "Pastel2")[1:2]
+)
+grid.draw(plot)
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- unique(sce$genotype)
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HOM-HET, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
+```
+
+#### HOM-HET, HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(2, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET, HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 1] == -1 & tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, c(1, 3), number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$F), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1, ]
+tests_down <- tests[tests[ , 1] == -1, ]
+
+results <- topTable(cont_fit, 1, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HET-WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+tests_down <- tests[tests[ , 2] == -1, ]
+
+results <- topTable(cont_fit, 2, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### HOM-WT
+
+```{r}
+tests_up <- tests[tests[ , 3] == 1, ]
+tests_down <- tests[tests[ , 3] == -1, ]
+
+results <- topTable(cont_fit, 3, number = Inf)
+up <- results[rownames(results) %in% rownames(tests_up), ]
+down <- results[rownames(results) %in% rownames(tests_down), ]
+all <- rbind(up, down)
+if (length(all) > 0) {
+  all <- all[order(-all$B), ]
+}
+
+datatable_download_exp(all)
+
+if (nrow(all) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)[1:25]), ]
+} else {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(all)), ]  
+}
+mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    column_order = c(5, 6, 1, 2, 3, 4),
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
+
+if (nrow(all) > 25) {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all)[1:25], cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
+} else {
+  DotPlot(
+    seurat_list[[seurat_idx]], features = rownames(all), cols = c("blue", "red")
+  ) + RotatedAxis()
+  VlnPlot(seurat_list[[seurat_idx]], rownames(all))
+}
+```
+
+#### Using `Seurat::FindClusters` for HOM-WT
+
+```{r}
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
+datatable_download_exp(seurat_DEGs)
+if (nrow(seurat_DEGs) > 25) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
+} else {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs))
+}
 
 grid.newpage()
 plot <- venn.diagram(
