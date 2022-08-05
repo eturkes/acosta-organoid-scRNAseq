@@ -360,7 +360,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-#### Comparison with `Seurat::FindClusters`: HOM-WT
+#### Using `Seurat::FindClusters` for HOM-WT
 
 ```{r}
 seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
@@ -376,7 +376,7 @@ plot <- venn.diagram(
 grid.draw(plot)
 ```
 
-#### Same comparison but using a simple HOM-WT limma model
+#### Using a simpler limma model for HOM-WT
 
 ```{r}
 contrast_mat <- makeContrasts(HOM-HET, levels = design)
@@ -635,12 +635,12 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-#### Comparison with `Seurat::FindClusters`: HOM-WT
+#### Using `Seurat::FindClusters` for HOM-WT
 
 ```{r}
-seurat_DEGs <- FindMarkers(sub_seurat, "HOM", "WT", verbose = FALSE)
+seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
 datatable_download_exp(seurat_DEGs)
-VlnPlot(sub_seurat, rownames(seurat_DEGs)[1:12])
+VlnPlot(seurat_list[[seurat_idx]], rownames(seurat_DEGs)[1:12])
 
 grid.newpage()
 plot <- venn.diagram(
@@ -651,12 +651,13 @@ plot <- venn.diagram(
 grid.draw(plot)
 ```
 
-#### Same comparison but using a simple HOM-WT limma model
+#### Using a simpler limma model for HOM-WT
 
 ```{r}
 contrast_mat <- makeContrasts(HOM-HET, levels = design)
 cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
 results <- topTable(cont_fit, number = Inf, p.value = 0.05)
+
 datatable_download_exp(results)
 
 grid.newpage()
