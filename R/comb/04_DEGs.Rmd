@@ -14,7 +14,7 @@ output:
     theme: lumen
     highlight: haddock
     toc: true
-    toc_depth: 3
+    toc_depth: 4
     toc_float:
       collapsed: false
       smooth_scroll: false
@@ -35,6 +35,9 @@ div.tocify {width: 100%;}
 .tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
 .tocify-subheader .tocify-subheader .tocify-item {
   font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 45px; text-indent: 0;
 }
 div.main-container {max-width: none; width: 100%;}
 </style>
@@ -129,7 +132,7 @@ cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
 tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
 ```
 
-**HOM-HET, HET-WT, HOM-WT**
+#### HOM-HET, HET-WT, HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
@@ -167,7 +170,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-**HET-WT, HOM-WT**
+#### HET-WT, HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
@@ -205,7 +208,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-**HOM-HET, HOM-WT**
+#### HOM-HET, HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
@@ -243,7 +246,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-**HOM-HET**
+#### HOM-HET
 
 ```{r}
 tests_up <- tests[tests[ , 1] == 1, ]
@@ -281,7 +284,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-**HET-WT**
+#### HET-WT
 
 ```{r}
 tests_up <- tests[tests[ , 2] == 1, ]
@@ -319,7 +322,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-**HOM-WT**
+#### HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 3] == 1, ]
@@ -357,7 +360,7 @@ DotPlot(
 VlnPlot(seurat_list[[seurat_idx]], rownames(all)[1:12])
 ```
 
-**Comparison with `Seurat::FindClusters`: HOM-WT**
+#### Comparison with `Seurat::FindClusters`: HOM-WT
 
 ```{r}
 seurat_DEGs <- FindMarkers(seurat_list[[seurat_idx]], "HOM", "WT", verbose = FALSE)
@@ -373,7 +376,7 @@ plot <- venn.diagram(
 grid.draw(plot)
 ```
 
-**Same comparison but using a simple HOM-WT limma model**
+#### Same comparison but using a simple HOM-WT limma model
 
 ```{r}
 contrast_mat <- makeContrasts(HOM-HET, levels = design)
@@ -416,7 +419,7 @@ cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
 tests <- decideTests(cont_fit, "nestedF", p.value = 0.05)
 ```
 
-**HOM-HET, HET-WT, HOM-WT**
+#### HOM-HET, HET-WT, HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
@@ -452,7 +455,7 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-**HET-WT, HOM-WT**
+#### HET-WT, HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
@@ -488,7 +491,7 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-**HOM-HET, HOM-WT**
+#### HOM-HET, HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 1] == 1 & tests[ , 3] == 1, ]
@@ -524,7 +527,7 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-**HOM-HET**
+#### HOM-HET
 
 ```{r}
 tests_up <- tests[tests[ , 1] == 1, ]
@@ -560,7 +563,7 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-**HET-WT**
+#### HET-WT
 
 ```{r}
 tests_up <- tests[tests[ , 2] == 1, ]
@@ -596,7 +599,7 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-**HOM-WT**
+#### HOM-WT
 
 ```{r}
 tests_up <- tests[tests[ , 3] == 1, ]
@@ -632,7 +635,7 @@ DotPlot(sub_seurat, features = rownames(all)[1:25], cols = c("blue", "red")) + R
 VlnPlot(sub_seurat, rownames(all)[1:12])
 ```
 
-**Comparison with `Seurat::FindClusters`: HOM-WT**
+#### Comparison with `Seurat::FindClusters`: HOM-WT
 
 ```{r}
 seurat_DEGs <- FindMarkers(sub_seurat, "HOM", "WT", verbose = FALSE)
@@ -648,7 +651,7 @@ plot <- venn.diagram(
 grid.draw(plot)
 ```
 
-**Same comparison but using a simple HOM-WT limma model**
+#### Same comparison but using a simple HOM-WT limma model
 
 ```{r}
 contrast_mat <- makeContrasts(HOM-HET, levels = design)
