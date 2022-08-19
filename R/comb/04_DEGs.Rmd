@@ -67,9 +67,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c(
-  "conflicted", "Seurat", "scuttle", "edgeR", "DT", "ComplexHeatmap", "VennDiagram", "RColorBrewer"
-)
+packages <- c("conflicted", "Seurat", "scuttle", "edgeR", "DT", "ComplexHeatmap")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
 conflict_prefer("cpm", "edgeR", quiet = TRUE)
