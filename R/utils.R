@@ -382,3 +382,33 @@ gene_plot <- function(subset_list, subset_names, genes) {
     }
   }
 }
+
+computeGeneSetsOverlapMax <- function(gSets, uniqGenes, min.sz=1, max.sz=Inf) {
+  ## gSetsMembershipMatrix should be a (genes x gene-sets) incidence matrix
+
+  gSetsMembershipMatrix <- incidence(gSets)
+  gSetsMembershipMatrix <- t(gSetsMembershipMatrix[, colnames(gSetsMembershipMatrix) %in% uniqGenes])
+
+  lenGsets <- colSums(gSetsMembershipMatrix)
+
+  szFilterMask <- lenGsets >= max(1, min.sz) & lenGsets <= max.sz
+  if (!any(szFilterMask))
+    stop("No gene set meets the minimum and maximum size filter\n")
+
+  gSetsMembershipMatrix <- gSetsMembershipMatrix[, szFilterMask]
+  lenGsets <- lenGsets[szFilterMask]
+
+  totalGsets <- ncol(gSetsMembershipMatrix)
+
+  M <- t(gSetsMembershipMatrix) %*% gSetsMembershipMatrix
+
+  M1 <- matrix(lenGsets, nrow=totalGsets, ncol=totalGsets,
+               dimnames=list(colnames(gSetsMembershipMatrix), colnames(gSetsMembershipMatrix)))
+  M2 <- t(M1)
+  M.max <- matrix(0, nrow=totalGsets, ncol=totalGsets)
+  M.max[M1 > M2] <- M1[M1 > M2]
+  M.max[M2 >= M1] <- M2[M2 >= M1]
+  overlapMatrix <- M / M.max
+
+  return (overlapMatrix)
+}
