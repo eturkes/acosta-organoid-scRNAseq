@@ -41,7 +41,7 @@ div.main-container {max-width: none; width: 100%;}
 
 *This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
 
-In this document we subcluster annotated cell-types
+In this document we subcluster annotated cell-types.
 The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
 
 ```{r}
