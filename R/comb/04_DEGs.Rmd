@@ -575,10 +575,10 @@ if (nrow(all) > 25) {
 ```{r}
 sub_seurat <- subset(seurat_list[[seurat_idx]], clustermap_names == "Ex Upper Layer 1")
 
-sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
-sce$sample <- seurat_list[[seurat_idx]]$sample
-sce$genotype <- seurat_list[[seurat_idx]]$genotype
-sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+sce <- SingleCellExperiment(list(counts = GetAssayData(sub_seurat, slot = "counts")))
+sce$sample <- sub_seurat$sample
+sce$genotype <- sub_seurat$genotype
+sce$clustermap_names <- sub_seurat$clustermap_names
 
 sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
 keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
