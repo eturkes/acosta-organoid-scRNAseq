@@ -280,8 +280,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -296,8 +297,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -322,8 +324,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -338,8 +341,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -365,8 +369,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -381,8 +386,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -412,8 +418,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -428,8 +435,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -455,8 +463,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -471,8 +480,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -502,8 +512,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -518,8 +529,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -545,8 +557,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -561,8 +574,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -592,8 +606,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -608,8 +623,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -831,8 +847,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -847,8 +864,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -873,8 +891,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -889,8 +908,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -916,8 +936,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -932,8 +953,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -963,8 +985,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -979,8 +1002,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1006,8 +1030,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1022,8 +1047,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1053,8 +1079,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1069,8 +1096,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1096,8 +1124,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1112,8 +1141,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1143,8 +1173,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1159,8 +1190,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1390,8 +1422,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1406,8 +1439,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1432,8 +1466,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1448,8 +1483,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1475,8 +1511,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1491,8 +1528,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1522,8 +1560,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1538,8 +1577,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1565,8 +1605,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1581,8 +1622,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1612,8 +1654,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1628,8 +1671,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1655,8 +1699,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1671,8 +1716,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1702,8 +1748,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1718,8 +1765,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1958,8 +2006,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -1974,8 +2023,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2000,8 +2050,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2016,8 +2067,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2043,8 +2095,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2059,8 +2112,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2090,8 +2144,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2106,8 +2161,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2133,8 +2189,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2149,8 +2206,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2180,8 +2238,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2196,8 +2255,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2223,8 +2283,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2239,8 +2300,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2270,8 +2332,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2286,8 +2349,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2517,8 +2581,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2533,8 +2598,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2559,8 +2625,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2575,8 +2642,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2602,8 +2670,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2618,8 +2687,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2649,8 +2719,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2665,8 +2736,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2692,8 +2764,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2708,8 +2781,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2739,8 +2813,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2755,8 +2830,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2782,8 +2858,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2798,8 +2875,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2829,8 +2907,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -2845,8 +2924,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3085,8 +3165,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3101,8 +3182,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3127,8 +3209,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3143,8 +3226,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3170,8 +3254,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3186,8 +3271,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3217,8 +3303,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3233,8 +3320,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3260,8 +3348,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3276,8 +3365,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3307,8 +3397,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3323,8 +3414,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3350,8 +3442,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3366,8 +3459,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3397,8 +3491,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3413,8 +3508,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3644,8 +3740,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3660,8 +3757,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3686,8 +3784,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3702,8 +3801,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3729,8 +3829,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3745,8 +3846,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3776,8 +3878,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3792,8 +3895,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3819,8 +3923,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3835,8 +3940,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3866,8 +3972,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3882,8 +3989,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3909,8 +4017,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3925,8 +4034,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3956,8 +4066,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -3972,8 +4083,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4212,8 +4324,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4228,8 +4341,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4254,8 +4368,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4270,8 +4385,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4297,8 +4413,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4313,8 +4430,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4344,8 +4462,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4360,8 +4479,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4387,8 +4507,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4403,8 +4524,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4434,8 +4556,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4450,8 +4573,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4477,8 +4601,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4493,8 +4618,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4524,8 +4650,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4540,8 +4667,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4771,8 +4899,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4787,8 +4916,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4813,8 +4943,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4829,8 +4960,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4856,8 +4988,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4872,8 +5005,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4903,8 +5037,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4919,8 +5054,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4946,8 +5082,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4962,8 +5099,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -4993,8 +5131,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5009,8 +5148,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5036,8 +5176,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5052,8 +5193,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5083,8 +5225,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5099,8 +5242,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5339,8 +5483,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5355,8 +5500,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5381,8 +5527,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5397,8 +5544,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5424,8 +5572,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5440,8 +5589,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5471,8 +5621,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5487,8 +5638,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5514,8 +5666,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5530,8 +5683,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5561,8 +5715,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5577,8 +5732,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5604,8 +5760,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5620,8 +5777,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5651,8 +5809,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5667,8 +5826,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5898,8 +6058,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5914,8 +6075,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5940,8 +6102,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5956,8 +6119,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5983,8 +6147,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -5999,8 +6164,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6030,8 +6196,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6046,8 +6213,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6073,8 +6241,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6089,8 +6258,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6120,8 +6290,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6136,8 +6307,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6163,8 +6335,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6179,8 +6352,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6210,8 +6384,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6226,8 +6401,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6466,8 +6642,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6482,8 +6659,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6508,8 +6686,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6524,8 +6703,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6551,8 +6731,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6567,8 +6748,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6598,8 +6780,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6614,8 +6797,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6641,8 +6825,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6657,8 +6842,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6688,8 +6874,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6704,8 +6891,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6731,8 +6919,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6747,8 +6936,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6778,8 +6968,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -6794,8 +6985,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7025,8 +7217,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7041,8 +7234,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7067,8 +7261,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7083,8 +7278,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7110,8 +7306,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7126,8 +7323,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7157,8 +7355,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7173,8 +7372,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7200,8 +7400,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7216,8 +7417,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7247,8 +7449,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7263,8 +7466,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7290,8 +7494,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7306,8 +7511,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7337,8 +7543,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
@@ -7353,8 +7560,9 @@ if (nrow(up) > 25) {
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
       column_names_rot = 45,
+      row_names_max_width = max_text_width(rownames(mat)),
       heatmap_legend_param = list(
-        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        title = "Per-row Scaled ssGSEA Enrichment", direction = "horizontal",
         legend_width = unit(7.5, "cm")
       )
     ),
