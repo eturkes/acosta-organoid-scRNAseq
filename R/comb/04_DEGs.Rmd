@@ -311,6 +311,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -339,6 +340,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -587,6 +589,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -615,6 +618,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -935,6 +939,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -963,6 +968,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1211,6 +1217,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1239,6 +1246,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1567,6 +1575,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1595,6 +1604,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1843,6 +1853,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1871,6 +1882,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2208,6 +2220,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2236,6 +2249,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2484,6 +2498,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2512,6 +2527,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2840,6 +2856,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2868,6 +2885,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3116,6 +3134,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3144,6 +3163,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3481,6 +3501,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3509,6 +3530,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3757,6 +3779,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3785,6 +3808,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4113,6 +4137,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4141,6 +4166,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4389,6 +4415,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4417,6 +4444,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4754,6 +4782,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4782,6 +4811,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5030,6 +5060,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5058,6 +5089,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5386,6 +5418,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5414,6 +5447,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5662,6 +5696,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5690,6 +5725,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6027,6 +6063,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6055,6 +6092,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6303,6 +6341,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6331,6 +6370,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6659,6 +6699,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6687,6 +6728,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6935,6 +6977,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6963,6 +7006,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -7300,6 +7344,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -7328,6 +7373,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -7576,6 +7622,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -7604,6 +7651,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -7932,6 +7980,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -7960,6 +8009,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -8208,6 +8258,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -8236,6 +8287,7 @@ if (nrow(up) > 25) {
   draw(
     Heatmap(
       mat[ , c(5, 6, 1, 2)],
+      cluster_columns = FALSE,
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
