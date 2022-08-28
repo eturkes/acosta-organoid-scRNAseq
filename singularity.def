@@ -6,7 +6,8 @@ From: rocker/rstudio:4.2.0
     apt-get install -y --no-install-recommends \
         libgeos-dev \
         libxml2-dev \
-        libglpk-dev
+        libglpk-dev \
+	libgsl23
     Rscript \
         -e "install.packages('base64enc')" \
         -e "install.packages('digest')" \
@@ -29,7 +30,9 @@ From: rocker/rstudio:4.2.0
         -e "install.packages('filesstrings')" \
         -e "install.packages('VennDiagram')" \
         -e "install.packages('fastmatch')" \
+        -e "install.packages('volcano3D')" \
         -e "install.packages('BiocManager')" \
+        -e "install.packages('remotes')" \
         -e "BiocManager::install('SingleCellExperiment')" \
         -e "BiocManager::install('scuttle')" \
         -e "BiocManager::install('DropletUtils')" \
