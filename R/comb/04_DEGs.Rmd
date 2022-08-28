@@ -284,6 +284,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -471,6 +543,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -764,6 +908,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -951,6 +1167,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1252,6 +1540,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -1439,6 +1799,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -1749,6 +2181,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -1936,6 +2440,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2237,6 +2813,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -2424,6 +3072,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -2734,6 +3454,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -2921,6 +3713,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3222,6 +4086,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -3409,6 +4345,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -3719,6 +4727,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -3906,6 +4986,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4207,6 +5359,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -4394,6 +5618,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -4704,6 +6000,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -4891,6 +6259,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5192,6 +6632,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -5379,6 +6891,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -5689,6 +7273,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -5876,6 +7532,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
@@ -6177,6 +7905,78 @@ if (nrow(up) > 12) {
 }
 ```
 
+#### HET (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
 #### HET + HOM
 
 ```{r}
@@ -6364,6 +8164,78 @@ if (nrow(up) > 25) {
     Heatmap(
       mat,
       column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT (No HOM Comparison)
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat[ , c(5, 6, 1, 2)],
       column_names_rot = 45,
       heatmap_legend_param = list(
         title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
