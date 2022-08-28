@@ -277,11 +277,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -331,11 +330,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -381,11 +379,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -435,11 +432,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -485,11 +481,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -539,11 +534,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -763,11 +757,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -817,11 +810,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -867,11 +859,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -921,11 +912,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -971,11 +961,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1025,11 +1014,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1257,11 +1245,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1311,11 +1298,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1361,11 +1347,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1415,11 +1400,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1465,11 +1449,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1519,11 +1502,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1760,11 +1742,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1814,11 +1795,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1864,11 +1844,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1918,11 +1897,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -1968,11 +1946,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2022,11 +1999,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2254,11 +2230,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2308,11 +2283,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2358,11 +2332,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2412,11 +2385,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2462,11 +2434,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2516,11 +2487,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2757,11 +2727,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2811,11 +2780,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2861,11 +2829,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2915,11 +2882,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -2965,11 +2931,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3019,11 +2984,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3251,11 +3215,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3305,11 +3268,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3355,11 +3317,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3409,11 +3370,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3459,11 +3419,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3513,11 +3472,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3754,11 +3712,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3808,11 +3765,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3858,11 +3814,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3912,11 +3867,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -3962,11 +3916,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4016,11 +3969,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4248,11 +4200,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4302,11 +4253,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4352,11 +4302,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4406,11 +4355,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4456,11 +4404,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4510,11 +4457,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4751,11 +4697,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4805,11 +4750,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4855,11 +4799,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4909,11 +4852,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -4959,11 +4901,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5013,11 +4954,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5245,11 +5185,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5299,11 +5238,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5349,11 +5287,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5403,11 +5340,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5453,11 +5389,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5507,11 +5442,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5748,11 +5682,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5802,11 +5735,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5852,11 +5784,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5906,11 +5837,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -5956,11 +5886,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6010,11 +5939,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6242,11 +6170,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6296,11 +6223,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6346,11 +6272,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6400,11 +6325,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6450,11 +6374,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
@@ -6504,11 +6427,10 @@ if (nrow(up) > 25) {
   )
 }
 
-if (nrow(up) > 0) {
-  DotPlot(
-    seurat_list[[seurat_idx]], features = rownames(up)[1:12], cols = c("blue", "red")
-  ) + RotatedAxis()
-  VlnPlot(seurat_list[[seurat_idx]], rownames(up))
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
 }
 ```
 
