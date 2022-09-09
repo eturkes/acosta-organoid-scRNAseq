@@ -1,0 +1,365 @@
+---
+title: "06 WGCNA - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "06_WGCNA.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we perform WGCNA analysis.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Hongjun Fu, Ohio State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c("conflicted", "Seurat", "WGCNA", "flashClust", "GSVA", "ggplot2")
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+vars_to_regress <- NULL # See `cluster_pipeline` in `utils.R`.
+cex1 <- 0.9
+
+analysis_no <- 6
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 12, fig.height = 7, dpi = 300)
+```
+
+# Prep
+
+```{r}
+seurat <- readRDS(file.path(cache_dir, "..", "02", "rca_seurat.rds"))
+
+# Adapted from code written by Gi Guo and Yuzhou Chang.
+# -----------------------------------------------------
+rds <- file.path(cache_dir, "All_HVG.rds")
+if (file.exists(rds)) {
+  All_HVG <- readRDS(rds)
+} else {
+
+  All_HVG <- vector("list", length(unique(seurat$sample)) + 1)
+  for (i in seq_along(All_HVG)) {
+
+    if (i == length(unique(seurat$sample)) + 1) {
+      sub_seurat <- seurat
+    } else {
+      sub_seurat <- seurat[ , which(seurat$sample == unique(seurat$sample)[i])]
+    }
+
+    sub_seurat <- suppressWarnings(
+      SCTransform(
+        sub_seurat, vars.to.regress = vars_to_regress, vst.flavor = "v2",
+        return.only.var.genes = FALSE, verbose = FALSE
+      )
+    )
+    HVG <- FindVariableFeatures(
+      sub_seurat,
+      selection.method = "vst",
+      nfeatures = 10000,
+      assay = "SCT"
+    )
+    All_HVG[[i]] <- HVG@assays$SCT@var.features
+  }
+
+  rm(HVG, sub_seurat)
+  All_HVG <- unique(unlist(All_HVG))
+  saveRDS(All_HVG, rds, compress = FALSE)
+}
+
+all_matrix_hvg <- seurat@assays$SCT@data
+all_matrix_hvg <- seurat@assays$SCT@data[match(All_HVG, rownames(all_matrix_hvg)), ]
+all_matrix_hvg <- t(as.matrix(all_matrix_hvg))
+gene.names <- colnames(all_matrix_hvg)
+# -----------------------------------------------------
+```
+
+# WGCNA Network Creation
+
+```{r}
+# Adapted from code written by Gi Guo and Yuzhou Chang.
+# -----------------------------------------------------
+# Calculate soft threshold-β
+# --------------------------
+powers <- c(c(1:10), seq(from = 12, to = 20, by = 2)) # Better to include powers up to 20.
+
+rds <- file.path(cache_dir, "sft.rds")
+if (file.exists(rds)) {
+  sft <- readRDS(rds)
+} else {
+  sft <- pickSoftThreshold(
+    all_matrix_hvg,
+    dataIsExpr = TRUE,
+    powerVector = powers,
+    corFnc = cor,
+    corOptions = list(use = 'p'),
+    networkType = "unsigned"
+  )
+  saveRDS(sft, rds, compress = FALSE)
+}
+# --------------------------
+
+# SFT index as a function of different powers.
+# --------------------------------------------
+plot(
+  sft$fitIndices[, 1],
+  -sign(sft$fitIndices[, 3]) * sft$fitIndices[, 2],
+  xlab = "Soft Threshold (power)",
+  ylab = "Scale Free Topology Model Fit, signed R^2",
+  type = "n",
+  main = paste("Scale independence")
+)
+text(
+  sft$fitIndices[, 1],
+  -sign(sft$fitIndices[, 3]) * sft$fitIndices[, 2],
+  labels = powers,
+  cex = cex1,
+  col = "red"
+)
+abline(h = 0.9, col = "red") # This line corresponds to using an R^2 cut-off of h.
+# --------------------------------------------
+
+# Mean connectivity as a function of different powers.
+# ----------------------------------------------------
+plot(
+  sft$fitIndices[, 1],
+  sft$fitIndices[, 5],
+  xlab = "Soft Threshold (power)",
+  ylab = "Mean Connectivity",
+  type = "n",
+  main = paste("Mean connectivity")
+)
+text(
+  sft$fitIndices[, 1],
+  sft$fitIndices[, 5],
+  labels = powers,
+  cex = cex1,
+  col = "red"
+)
+# ----------------------------------------------------
+
+# Automatic module detection.
+# ---------------------------
+softPower <- 2
+
+rds <- file.path(cache_dir, "bwnet.rds")
+if (file.exists(rds)) {
+  bwnet <- readRDS(rds)
+} else {
+  bwnet <- blockwiseModules(
+    all_matrix_hvg,
+    maxBlockSize = 5000,
+    mergeCutHeight = 0.25,
+    networkType = "unsigned",
+    power = softPower,
+    minModuleSize = 30,
+    numericLabels = TRUE,
+    saveTOMs = FALSE,
+    pamRespectsDendro = FALSE,
+    verbose = 3
+  )
+  saveRDS(bwnet, rds, compress = FALSE)
+}
+# ---------------------------
+
+rds <- file.path(cache_dir, "TOM.rds")
+if (file.exists(rds)) {
+  TOM <- readRDS(rds)
+} else {
+  TOM <- TOMsimilarityFromExpr(
+    all_matrix_hvg,
+    networkType = "unsigned",
+    TOMType = "unsigned",
+    power = softPower
+  )
+  colnames(TOM) <- rownames(TOM) <- gene.names
+  saveRDS(TOM, rds, compress = FALSE)
+}
+
+rds <- file.path(cache_dir, "geneTree.rds")
+if (file.exists(rds)) {
+  geneTree <- readRDS(rds)
+} else {
+  dissTOM <- 1 - TOM
+  geneTree <- flashClust(as.dist(dissTOM), method = "average")
+  rm(dissTOM)
+  saveRDS(geneTree, rds, compress = FALSE)
+}
+
+plot(geneTree, xlab = "", sub = "", cex = 0.3)
+
+# Module identification using dynamic tree cut.
+# ---------------------------------------------
+dynamicMods <- cutreeDynamic(
+  dendro = geneTree,
+  method = "tree",
+  minClusterSize = 20,
+  deepSplit = 3
+)
+table(dynamicMods)
+# ---------------------------------------------
+
+# Plot the module assignment under the dendrogram.
+# Note: The grey color is reserved for unassigned genes.
+# ------------------------------------------------------
+dynamicColors <- labels2colors(dynamicMods)
+table(dynamicColors)
+
+plotDendroAndColors(
+  geneTree,
+  dynamicColors,
+  "Dynamic Tree Cut",
+  dendroLabels = FALSE,
+  hang = 0.03,
+  addGuide = TRUE,
+  guideHang = 0.05,
+  main = "Gene dendrogram and module colors"
+)
+# ------------------------------------------------------
+
+# Discard the unassigned genes, and focus on the rest.
+# ----------------------------------------------------
+restGenes <- dynamicColors != "grey"
+
+rds <- file.path(cache_dir, "diss1.rds")
+if (file.exists(rds)) {
+  diss1 <- readRDS(rds)
+} else {
+  diss1 <- 1 - TOMsimilarityFromExpr(all_matrix_hvg[ , restGenes], power = softPower)
+  colnames(diss1) <- rownames(diss1) <- gene.names[restGenes]
+  saveRDS(diss1, rds, compress = FALSE)
+}
+# ----------------------------------------------------
+
+hier1 <- flashClust(as.dist(diss1), method = "average")
+plotDendroAndColors(
+  hier1,
+  dynamicColors[restGenes],
+  "Dynamic Tree Cut",
+  dendroLabels = FALSE,
+  hang = 0.03,
+  addGuide = TRUE,
+  guideHang = 0.05,
+  main = "Gene dendrogram and module colors"
+)
+
+diag(diss1) <- NA # Set the diagonal of the dissimilarity to NA.
+
+# Visualize the Tom plot.
+# Raise the dissimilarity matrix to the power of 4 to bring out the module structure.
+# -----------------------------------------------------------------------------------
+TOMplot(diss1, hier1, as.character(dynamicColors[restGenes]))
+# -----------------------------------------------------------------------------------
+
+# Extract module.
+# ---------------
+module_colors <- setdiff(unique(dynamicColors), "grey")
+module_list <- vector("list", length(module_colors))
+names(module_list) <- module_colors
+for (i in seq_along(module_list)) {
+  module_list[[i]] <- gene.names[which(dynamicColors == module_colors[i])]
+}
+
+data <- data.frame(1:8)
+for (i in 1:length(module_colors)) {
+  data[i, 1] <- length(gene.names[which(dynamicColors == module_colors[i])])
+}
+rownames(data) <- module_colors
+colnames(data) <- c("gene_num")
+# ---------------
+# -----------------------------------------------------
+```
+
+# Analysis
+
+```{r}
+rds <- file.path(cache_dir, "gsva.rds")
+if (file.exists(rds)) {
+  gsva <- readRDS(rds)
+} else {
+  gsva <- gsva(
+    GetAssayData(seurat), module_list, method = "ssgsea", ssgsea.norm = FALSE, verbose = FALSE
+  )
+  saveRDS(gsva, rds, compress = FALSE)
+}
+gsva <- (2 * (gsva - min(gsva)) / (max(gsva) - min(gsva))) - 1
+
+seurat[["GSVA"]] <- CreateAssayObject(data = as.matrix(gsva))
+DefaultAssay(seurat) <- "GSVA"
+
+for (i in seq(nrow(seurat))) {
+  print(
+    FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "rca_umap") +
+      scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
+  )
+}
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
