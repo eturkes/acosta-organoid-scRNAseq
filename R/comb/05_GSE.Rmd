@@ -113,7 +113,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -5059,7 +5059,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -7545,7 +7545,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -10022,7 +10022,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -12508,7 +12508,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -14985,7 +14985,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -17471,7 +17471,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -19948,7 +19948,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -22434,7 +22434,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -24911,7 +24911,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -27397,7 +27397,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -29874,7 +29874,7 @@ seurat_list[[seurat_idx]]@active.ident <- factor(
 )
 ```
 
-### All
+### All Cells
 
 ```{r}
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
