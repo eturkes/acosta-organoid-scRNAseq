@@ -1,0 +1,2364 @@
+---
+title: "07 Select Genes - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "07_select_genes.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 45px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we check the expression of specific select genes.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Hongjun Fu, Ohio State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c(
+  "conflicted", "openxlsx", "Seurat", "SingleCellExperiment", "scuttle", "edgeR", "ComplexHeatmap"
+)
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+conflict_prefer("cpm", "edgeR", quiet = TRUE)
+
+analysis_no <- 7
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 12, fig.height = 7, dpi = 150)
+```
+
+# Prep
+
+```{r}
+gene_lists <- as.list(
+  read.xlsx(file.path(data_dir, "gene-lists", "GeneLists_R406W_COs_Fu Lab.xlsx"))
+)
+gene_lists <- lapply(gene_lists, function(x) x[!is.na(x)])
+```
+
+# Excitatory Neuron
+
+```{r}
+sub_name <- "Ex"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+### Ex Upper Layer 1
+
+```{r}
+sub_seurat <- subset(seurat_list[[seurat_idx]], clustermap_names == "Ex Upper Layer 1")
+
+sce <- SingleCellExperiment(list(counts = GetAssayData(sub_seurat, slot = "counts")))
+sce$sample <- sub_seurat$sample
+sce$genotype <- sub_seurat$genotype
+sce$clustermap_names <- sub_seurat$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(sub_seurat)]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  print(VlnPlot(sub_seurat, gene_list_hits[13:24]))
+  VlnPlot(sub_seurat, gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  VlnPlot(sub_seurat, gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(sub_seurat, gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(sub_seurat)]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  print(VlnPlot(sub_seurat, gene_list_hits[13:24]))
+  VlnPlot(sub_seurat, gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  VlnPlot(sub_seurat, gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(sub_seurat, gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(sub_seurat)]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  print(VlnPlot(sub_seurat, gene_list_hits[13:24]))
+  VlnPlot(sub_seurat, gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  VlnPlot(sub_seurat, gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(sub_seurat, gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(sub_seurat)]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  print(VlnPlot(sub_seurat, gene_list_hits[13:24]))
+  VlnPlot(sub_seurat, gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(sub_seurat, gene_list_hits[1:12]))
+  VlnPlot(sub_seurat, gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(sub_seurat, gene_list_hits)
+}
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+# Radial Glia
+
+```{r}
+sub_name <- "RG"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+# IPC
+
+```{r}
+sub_name <- "IPC"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+# Inhibitory Neuron
+
+```{r}
+sub_name <- "In"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+# Mural
+
+```{r}
+sub_name <- "Mu"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+# Unclassified
+
+```{r}
+sub_name <- "Unc"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+## D72
+
+```{r}
+seurat_idx <- 2
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[1])`
+
+```{r}
+idx <- 1
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[2])`
+
+```{r}
+idx <- 2
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[3])`
+
+```{r}
+idx <- 3
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+#### `r gsub("\\.", " ", names(gene_lists)[4])`
+
+```{r}
+idx <- 4
+
+if (length(which(rownames(sce) %in% gene_lists[[idx]])) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% gene_lists[[idx]]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(5, 6, 1, 2, 3, 4),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+gene_list_hits <- gene_lists[[idx]][gene_lists[[idx]] %in% rownames(seurat_list[[seurat_idx]])]
+if (length(gene_list_hits) > 12 * 2) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:24]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[24:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 12) {
+  print(VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[1:12]))
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits[13:length(gene_list_hits)])
+} else if (length(gene_list_hits) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], gene_list_hits)
+}
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
