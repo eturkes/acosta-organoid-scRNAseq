@@ -563,15 +563,15 @@ datatable_download(clustermap_markers)
 file_list$D120@active.ident <- timepoint_seurat$D120$clustermap
 timepoint_seurat$D120 <- RenameIdents(
   timepoint_seurat$D120,
-  "1" = "Ex Deep Layer 2", "2" = "Ex Upper Layer 9",
-  "3" = "Ex Upper Layer 1", "4" = "Ex Upper Layer 8",
-  "5" = "Ex Upper Layer 6", "6" = "Ex Upper Layer 4",
-  "7" = "Ex Upper Layer 2", "8" = "Ex Upper Layer 2",
-  "9" = "Ex Deep Layer 4", "10" = "Ex Deep Layer 1",
-  "11" = "Ex Upper Layer 7", "12" = "Ex Unclassified 1",
-  "13" = "Ex Newborn 2", "14" = "Ex Deep Layer 3",
-  "15" = "Ex Newborn 1", "16" = "Ex Upper Layer 3",
-  "17" = "Ex Deep Layer 5", "18" = "Ex Upper Layer 5"
+  "1" = "Ex Deep Layer 02", "2" = "Ex Upper Layer 09",
+  "3" = "Ex Upper Layer 01", "4" = "Ex Upper Layer 08",
+  "5" = "Ex Upper Layer 06", "6" = "Ex Upper Layer 04",
+  "7" = "Ex Upper Layer 02", "8" = "Ex Upper Layer 02",
+  "9" = "Ex Deep Layer 04", "10" = "Ex Deep Layer 01",
+  "11" = "Ex Upper Layer 07", "12" = "Ex Unclassified 01",
+  "13" = "Ex Newborn 02", "14" = "Ex Deep Layer 03",
+  "15" = "Ex Newborn 01", "16" = "Ex Upper Layer 03",
+  "17" = "Ex Deep Layer 05", "18" = "Ex Upper Layer 05"
 )
 timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
 red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
@@ -580,13 +580,13 @@ red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat")
 timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
 timepoint_seurat$D72 <- RenameIdents(
   timepoint_seurat$D72,
-  "1" = "Ex Deep Layer 3", "2" = "Ex Unclassified 1",
-  "3" = "Ex Upper Layer 1", "4" = "Ex Deep Layer 2",
-  "5" = "Ex Unclassified 2", "6" = "Ex Unclassified 4",
-  "7" = "Ex Newborn 1", "8" = "Ex Unclassified 5",
-  "9" = "Ex Newborn 2", "10" = "Ex Unclassified 3",
-  "11" = "Ex Deep Layer 4", "12" = "Ex Deep Layer 1",
-  "13" = "Ex Unclassified 6"
+  "1" = "Ex Deep Layer 03", "2" = "Ex Unclassified 01",
+  "3" = "Ex Upper Layer 01", "4" = "Ex Deep Layer 02",
+  "5" = "Ex Unclassified 02", "6" = "Ex Unclassified 04",
+  "7" = "Ex Newborn 01", "8" = "Ex Unclassified 05",
+  "9" = "Ex Newborn 02", "10" = "Ex Unclassified 03",
+  "11" = "Ex Deep Layer 04", "12" = "Ex Deep Layer 01",
+  "13" = "Ex Unclassified 06"
 )
 timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
 red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
@@ -1933,7 +1933,7 @@ timepoint_seurat$D120 <- RenameIdents(
   timepoint_seurat$D120,
   "0" = "Unc 05", "1" = "Unc 04",
   "2" = "Unc 01", "3" = "Unc 03",
-  "4" = "Unc 02", "5" = "In 05"
+  "4" = "Unc 02"
 )
 timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
 red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
