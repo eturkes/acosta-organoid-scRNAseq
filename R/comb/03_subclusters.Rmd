@@ -1034,12 +1034,12 @@ timepoint_seurat$D120@active.ident <- timepoint_seurat$D120$clustermap
 timepoint_seurat$D120 <- RenameIdents(
   timepoint_seurat$D120,
   "1" = "RG Early 01", "2" = "RG Late 08",
-  "3" = "RG Unclassified 01", "4" = "RG Late 03",
+  "3" = "RG Astrocyte 01", "4" = "RG Late 03",
   "5" = "RG Late 04", "6" = "RG Late 01",
   "7" = "RG Late 05", "8" = "RG OPC 01",
-  "9" = "RG Late 07", "10" = "RG Unclassified 02",
+  "9" = "RG Late 07", "10" = "RG Unclassified 01",
   "11" = "RG Late 02", "12" = "RG Late 06",
-  "13" = "RG Astrocyte 01"
+  "13" = "RG Astrocyte 02"
 )
 timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
 red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
