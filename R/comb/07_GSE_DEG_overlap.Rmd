@@ -1,5 +1,5 @@
 ---
-title: "08 GSE DEG Overlap - Combined Organelles"
+title: "07 GSE DEG Overlap - Combined Organelles"
 author:
   - name: "Emir Turkes [emir.turkes@eturkes.com]"
   - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
@@ -20,7 +20,7 @@ output:
       smooth_scroll: false
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
-    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "08_GSE_DEG_overlap.html"
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "07_GSE_DEG_overlap.html"
   ))})
 ---
 
@@ -71,7 +71,7 @@ packages <- c("conflicted", "GSEABase", "biomaRt", "DT")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
 
-analysis_no <- 8
+analysis_no <- 7
 data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
 data_dir <- file.path("..", "..", "data") # Backed up data.
 results_dir <- file.path("..", "..", "results")
