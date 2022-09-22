@@ -1,0 +1,154 @@
+---
+title: "08 GSE DEG Overlap - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "08_GSE_DEG_overlap.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 45px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we check the expression of specific select genes.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Hongjun Fu, Ohio State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c("conflicted", "GSEABase", "biomaRt")
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+analysis_no <- 8
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 12, fig.height = 7, dpi = 300)
+```
+
+# Prep
+
+```{r}
+DEG_files <- list.files(file.path(results_dir, "comb", "04-DEGs"))
+GSE_files <- list.files(file.path(results_dir, "comb", "05-GSE"))
+
+GSE_files <- GSE_files[grep("AllOntologies", GSE_files)]
+remove <- grep("AllStats", GSE_files)
+GSE_files <- GSE_files[-remove]
+DEG_files <- DEG_files[-remove]
+
+gene_sets <- readRDS(file.path(cache_dir, "..", "05", "filtered_comb_ENSG.rds"))
+
+rds <- file.path(cache_dir, "gene_anno.rds")
+if (file.exists(rds)) {
+  gene_anno <- readRDS(rds)
+} else {
+  mart <- useEnsembl("ensembl", "hsapiens_gene_ensembl")
+  attributes <- c("external_gene_name", "ensembl_gene_id")
+  gene_anno <- getBM(attributes, "ensembl_gene_id", unique(unlist(geneIds(gene_sets))), mart)
+  saveRDS(gene_anno, rds)
+}
+```
+
+# Analysis
+
+```{r}
+for (i in seq_along(DEG_files)) {
+  DEG <- read.csv(file.path(results_dir, "comb", "04-DEGs", DEG_files[i]))
+  GSE <- read.csv(file.path(results_dir, "comb", "05-GSE", GSE_files[i]))
+
+  if (nrow(GSE) > 0) {
+
+    print(GSE_files[i])
+    cat("\n")
+
+    for (j in seq(nrow(GSE))) {
+      current_gene_set <- geneIds(gene_sets[which(names(gene_sets) == GSE$X[j])]) 
+      current_gene_set[[1]] <- gene_anno[
+        gene_anno$ensembl_gene_id %in% current_gene_set[[1]],
+      ]$external_gene_name
+
+      if (any(DEG$X %in% current_gene_set[[1]])) {
+        cat(names(current_gene_set), "\n")
+        cat(current_gene_set[[1]], "\n")
+        cat("Genes that are also DEG:", DEG$X[which(DEG$X %in% current_gene_set[[1]])], "\n")
+        cat(
+          "Percentage DEG of those in gene set:",
+          length(which(DEG$X %in% current_gene_set[[1]])) / length(current_gene_set[[1]]) * 100,
+          "\n"
+        )
+        cat("\n")
+      }
+    }
+  }
+}
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
