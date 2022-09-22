@@ -114,7 +114,7 @@ if (file.exists(rds)) {
 # Full Output
 
 ```{r}
-percentage_df <- data.frame(matrix(nrow = 0, ncol = 2))
+percentage_df <- data.frame(matrix(nrow = 0, ncol = 3))
 
 for (i in seq_along(DEG_files)) {
   DEG <- read.csv(file.path(results_dir, "comb", "04-DEGs", DEG_files[i]))
@@ -137,7 +137,7 @@ for (i in seq_along(DEG_files)) {
         cat("Percentage DEG of those in gene set:", percentage, "\n")
         cat("\n")
 
-        add_df <- data.frame(x = names(current_gene_set), y = percentage)
+        add_df <- data.frame(x = GSE_files[i], y = names(current_gene_set), z = percentage)
         percentage_df <- rbind(percentage_df, add_df)
       }
     }
@@ -148,8 +148,9 @@ for (i in seq_along(DEG_files)) {
 # Percentage Table
 
 ```{r}
-percentage_df <- percentage_df[order(percentage_df$y, decreasing = TRUE), ]
-colnames(percentage_df) <- c("Gene Set", "Percentage DEG")
+percentage_df <- percentage_df[order(percentage_df$z, decreasing = TRUE), ]
+colnames(percentage_df) <- c("Comparison", "Gene Set", "Percentage DEG")
+rownames(percentage_df) <- NULL
 datatable_download(percentage_df)
 ```
 
