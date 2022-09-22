@@ -842,10 +842,10 @@ radial_plotly(polar, 2)
 volcano3D(polar, 2)
 ```
 
-### Ex Upper Layer 1
+### Ex Upper Layer 01
 
 ```{r}
-sub_seurat <- subset(seurat_list[[seurat_idx]], clustermap_names == "Ex Upper Layer 1")
+sub_seurat <- subset(seurat_list[[seurat_idx]], clustermap_names == "Ex Upper Layer 01")
 
 sce <- SingleCellExperiment(list(counts = GetAssayData(sub_seurat, slot = "counts")))
 sce$sample <- sub_seurat$sample
