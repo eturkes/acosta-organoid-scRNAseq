@@ -842,7 +842,7 @@ radial_plotly(polar, 2)
 volcano3D(polar, 2)
 ```
 
-### Ex Upper Layer 01
+### Upper Layer 01
 
 ```{r}
 sub_seurat <- subset(seurat_list[[seurat_idx]], clustermap_names == "Ex Upper Layer 01")
@@ -879,7 +879,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(results)
@@ -898,7 +898,7 @@ write.csv(
     "comb",
     "04-DEGs",
     paste(
-      sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "WT<HET<HOM", "DEGs.csv", sep = "-"
+      sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "WT<HET<HOM", "DEGs.csv", sep = "-"
     )
   )
 )
@@ -958,7 +958,7 @@ write.csv(
     "comb",
     "04-DEGs",
     paste(
-      sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "WT>HET>HOM", "DEGs.csv", sep = "-"
+      sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "WT>HET>HOM", "DEGs.csv", sep = "-"
     )
   )
 )
@@ -1018,7 +1018,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "HET", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "HET", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
@@ -1077,7 +1077,7 @@ write.csv(
     "comb",
     "04-DEGs",
     paste(
-      sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "HETnoHOM", "DEGs.csv", sep = "-"
+      sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "HETnoHOM", "DEGs.csv", sep = "-"
     )
   )
 )
@@ -1167,7 +1167,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "HET+HOM", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "HET+HOM", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
@@ -1226,7 +1226,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "HOM", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "HOM", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
@@ -1289,7 +1289,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "HOM+WT", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "HOM+WT", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
@@ -1348,7 +1348,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "WT", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "WT", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
@@ -1406,7 +1406,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "WTnoHOM", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "WTnoHOM", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
@@ -1495,7 +1495,7 @@ write.csv(
     results_dir,
     "comb",
     "04-DEGs",
-    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer1", "WT+HET", "DEGs.csv", sep = "-")
+    paste(sub_name, names(seurat_list[seurat_idx]), "UpperLayer01", "WT+HET", "DEGs.csv", sep = "-")
   )
 )
 datatable_download_exp(up)
