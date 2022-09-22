@@ -67,7 +67,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c("conflicted", "GSEABase", "biomaRt")
+packages <- c("conflicted", "GSEABase", "biomaRt", "DT")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
 
@@ -111,18 +111,16 @@ if (file.exists(rds)) {
 }
 ```
 
-# Analysis
+# Full Output
 
 ```{r}
+percentage_df <- data.frame(matrix(nrow = 0, ncol = 2))
+
 for (i in seq_along(DEG_files)) {
   DEG <- read.csv(file.path(results_dir, "comb", "04-DEGs", DEG_files[i]))
   GSE <- read.csv(file.path(results_dir, "comb", "05-GSE", GSE_files[i]))
 
   if (nrow(GSE) > 0) {
-
-    print(GSE_files[i])
-    cat("\n")
-
     for (j in seq(nrow(GSE))) {
       current_gene_set <- geneIds(gene_sets[which(names(gene_sets) == GSE$X[j])]) 
       current_gene_set[[1]] <- gene_anno[
@@ -130,19 +128,29 @@ for (i in seq_along(DEG_files)) {
       ]$external_gene_name
 
       if (any(DEG$X %in% current_gene_set[[1]])) {
+        cat(GSE_files[i], "\n")
         cat(names(current_gene_set), "\n")
         cat(current_gene_set[[1]], "\n")
         cat("Genes that are also DEG:", DEG$X[which(DEG$X %in% current_gene_set[[1]])], "\n")
-        cat(
-          "Percentage DEG of those in gene set:",
-          length(which(DEG$X %in% current_gene_set[[1]])) / length(current_gene_set[[1]]) * 100,
-          "\n"
-        )
+        percentage <-
+          length(which(DEG$X %in% current_gene_set[[1]])) / length(current_gene_set[[1]]) * 100
+        cat("Percentage DEG of those in gene set:", percentage, "\n")
         cat("\n")
+
+        add_df <- data.frame(x = names(current_gene_set), y = percentage)
+        percentage_df <- rbind(percentage_df, add_df)
       }
     }
   }
 }
+```
+
+# Percentage Table
+
+```{r}
+percentage_df <- percentage_df[order(percentage_df$y, decreasing = TRUE), ]
+colnames(percentage_df) <- c("Gene Set", "Percentage DEG")
+datatable_download(percentage_df)
 ```
 
 # References
