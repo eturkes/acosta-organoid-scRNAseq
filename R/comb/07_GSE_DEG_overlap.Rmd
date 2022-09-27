@@ -67,9 +67,12 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c("conflicted", "GSEABase", "biomaRt", "DT")
+packages <- c(
+  "conflicted", "GSEABase", "biomaRt", "DT", "Seurat", "scuttle", "edgeR", "ComplexHeatmap"
+)
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
+conflict_prefer("cpm", "edgeR", quiet = TRUE)
 
 analysis_no <- 7
 data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
@@ -152,6 +155,61 @@ percentage_df <- percentage_df[order(percentage_df$z, decreasing = TRUE), ]
 colnames(percentage_df) <- c("Comparison", "Gene Set", "Percentage DEG")
 rownames(percentage_df) <- NULL
 datatable_download(percentage_df)
+```
+
+# Expression Plots
+
+```{r}
+for (i in seq(25)) {
+  sub_name <- strsplit(percentage_df$Comparison[i], "-")[[1]][1]
+  seurat_idx <- strsplit(percentage_df$Comparison[i], "-")[[1]][2]
+  ctype <- strsplit(percentage_df$Comparison[i], "-")[[1]][3]
+
+  if (ctype == "AllCells") {
+    seurat_list <- readRDS(
+      file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+    )
+    seurat_list[[seurat_idx]]@active.ident <- factor(
+      seurat_list[[seurat_idx]]$genotype, c("WT", "HET", "HOM")
+    )
+
+    sce <- SingleCellExperiment(
+      list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts"))
+    )
+    sce$sample <- seurat_list[[seurat_idx]]$sample
+    sce$genotype <- seurat_list[[seurat_idx]]$genotype
+    sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+
+    sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+    keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+    sce <- sce[keep, ]
+    dge <- DGEList(counts(sce))
+    dge <- calcNormFactors(dge)
+    logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+    current_gene_set <- geneIds(gene_sets[which(names(gene_sets) == percentage_df[[2]][i])]) 
+    current_gene_set[[1]] <- gene_anno[
+      gene_anno$ensembl_gene_id %in% current_gene_set[[1]],
+    ]$external_gene_name
+
+    mat <- logcounts(sce)[which(rownames(sce) %in% current_gene_set[[1]]), ]
+    mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+    set.seed(1)
+    draw(
+      Heatmap(
+        mat,
+        column_order = c(5, 6, 1, 2, 3, 4),
+        column_names_rot = 45,
+        column_title = names(current_gene_set),
+        heatmap_legend_param = list(
+          title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+          legend_width = unit(7.5, "cm")
+        )
+      ),
+      heatmap_legend_side = "top"
+    )
+  }
+}
 ```
 
 # References
