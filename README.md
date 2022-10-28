@@ -84,7 +84,7 @@ For instance the following command can be used:
 ssh -NL 8787:localhost:8787 turkes2@owens-login03.hpc.osc.edu
 ```
 
-The left-most port specifies the port desired locally, where the right-most is the port on the server.
+The left-most port specifies the port desired locally, whereas the right-most is the port on the server.
 The right-most argument is the user@ip-address details used to log into the server.
 
 ### Step 3.
