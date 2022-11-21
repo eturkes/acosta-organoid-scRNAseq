@@ -65,7 +65,7 @@ apptainer pull library://eturkes/acosta-organoid-scrnaseq/acosta-organoid-scrnas
 Once downloaded, the following command will launch an Apptainer instance of RStudio Server with access to the current project:
 
 ```
-singularity exec --bind rsession.conf:/etc/rstudio/rsession.conf,run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf acosta-organoid-scRNAseq_v3.sif rserver --www-address=127.0.0.1 --www-port=8787
+singularity exec --bind rsession.conf:/etc/rstudio/rsession.conf,run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf acosta-organoid-scrnaseq_v3.sif rserver --www-address=127.0.0.1 --www-port=8787
 ```
 
 This will run the container on port 8787 and can be changed to any other non-used port.
@@ -74,7 +74,7 @@ One can then open a web browser and go the address `http://localhost:8787/` or w
 It may be preferable to supplement with additional arguments and commands, for example the line below. Please see external documentation for what these modifiers do.
 
 ```
-nohup singularity exec --bind rsession.conf:/etc/rstudio/rsession.conf,run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf acosta-organoid-scRNAseq_v3.sif rserver --www-address=127.0.0.1 --www-port=8787 --server-user=turkes2 &
+nohup singularity exec --bind rsession.conf:/etc/rstudio/rsession.conf,run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf acosta-organoid-scrnaseq_v3.sif rserver --www-address=127.0.0.1 --www-port=8787 --server-user=turkes2 &
 ```
 
 If one is running the analysis on a remote headless server but would like to control RStudio Server in a local web browser, an SSH tunnel can be used.
