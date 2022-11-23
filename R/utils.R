@@ -138,13 +138,15 @@ datatable_download_exp <- function(dt) {
 #' @param vars_to_regress Vector of nuisance variables for sctransform to regress out.
 #' @param parallel_override See function \code{"parallel_plan"}.
 #' @param cc Logical, whether to perform cell-cycle scoring.
+#' @param res_divider, what to divide number of cells by to arrive at clustering resolution.
 #' @examples
 #' cluster_pipeline(
 #'   seurat = seurat, cache_dir = cache_dir, sub_name = "neuronal", protocol = protocol,
-#'   vars_to_regress = "mito_percent", parallel_override = NULL, cc = FALSE)
+#'   vars_to_regress = "mito_percent", parallel_override = NULL, cc = FALSE, res_divider = 1000
 #' )
 cluster_pipeline <- function(
-  seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, cc = TRUE
+  seurat, cache_dir, sub_name, protocol,
+  vars_to_regress, parallel_override, cc = TRUE, res_divider = 3000
 ) {
 
   rds <- file.path(cache_dir, paste0(sub_name, "_seurat.rds"))
@@ -280,7 +282,7 @@ cluster_pipeline <- function(
 
     # Perform Louvain clustering.
     # ---------------------------
-    resolution <- (dim(seurat)[2] / 3000) * 0.8 # Default is optimal for 3K cells so we scale it.
+    resolution <- ncol(seurat) / res_divider
     seurat <- FindNeighbors(seurat, reduction, dims, verbose = FALSE)
     seurat <- FindClusters(seurat, resolution = resolution, verbose = FALSE)
     # ---------------------------

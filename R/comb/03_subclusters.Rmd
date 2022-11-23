@@ -97,7 +97,7 @@ if (!dir.exists(cache_dir)) {
 }
 # ------------------------------------------------
 
-knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 150)
 ```
 
 # Prep
@@ -152,7 +152,7 @@ DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
 sub_name <- "Ex"
 sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE, 1500
 )
 sub_seurat
 
@@ -187,7 +187,8 @@ for (i in seq_along(timepoint_seurat)) {
   timepoint_seurat[[i]][["SCT"]] <- NULL
   save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
   timepoint_seurat[[i]] <- cluster_pipeline(
-    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+    timepoint_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE, 1500
   )
   print(timepoint_seurat[[i]])
 
@@ -231,7 +232,7 @@ for (i in seq_along(D120_genotype_seurat)) {
   )
   D120_genotype_seurat[[i]] <- cluster_pipeline(
     D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
-    vars_to_regress, parallel_override, FALSE
+    vars_to_regress, parallel_override, FALSE, 1500
   )
   print(D120_genotype_seurat[[i]])
 
@@ -288,7 +289,7 @@ for (i in seq_along(D72_genotype_seurat)) {
   )
   D72_genotype_seurat[[i]] <- cluster_pipeline(
     D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
-    vars_to_regress, parallel_override, FALSE
+    vars_to_regress, parallel_override, FALSE, 1500
   )
   print(D72_genotype_seurat[[i]])
 
@@ -374,7 +375,7 @@ if (!dir.exists(out_dir)) {
     comb_obj = file_list$comb,
     comb_delim = "_",
     reduction = "umap",
-    edge_cutoff = 0.1
+    edge_cutoff = 0.01
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -446,7 +447,7 @@ if (!dir.exists(out_dir)) {
     comb_obj = file_list$comb,
     comb_delim = "_",
     reduction = "umap",
-    edge_cutoff = 0.1
+    edge_cutoff = 0.01
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -510,7 +511,7 @@ if (!dir.exists(out_dir)) {
     marker_file_list, output = file.path(out_dir, sub_name),
     single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
     comb_delim = "_", reduction = "umap",
-    edge_cutoff = 0.1
+    edge_cutoff = 0.01
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -560,54 +561,67 @@ datatable_download(clustermap_markers)
 ## Annotations
 
 ```{r}
-file_list$D120@active.ident <- timepoint_seurat$D120$clustermap
-timepoint_seurat$D120 <- RenameIdents(
-  timepoint_seurat$D120,
-  "1" = "Ex Deep Layer 02", "2" = "Ex Upper Layer 09",
-  "3" = "Ex Upper Layer 01", "4" = "Ex Upper Layer 08",
-  "5" = "Ex Upper Layer 06", "6" = "Ex Upper Layer 04",
-  "7" = "Ex Upper Layer 02", "8" = "Ex Upper Layer 02",
-  "9" = "Ex Deep Layer 04", "10" = "Ex Deep Layer 01",
-  "11" = "Ex Upper Layer 07", "12" = "Ex Unclassified 01",
-  "13" = "Ex Newborn 02", "14" = "Ex Deep Layer 03",
-  "15" = "Ex Newborn 01", "16" = "Ex Upper Layer 03",
-  "17" = "Ex Deep Layer 05", "18" = "Ex Upper Layer 05"
+file_list$D120@active.ident <- file_list$D120$clustermap
+file_list$D120 <- RenameIdents(
+  file_list$D120,
+  "4" = "Ex Newborn 01", "16" = "Ex Newborn 02", "2" = "Ex Upper Layer 01",
+  "1" = "Ex Upper Layer 02", "11" = "Ex Upper Layer 03", "13" = "Ex Upper Layer 04",
+  "5" = "Ex Deep Layer 01", "18" = "Ex Deep Layer 02", "17" = "Ex Deep Layer 03",
+  "11" = "Ex Deep Layer 04", "3" = "Ex Deep Layer 05", "6" = "Ex Deep Layer 06",
+  "7" = "Ex Upper Layer 06", "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07",
+  "15" = "Ex Upper Layer 05", "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01",
+  "10" = "Ex Unclassified 02"
 )
-timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
-red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
-  ggtitle("D120")
+file_list$D120$clustermap_names <- factor(as.character(file_list$D120@active.ident))
+file_list$D120$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(file_list$D120$clustermap_names))
+)
+red_dim_plot(file_list$D120, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120")
+red_dim_plot(file_list$D120, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D120")
 
-timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
-timepoint_seurat$D72 <- RenameIdents(
-  timepoint_seurat$D72,
-  "1" = "Ex Deep Layer 03", "2" = "Ex Unclassified 01",
-  "3" = "Ex Upper Layer 01", "4" = "Ex Deep Layer 02",
-  "5" = "Ex Unclassified 02", "6" = "Ex Unclassified 04",
-  "7" = "Ex Newborn 01", "8" = "Ex Unclassified 05",
-  "9" = "Ex Newborn 02", "10" = "Ex Unclassified 03",
-  "11" = "Ex Deep Layer 04", "12" = "Ex Deep Layer 01",
-  "13" = "Ex Unclassified 06"
+file_list$D72@active.ident <- file_list$D72$clustermap
+file_list$D72 <- RenameIdents(
+  file_list$D72,
+  "4" = "Ex Newborn 01", "16" = "Ex Newborn 02", "2" = "Ex Upper Layer 01",
+  "1" = "Ex Upper Layer 02", "11" = "Ex Upper Layer 03", "13" = "Ex Upper Layer 04",
+  "5" = "Ex Deep Layer 01", "18" = "Ex Deep Layer 02", "17" = "Ex Deep Layer 03",
+  "11" = "Ex Deep Layer 04", "3" = "Ex Deep Layer 05", "6" = "Ex Deep Layer 06",
+  "7" = "Ex Upper Layer 06", "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07",
+  "15" = "Ex Upper Layer 05", "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01",
+  "10" = "Ex Unclassified 02"
 )
-timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
-red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
-  ggtitle("D72")
+file_list$D72$clustermap_names <- factor(as.character(file_list$D72@active.ident))
+file_list$D72$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(file_list$D72$clustermap_names))
+)
+red_dim_plot(file_list$D72, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D72")
+red_dim_plot(file_list$D72, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D72")
 
-sub_seurat$clustermap_genotype_names <- factor(
-  sub(
-    "\\s+[^ ]+$", "",
-    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
-  )
+file_list$comb@active.ident <- file_list$comb$clustermap
+file_list$comb <- RenameIdents(
+  file_list$comb,
+  "4" = "Ex Newborn 01", "16" = "Ex Newborn 02", "2" = "Ex Upper Layer 01",
+  "1" = "Ex Upper Layer 02", "11" = "Ex Upper Layer 03", "13" = "Ex Upper Layer 04",
+  "5" = "Ex Deep Layer 01", "18" = "Ex Deep Layer 02", "17" = "Ex Deep Layer 03",
+  "11" = "Ex Deep Layer 04", "3" = "Ex Deep Layer 05", "6" = "Ex Deep Layer 06",
+  "7" = "Ex Upper Layer 06", "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07",
+  "15" = "Ex Upper Layer 05", "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01",
+  "10" = "Ex Unclassified 02"
 )
-red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+file_list$comb$clustermap_names <- factor(as.character(file_list$comb@active.ident))
+file_list$comb$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(file_list$comb$clustermap_names))
+)
+red_dim_plot(file_list$comb, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120 + D72")
+red_dim_plot(file_list$comb, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D120 + D72")
 
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
-  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -622,7 +636,7 @@ DefaultAssay(sub_seurat) <- "RNA"
 sub_seurat[["SCT"]] <- NULL
 sub_name <- "RG"
 sub_seurat <- cluster_pipeline(
-  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE
+  sub_seurat, cache_dir, sub_name, protocol, vars_to_regress, parallel_override, FALSE, 500
 )
 sub_seurat
 
@@ -657,7 +671,8 @@ for (i in seq_along(timepoint_seurat)) {
   timepoint_seurat[[i]][["SCT"]] <- NULL
   save_name <- paste(sub_name, unique(timepoint_seurat[[i]]$timepoint), sep = "_")
   timepoint_seurat[[i]] <- cluster_pipeline(
-    timepoint_seurat[[i]], cache_dir, save_name, protocol, vars_to_regress, parallel_override, FALSE
+    timepoint_seurat[[i]], cache_dir, save_name, protocol,
+    vars_to_regress, parallel_override, FALSE, 500
   )
   print(timepoint_seurat[[i]])
 
@@ -701,7 +716,7 @@ for (i in seq_along(D120_genotype_seurat)) {
   )
   D120_genotype_seurat[[i]] <- cluster_pipeline(
     D120_genotype_seurat[[i]], cache_dir, save_name, protocol,
-    vars_to_regress, parallel_override, FALSE
+    vars_to_regress, parallel_override, FALSE, 500
   )
   print(D120_genotype_seurat[[i]])
 
@@ -758,7 +773,7 @@ for (i in seq_along(D72_genotype_seurat)) {
   )
   D72_genotype_seurat[[i]] <- cluster_pipeline(
     D72_genotype_seurat[[i]], cache_dir, save_name, protocol,
-    vars_to_regress, parallel_override, FALSE
+    vars_to_regress, parallel_override, FALSE, 500
   )
   print(D72_genotype_seurat[[i]])
 
@@ -844,7 +859,7 @@ if (!dir.exists(out_dir)) {
     comb_obj = file_list$comb,
     comb_delim = "_",
     reduction = "umap",
-    edge_cutoff = 0.1
+    edge_cutoff = 0.01
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -916,7 +931,7 @@ if (!dir.exists(out_dir)) {
     comb_obj = file_list$comb,
     comb_delim = "_",
     reduction = "umap",
-    edge_cutoff = 0.1
+    edge_cutoff = 0.01
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -980,7 +995,7 @@ if (!dir.exists(out_dir)) {
     marker_file_list, output = file.path(out_dir, sub_name),
     single_obj_list = c(D120 = file_list$D120, D72 = file_list$D72), comb_obj = file_list$comb,
     comb_delim = "_", reduction = "umap",
-    edge_cutoff = 0.1
+    edge_cutoff = 0.01
   )
   files <- c(list.files(pattern = "*.png"), list.files(pattern = "*.pdf"))
   move_files(files, out_dir, TRUE)
@@ -1030,58 +1045,112 @@ datatable_download(clustermap_markers)
 ## Annotations
 
 ```{r}
-timepoint_seurat$D120@active.ident <- timepoint_seurat$D120$clustermap
-timepoint_seurat$D120 <- RenameIdents(
-  timepoint_seurat$D120,
-  "1" = "RG Early 01", "2" = "RG Late 08",
-  "3" = "RG Astrocyte 01", "4" = "RG Late 03",
-  "5" = "RG Late 04", "6" = "RG Late 01",
-  "7" = "RG Late 05", "8" = "RG OPC 01",
-  "9" = "RG Late 07", "10" = "RG Unclassified 01",
-  "11" = "RG Late 02", "12" = "RG Late 06",
-  "13" = "RG Astrocyte 02"
+file_list$D120@active.ident <- file_list$D120$clustermap
+file_list$D120 <- RenameIdents(
+  file_list$D120,
+  "12" = "RG Astrocyte 02", "8" = "RG Astrocyte 01", "30" = "RG Astrocyte 03",
+  "38" = "RG Astrocyte 04", "28" = "RG OPC 01", "15" = "RG OPC 03",
+  "2" = "RG Early 01", "4" = "RG Early 02", "7" = "RG Early 03",
+  "16" = "RG Early 04", "32" = "RG Early 05", "33" = "RG Early 06",
+  "54" = "RG Early 07", "60" = "RG Early 08", "50" = "RG Early 09",
+  "61" = "RG Early 10", "44" = "RG Early 11", "42" = "RG Early 14",
+  "14" = "RG Late 01", "21" = "RG Late 02", "11" = "RG Late 03",
+  "1" = "RG Late 04", "6" = "RG Late 05", "27" = "RG Late 06",
+  "29" = "RG Astrocyte 05", "20" = "RG Astrocyte 06", "34" = "RG Late 07",
+  "24" = "RG Unclassified 05", "25" = "RG Late 08", "26" = "RG Astrocyte 07",
+  "36" = "RG Late 09", "17" = "RG Late 10", "59" = "RG Late 11",
+  "58" = "RG Late 12", "53" = "RG Late 13", "18" = "RG Late 14",
+  "51" = "RG Late 15", "62" = "RG Late 16", "56" = "RG Late 17",
+  "45" = "RG Late 18", "55" = "RG Late 19", "41" = "RG Late 20",
+  "37" = "RG Late 21", "19" = "RG Late 22", "39" = "RG Early 12",
+  "9" = "RG Early 13", "13" = "RG Astrocyte 08", "31" = "RG OPC 02",
+  "3" = "RG Unclassified 02", "10" = "RG Unclassified 03", "35" = "RG Unclassified 04",
+  "43" = "RG Unclassified 06", "46" = "RG Unclassified 07", "49" = "RG Unclassified 08",
+  "40" = "RG Unclassified 09", "47" = "RG Unclassified 10", "38" = "RG Unclassified 11",
+  "48" = "RG Unclassified 12", "24" = "RG Unclassified 13", "57" = "RG Unclassified 14",
+  "51" = "RG Unclassified 15", "22" = "RG Unclassified 16", "52" = "RG Unclassified 17",
+  "23" = "RG Unclassified 18", "5" = "RG Unclassified 01"
 )
-timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
-red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
-  ggtitle("D120")
+file_list$D120$clustermap_names <- factor(as.character(file_list$D120@active.ident))
+file_list$D120$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(file_list$D120$clustermap_names))
+)
+red_dim_plot(file_list$D120, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120")
+red_dim_plot(file_list$D120, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D120")
 
-timepoint_seurat$D72@active.ident <- timepoint_seurat$D72$clustermap
-timepoint_seurat$D72 <- RenameIdents(
-  timepoint_seurat$D72,
-  "1" = "RG Unclassified 01", "2" = "RG Late 07",
-  "3" = "RG Early 01", "4" = "RG Early 02",
-  "5" = "RG Late 06", "6" = "RG Unclassified 11",
-  "7" = "RG Late 09", "8" = "RG Late 01",
-  "9" = "RG Unclassified 06", "10" = "RG Unclassified 05",
-  "11" = "RG Late 02", "12" = "RG Unclassified 04",
-  "13" = "RG Late 03", "14" = "RG Unclassified 13",
-  "15" = "RG Unclassified 10", "16" = "RG Late 08",
-  "17" = "RG Unclassified 08", "18" = "RG Unclassified 07",
-  "19" = "RG Unclassified 09", "20" = "RG Early 03",
-  "21" = "RG Unclassified 03", "22" = "RG Unclassified 12",
-  "23" = "RG Late 04", "24" = "RG Late 05",
-  "25" = "RG Unclassified 02"
+file_list$D72@active.ident <- file_list$D72$clustermap
+file_list$D72 <- RenameIdents(
+  file_list$D72,
+  "12" = "RG Astrocyte 02", "8" = "RG Astrocyte 01", "30" = "RG Astrocyte 03",
+  "38" = "RG Astrocyte 04", "28" = "RG OPC 01", "15" = "RG OPC 03",
+  "2" = "RG Early 01", "4" = "RG Early 02", "7" = "RG Early 03",
+  "16" = "RG Early 04", "32" = "RG Early 05", "33" = "RG Early 06",
+  "54" = "RG Early 07", "60" = "RG Early 08", "50" = "RG Early 09",
+  "61" = "RG Early 10", "44" = "RG Early 11", "42" = "RG Early 14",
+  "14" = "RG Late 01", "21" = "RG Late 02", "11" = "RG Late 03",
+  "1" = "RG Late 04", "6" = "RG Late 05", "27" = "RG Late 06",
+  "29" = "RG Astrocyte 05", "20" = "RG Astrocyte 06", "34" = "RG Late 07",
+  "24" = "RG Unclassified 05", "25" = "RG Late 08", "26" = "RG Astrocyte 07",
+  "36" = "RG Late 09", "17" = "RG Late 10", "59" = "RG Late 11",
+  "58" = "RG Late 12", "53" = "RG Late 13", "18" = "RG Late 14",
+  "51" = "RG Late 15", "62" = "RG Late 16", "56" = "RG Late 17",
+  "45" = "RG Late 18", "55" = "RG Late 19", "41" = "RG Late 20",
+  "37" = "RG Late 21", "19" = "RG Late 22", "39" = "RG Early 12",
+  "9" = "RG Early 13", "13" = "RG Astrocyte 08", "31" = "RG OPC 02",
+  "3" = "RG Unclassified 02", "10" = "RG Unclassified 03", "35" = "RG Unclassified 04",
+  "43" = "RG Unclassified 06", "46" = "RG Unclassified 07", "49" = "RG Unclassified 08",
+  "40" = "RG Unclassified 09", "47" = "RG Unclassified 10", "38" = "RG Unclassified 11",
+  "48" = "RG Unclassified 12", "24" = "RG Unclassified 13", "57" = "RG Unclassified 14",
+  "51" = "RG Unclassified 15", "22" = "RG Unclassified 16", "52" = "RG Unclassified 17",
+  "23" = "RG Unclassified 18", "5" = "RG Unclassified 01"
 )
-timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
-red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
-  ggtitle("D72")
+file_list$D72$clustermap_names <- factor(as.character(file_list$D72@active.ident))
+file_list$D72$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(file_list$D72$clustermap_names))
+)
+red_dim_plot(file_list$D72, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D72")
+red_dim_plot(file_list$D72, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D72")
 
-sub_seurat$clustermap_genotype_names <- factor(
-  sub(
-    "\\s+[^ ]+$", "",
-    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
-  )
+file_list$comb@active.ident <- file_list$comb$clustermap
+file_list$comb <- RenameIdents(
+  file_list$comb,
+  "12" = "RG Astrocyte 02", "8" = "RG Astrocyte 01", "30" = "RG Astrocyte 03",
+  "38" = "RG Astrocyte 04", "28" = "RG OPC 01", "15" = "RG OPC 03",
+  "2" = "RG Early 01", "4" = "RG Early 02", "7" = "RG Early 03",
+  "16" = "RG Early 04", "32" = "RG Early 05", "33" = "RG Early 06",
+  "54" = "RG Early 07", "60" = "RG Early 08", "50" = "RG Early 09",
+  "61" = "RG Early 10", "44" = "RG Early 11", "42" = "RG Early 14",
+  "14" = "RG Late 01", "21" = "RG Late 02", "11" = "RG Late 03",
+  "1" = "RG Late 04", "6" = "RG Late 05", "27" = "RG Late 06",
+  "29" = "RG Astrocyte 05", "20" = "RG Astrocyte 06", "34" = "RG Late 07",
+  "24" = "RG Unclassified 05", "25" = "RG Late 08", "26" = "RG Astrocyte 07",
+  "36" = "RG Late 09", "17" = "RG Late 10", "59" = "RG Late 11",
+  "58" = "RG Late 12", "53" = "RG Late 13", "18" = "RG Late 14",
+  "51" = "RG Late 15", "62" = "RG Late 16", "56" = "RG Late 17",
+  "45" = "RG Late 18", "55" = "RG Late 19", "41" = "RG Late 20",
+  "37" = "RG Late 21", "19" = "RG Late 22", "39" = "RG Early 12",
+  "9" = "RG Early 13", "13" = "RG Astrocyte 08", "31" = "RG OPC 02",
+  "3" = "RG Unclassified 02", "10" = "RG Unclassified 03", "35" = "RG Unclassified 04",
+  "43" = "RG Unclassified 06", "46" = "RG Unclassified 07", "49" = "RG Unclassified 08",
+  "40" = "RG Unclassified 09", "47" = "RG Unclassified 10", "38" = "RG Unclassified 11",
+  "48" = "RG Unclassified 12", "24" = "RG Unclassified 13", "57" = "RG Unclassified 14",
+  "51" = "RG Unclassified 15", "22" = "RG Unclassified 16", "52" = "RG Unclassified 17",
+  "23" = "RG Unclassified 18", "5" = "RG Unclassified 01"
 )
-red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
+file_list$comb$clustermap_names <- factor(as.character(file_list$comb@active.ident))
+file_list$comb$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(file_list$comb$clustermap_names))
+)
+red_dim_plot(file_list$comb, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120 + D72")
+red_dim_plot(file_list$comb, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D120 + D72")
 
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
-  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1266,37 +1335,41 @@ for (i in seq_along(D72_genotype_seurat)) {
 ## Annotations
 
 ```{r}
-timepoint_seurat$D120 <- RenameIdents(
-  timepoint_seurat$D120,
-  "0" = "IPC 03", "1" = "IPC 06",
-  "2" = "IPC 04", "3" = "IPC 02",
-  "4" = "IPC 07", "5" = "IPC 05",
-  "6" = "IPC 01", "7" = "IPC 08"
+sub_seurat <- RenameIdents(
+  sub_seurat,
+  "2" = "IPC 01", "0" = "IPC 02", "9" = "IPC 03",
+  "1" = "IPC 04", "12" = "IPC 05", "17" = "IPC 06",
+  "3" = "IPC 07", "4" = "IPC 08", "7" = "IPC 09",
+  "13" = "IPC 10", "8" = "IPC 11", "10" = "IPC 12",
+  "14" = "IPC 13", "16" = "IPC 14", "15" = "IPC 15",
+  "11" = "IPC 16", "5" = "IPC 17", "6" = "IPC 18"
 )
-timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
-red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+sub_seurat$clustermap_names <- factor(as.character(sub_seurat@active.ident))
+sub_seurat$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(sub_seurat$clustermap_names))
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120 + D72")
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D120 + D72")
+
+timepoint_seurat$D120$clustermap_names <- factor(
+  sub_seurat$clustermap_names[1:ncol(timepoint_seurat$D120)]
+)
+timepoint_seurat$D120$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[1:ncol(timepoint_seurat$D120)]
+)
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120")
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D120")
 
-timepoint_seurat$D72 <- RenameIdents(
-  timepoint_seurat$D72,
-  "0" = "IPC 10", "1" = "IPC 08",
-  "2" = "IPC 07", "3" = "IPC 02",
-  "4" = "IPC 03", "5" = "IPC 06",
-  "6" = "IPC 01", "7" = "IPC 09",
-  "8" = "IPC 05", "9" = "IPC 04"
+timepoint_seurat$D72$clustermap_names <- factor(
+  sub_seurat$clustermap_names[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
 )
-timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
-red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+timepoint_seurat$D72$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
+)
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D72")
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
-
-sub_seurat$clustermap_genotype_names <- factor(
-  sub(
-    "\\s+[^ ]+$", "",
-    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
-  )
-)
-red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
-  ggtitle("D120 + D72")
 
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
@@ -1304,7 +1377,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1489,38 +1562,44 @@ for (i in seq_along(D72_genotype_seurat)) {
 ## Annotations
 
 ```{r}
-timepoint_seurat$D120 <- RenameIdents(
-  timepoint_seurat$D120,
-  "0" = "In Unclassified 01", "1" = "In 02",
-  "2" = "In 01", "3" = "In 03"
+sub_seurat <- RenameIdents(
+  sub_seurat,
+  "14" = "In Unclassified 01", "8" = "In Unclassified 02", "7" = "In Unclassified 03",
+  "13" = "In Unclassified 04", "18" = "In Unclassified 05", "22" = "In Unclassified 06",
+  "24" = "In Unclassified 07", "1" = "In 01", "4" = "In 02",
+  "2" = "In 03", "19" = "In 04", "10" = "In 05",
+  "12" = "In 06", "11" = "In 07", "3" = "In 08",
+  "20" = "In 09", "16" = "In 10", "15" = "In 11",
+  "0" = "In 12", "23" = "In 13", "9" = "In 14",
+  "17" = "In 15", "5" = "In 16", "21" = "In 17",
+  "6" = "In 18"
 )
-timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
-red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+sub_seurat$clustermap_names <- factor(as.character(sub_seurat@active.ident))
+sub_seurat$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(sub_seurat$clustermap_names))
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120 + D72")
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D120 + D72")
+
+timepoint_seurat$D120$clustermap_names <- factor(
+  sub_seurat$clustermap_names[1:ncol(timepoint_seurat$D120)]
+)
+timepoint_seurat$D120$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[1:ncol(timepoint_seurat$D120)]
+)
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120")
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D120")
 
-timepoint_seurat$D72 <- RenameIdents(
-  timepoint_seurat$D72,
-  "0" = "In 02", "1" = "In 13",
-  "2" = "In Unclassified 01", "3" = "In 11",
-  "4" = "In 07", "5" = "In 05",
-  "6" = "In 10", "7" = "In 01",
-  "8" = "In Unclassified 03", "9" = "In 06",
-  "10" = "In 09", "11" = "In 08",
-  "12" = "In Unclassified 02", "13" = "In 12",
-  "14" = "In 04", "15" = "In 03"
+timepoint_seurat$D72$clustermap_names <- factor(
+  sub_seurat$clustermap_names[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
 )
-timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
-red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+timepoint_seurat$D72$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
+)
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D72")
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
-
-sub_seurat$clustermap_genotype_names <- factor(
-  sub(
-    "\\s+[^ ]+$", "",
-    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
-  )
-)
-red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
-  ggtitle("D120 + D72")
 
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
@@ -1528,7 +1607,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1713,30 +1792,37 @@ for (i in seq_along(D72_genotype_seurat)) {
 ## Annotations
 
 ```{r}
-timepoint_seurat$D120 <- RenameIdents(
-  timepoint_seurat$D120,
-  "0" = "Mu 01"
+sub_seurat <- RenameIdents(
+  sub_seurat,
+  "0" = "Mu 01", "3" = "Mu 02", "4" = "Mu 03",
+  "2" = "Mu 04", "1" = "Mu 05"
 )
-timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
-red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+sub_seurat$clustermap_names <- factor(as.character(sub_seurat@active.ident))
+sub_seurat$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(sub_seurat$clustermap_names))
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120 + D72")
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D120 + D72")
+
+timepoint_seurat$D120$clustermap_names <- factor(
+  sub_seurat$clustermap_names[1:ncol(timepoint_seurat$D120)]
+)
+timepoint_seurat$D120$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[1:ncol(timepoint_seurat$D120)]
+)
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120")
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D120")
 
-timepoint_seurat$D72 <- RenameIdents(
-  timepoint_seurat$D72,
-  "0" = "Mu 02", "1" = "Mu 01"
+timepoint_seurat$D72$clustermap_names <- factor(
+  sub_seurat$clustermap_names[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
 )
-timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
-red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+timepoint_seurat$D72$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
+)
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D72")
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
-
-sub_seurat$clustermap_genotype_names <- factor(
-  sub(
-    "\\s+[^ ]+$", "",
-    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
-  )
-)
-red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
-  ggtitle("D120 + D72")
 
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
@@ -1744,7 +1830,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1929,33 +2015,39 @@ for (i in seq_along(D72_genotype_seurat)) {
 ## Annotations
 
 ```{r}
-timepoint_seurat$D120 <- RenameIdents(
-  timepoint_seurat$D120,
-  "0" = "Unc 05", "1" = "Unc 04",
-  "2" = "Unc 01", "3" = "Unc 03",
-  "4" = "Unc 02"
+sub_seurat <- RenameIdents(
+  sub_seurat,
+  "0" = "Unc 01", "6" = "Unc 02", "1" = "Unc 03",
+  "3" = "Unc 04", "4" = "Unc 05", "10" = "Unc 06",
+  "9" = "Unc 07", "2" = "Unc 08", "8" = "Unc 09",
+  "7" = "Unc 10", "5" = "Unc 11"
 )
-timepoint_seurat$D120$clustermap_names <- factor(as.character(timepoint_seurat$D120@active.ident))
-red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") +
+sub_seurat$clustermap_names <- factor(as.character(sub_seurat@active.ident))
+sub_seurat$clustermap_names_short <- factor(
+  sub("\\s+[^ ]+$", "", as.character(sub_seurat$clustermap_names))
+)
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120 + D72")
+red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_names_short", "cat") + ggtitle("D120 + D72")
+
+timepoint_seurat$D120$clustermap_names <- factor(
+  sub_seurat$clustermap_names[1:ncol(timepoint_seurat$D120)]
+)
+timepoint_seurat$D120$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[1:ncol(timepoint_seurat$D120)]
+)
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D120")
+red_dim_plot(timepoint_seurat$D120, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D120")
 
-timepoint_seurat$D72 <- RenameIdents(
-  timepoint_seurat$D72,
-  "0" = "Unc 02", "1" = "Unc 04",
-  "2" = "Unc 03", "3" = "Unc 01"
+timepoint_seurat$D72$clustermap_names <- factor(
+  sub_seurat$clustermap_names[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
 )
-timepoint_seurat$D72$clustermap_names <- factor(as.character(timepoint_seurat$D72@active.ident))
-red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") +
+timepoint_seurat$D72$clustermap_names_short <- factor(
+  sub_seurat$clustermap_names_short[(ncol(timepoint_seurat$D120) + 1):ncol(sub_seurat)]
+)
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") + ggtitle("D72")
+red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
-
-sub_seurat$clustermap_genotype_names <- factor(
-  sub(
-    "\\s+[^ ]+$", "",
-    as.character(c(timepoint_seurat$D120$clustermap_names, timepoint_seurat$D72$clustermap_names))
-  )
-)
-red_dim_plot(sub_seurat, "umap1", "umap2", "clustermap_genotype_names", "cat") +
-  ggtitle("D120 + D72")
 
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
@@ -1963,7 +2055,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_genotype_names))
+final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
