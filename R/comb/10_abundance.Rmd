@@ -1,0 +1,337 @@
+---
+title: "10 Differential Abundance - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "10_abundance.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 45px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we perform differential gene expression analysis.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Hongjun Fu, Ohio State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c("conflicted", "Seurat", "ggplot2")
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+analysis_no <- 10
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
+```
+
+# All
+
+```{r}
+seurat_list <- readRDS(file.path(cache_dir, "..", "03", "seurat.rds"))
+timepoint_seurat <- SplitObject(seurat_list, "timepoint")
+seurat_list <- c(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = seurat_list)
+rm(timepoint_seurat)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$subclusters, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Timepoint, Proportion, fill = Celltype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$comb$subclusters, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90))
+
+df <- as.data.frame(table(seurat_list$D120$subclusters, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90))
+
+df <- as.data.frame(table(seurat_list$D72$subclusters, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90))
+
+df <- as.data.frame(table(seurat_list$comb$cluster_names, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Timepoint, Proportion, fill = Celltype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$comb$cluster_names, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$cluster_names, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$cluster_names, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# Excitatory Neuron
+
+```{r}
+sub_name <- "Ex"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Timepoint, Proportion, fill = Celltype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$clustermap_names_short, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$clustermap_names_short, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# Radial Glia
+
+```{r}
+sub_name <- "RG"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Timepoint, Proportion, fill = Celltype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$clustermap_names_short, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$clustermap_names_short, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# IPC
+
+```{r}
+sub_name <- "IPC"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$clustermap_names_short, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$clustermap_names_short, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# Inhibitory Neuron
+
+```{r}
+sub_name <- "In"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$clustermap_names_short, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$clustermap_names_short, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# Mural
+
+```{r}
+sub_name <- "Mu"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$clustermap_names_short, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$clustermap_names_short, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# Unclassified
+
+```{r}
+sub_name <- "Unc"
+seurat_list <- readRDS(
+  file.path(cache_dir, "..", "03", paste(sub_name, "seurat_list.rds", sep = "_"))
+)
+
+for (i in seq_along(seurat_list)) {
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+}
+
+df <- as.data.frame(table(seurat_list$comb$clustermap_names_short, seurat_list$comb$timepoint))
+colnames(df) <- c("Celltype", "Timepoint", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Timepoint)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D120$clustermap_names_short, seurat_list$D120$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+
+df <- as.data.frame(table(seurat_list$D72$clustermap_names_short, seurat_list$D72$genotype))
+colnames(df) <- c("Celltype", "Genotype", "Proportion")
+ggplot(df, aes(Celltype, Proportion, fill = Genotype)) +
+  geom_bar(position = "fill", stat = "identity")
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
