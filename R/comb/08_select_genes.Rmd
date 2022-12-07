@@ -91,7 +91,7 @@ knitr::opts_chunk$set(fig.width = 12, fig.height = 7, dpi = 72)
 # Prep
 
 ```{r}
-gene_lists <- as.list(read.delim(file.path(data_dir, "gene-lists", "RNAscope-genes.csv")))
+gene_lists <- as.list(read.delim(file.path(data_dir, "gene-lists", "RNAscope-genes.tsv")))
 gene_lists <- lapply(gene_lists, function(x) x[!x == ""])
 ```
 
