@@ -78,7 +78,7 @@ results_dir <- file.path("..", "..", "results")
 
 # Unique cache directory for each analysis number.
 # ------------------------------------------------
-cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+cache_dir <- file.path("..", "..", "cache", data_name, analysis_no)
 if (!dir.exists(cache_dir)) {
   dir.create(cache_dir, recursive = TRUE)
 }
