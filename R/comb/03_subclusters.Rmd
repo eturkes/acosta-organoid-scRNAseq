@@ -622,6 +622,7 @@ if (!file.exists(rds)) {
 }
 
 final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
+final_annotations_long <- c(final_annotations, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1151,6 +1152,7 @@ if (!file.exists(rds)) {
 }
 
 final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
+final_annotations_long <- c(final_annotations, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1378,6 +1380,7 @@ if (!file.exists(rds)) {
 }
 
 final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations_long <- c(final_annotations, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1608,6 +1611,7 @@ if (!file.exists(rds)) {
 }
 
 final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations_long <- c(final_annotations, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -1831,6 +1835,7 @@ if (!file.exists(rds)) {
 }
 
 final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations_long <- c(final_annotations, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -2056,6 +2061,7 @@ if (!file.exists(rds)) {
 }
 
 final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations_long <- c(final_annotations, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
 
@@ -2063,9 +2069,12 @@ cell_order <- c(cell_order, colnames(sub_seurat))
 
 ```{r}
 final_annotations <- final_annotations[match(colnames(seurat), cell_order)]
+final_annotations_long <- final_annotations_long[match(colnames(seurat), cell_order)]
 
 seurat$subclusters <- factor(final_annotations)
+seurat$subclusters_long <- factor(final_annotations_long)
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters_long")
 
 rds <- file.path(cache_dir, "seurat.rds")
 if (!file.exists(rds)) {
