@@ -67,9 +67,10 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c("conflicted", "Seurat", "ggplot2", "scales")
+packages <- c("conflicted", "Seurat", "ggplot2", "scales", "scuttle", "edgeR", "DT")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
+conflict_prefer("cpm", "edgeR", quiet = TRUE)
 
 analysis_no <- 11
 data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
@@ -108,19 +109,248 @@ for (i in seq_along(sub_name)) {
 ```{r}
 gene <- "GRAMD1B"
 
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat, slot = "counts")))
+sce$sample <- seurat$sample
+sce$genotype <- seurat$genotype
+sce$timepoint <- seurat$timepoint
+sce$cluster_names <- seurat$cluster_names
+sce$sample_timepoint <- paste(sce$sample, sce$timepoint)
+sce$cluster_names_timepoint <- paste(sce$cluster_names, sce$timepoint)
+sce$cluster_names_genotype <- paste(sce$cluster_names, sce$genotype)
+sce$cluster_names_genotype_timepoint <- paste(sce$cluster_names_genotype, sce$timepoint)
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, colData(sce)[ , c("sample", "cluster_names")]))
+colnames(sce) <- sce$sample_timepoint
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
 VlnPlot(seurat, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat, gene, group.by = "subclusters", split.by = "timepoint") +
-  scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat, gene, group.by = "genotype", split.by = "timepoint") +
-  scale_fill_manual(values = hue_pal()(2))
 
-VlnPlot(seurat, gene, group.by = "cluster_names", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat, gene, group.by = "subclusters", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat, gene, group.by = "timepoint", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
+design <- model.matrix(~ 0 + sce$cluster_names_timepoint)
+colnames(design) <- c(
+  "D120_Ex", "D72_Ex",
+  "D120_In", "D72_In",
+  "D120_IPC", "D72_IPC",
+  "D120_Mu", "D72_Mu",
+  "D120_RG", "D72_RG",
+  "D120_Unc", "D72_Unc"
+)
+fit <- lmFit(logcounts(sce), design)
+
+contrast_mat <- makeContrasts(
+  D120_RG_All = D120_RG - (D120_Ex + D120_Unc + D120_IPC + D120_In + D120_Mu) / 5,
+  D120_Ex_All = D120_Ex - (D120_RG + D120_Unc + D120_IPC + D120_In + D120_Mu) / 5,
+  D120_Unc_All = D120_Unc - (D120_Ex + D120_RG + D120_IPC + D120_In + D120_Mu) / 5,
+  D120_IPC_All = D120_IPC - (D120_Ex + D120_RG + D120_Unc + D120_In + D120_Mu) / 5,
+  D120_In_All = D120_In - (D120_Ex + D120_RG + D120_IPC + D120_Unc + D120_Mu) / 5,
+  D120_Mu_All = D120_Mu - (D120_Ex + D120_RG + D120_IPC + D120_In + D120_In) / 5,
+  D72_RG_All = D72_RG - (D72_Ex + D72_Unc + D72_IPC + D72_In + D72_Mu) / 5,
+  D72_Ex_All = D72_Ex - (D72_RG + D72_Unc + D72_IPC + D72_In + D72_Mu) / 5,
+  D72_Unc_All = D72_Unc - (D72_Ex + D72_RG + D72_IPC + D72_In + D72_Mu) / 5,
+  D72_IPC_All = D72_IPC - (D72_Ex + D72_RG + D72_Unc + D72_In + D72_Mu) / 5,
+  D72_In_All = D72_In - (D72_Ex + D72_RG + D72_IPC + D72_Unc + D72_Mu) / 5,
+  D72_Mu_All = D72_Mu - (D72_Ex + D72_RG + D72_IPC + D72_In + D72_In) / 5,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "D120_IPC_All", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "D72_IPC_All", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+contrast_mat <- makeContrasts(
+  RG_timepoint = D120_RG - D72_RG,
+  Ex_timepoint = D120_Ex - D72_Ex,
+  Unc_timepoint = D120_Unc - D72_Unc,
+  IPC_timepoint = D120_IPC - D72_IPC,
+  Mu_timepoint = D120_Mu - D72_Mu,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "IPC_timepoint", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+design <- model.matrix(~ 0 + sce$cluster_names_genotype)
+colnames(design) <- c(
+  "HET_Ex", "HOM_Ex", "WT_Ex",
+  "HET_In", "HOM_In", "WT_In",
+  "HET_IPC", "HOM_IPC", "WT_IPC",
+  "HET_Mu", "HOM_Mu", "WT_Mu",
+  "HET_RG", "HOM_RG", "WT_RG",
+  "HET_Unc", "HOM_Unc", "WT_Unc"
+)
+fit <- lmFit(logcounts(sce), design)
+
+contrast_mat <- makeContrasts(
+  HOM_RG_All = HOM_RG - (HOM_Ex + HOM_Unc + HOM_IPC + HOM_In + HOM_Mu) / 5,
+  HOM_Ex_All = HOM_Ex - (HOM_RG + HOM_Unc + HOM_IPC + HOM_In + HOM_Mu) / 5,
+  HOM_Unc_All = HOM_Unc - (HOM_Ex + HOM_RG + HOM_IPC + HOM_In + HOM_Mu) / 5,
+  HOM_IPC_All = HOM_IPC - (HOM_Ex + HOM_RG + HOM_Unc + HOM_In + HOM_Mu) / 5,
+  HOM_In_All = HOM_In - (HOM_Ex + HOM_RG + HOM_IPC + HOM_Unc + HOM_Mu) / 5,
+  HOM_Mu_All = HOM_Mu - (HOM_Ex + HOM_RG + HOM_IPC + HOM_In + HOM_In) / 5,
+  HET_RG_All = HET_RG - (HET_Ex + HET_Unc + HET_IPC + HET_In + HET_Mu) / 5,
+  HET_Ex_All = HET_Ex - (HET_RG + HET_Unc + HET_IPC + HET_In + HET_Mu) / 5,
+  HET_Unc_All = HET_Unc - (HET_Ex + HET_RG + HET_IPC + HET_In + HET_Mu) / 5,
+  HET_IPC_All = HET_IPC - (HET_Ex + HET_RG + HET_Unc + HET_In + HET_Mu) / 5,
+  HET_In_All = HET_In - (HET_Ex + HET_RG + HET_IPC + HET_Unc + HET_Mu) / 5,
+  HET_Mu_All = HET_Mu - (HET_Ex + HET_RG + HET_IPC + HET_In + HET_In) / 5,
+  WT_RG_All = WT_RG - (WT_Ex + WT_Unc + WT_IPC + WT_In + WT_Mu) / 5,
+  WT_Ex_All = WT_Ex - (WT_RG + WT_Unc + WT_IPC + WT_In + WT_Mu) / 5,
+  WT_Unc_All = WT_Unc - (WT_Ex + WT_RG + WT_IPC + WT_In + WT_Mu) / 5,
+  WT_IPC_All = WT_IPC - (WT_Ex + WT_RG + WT_Unc + WT_In + WT_Mu) / 5,
+  WT_In_All = WT_In - (WT_Ex + WT_RG + WT_IPC + WT_Unc + WT_Mu) / 5,
+  WT_Mu_All = WT_Mu - (WT_Ex + WT_RG + WT_IPC + WT_In + WT_In) / 5,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "HOM_IPC_All", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "HET_IPC_All", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "WT_IPC_All", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+contrast_mat <- makeContrasts(
+  RG_genotype_HOM = HOM_RG - (HET_RG + WT_RG) / 2,
+  RG_genotype_HET = HET_RG - (HOM_RG + WT_RG) / 2,
+  RG_genotype_WT = WT_RG - (HOM_RG + HET_RG) / 2,
+  Ex_genotype_HOM = HOM_Ex - (HET_Ex + WT_Ex) / 2,
+  Ex_genotype_HET = HET_Ex - (HOM_Ex + WT_Ex) / 2,
+  Ex_genotype_WT = WT_Ex - (HOM_Ex + HET_Ex) / 2,
+  Unc_genotype_HOM = HOM_Unc - (HET_Unc + WT_Unc) / 2,
+  Unc_genotype_HET = HET_Unc - (HOM_Unc + WT_Unc) / 2,
+  Unc_genotype_WT = WT_Unc - (HOM_Unc + HET_Unc) / 2,
+  IPC_genotype_HOM = HOM_IPC - (HET_IPC + WT_IPC) / 2,
+  IPC_genotype_HET = HET_IPC - (HOM_IPC + WT_IPC) / 2,
+  IPC_genotype_WT = WT_IPC - (HOM_IPC + HET_IPC) / 2,
+  In_genotype_HOM = HOM_In - (HET_In + WT_In) / 2,
+  In_genotype_HET = HET_In - (HOM_In + WT_In) / 2,
+  In_genotype_WT = WT_In - (HOM_In + HET_In) / 2,
+  Mu_genotype_HOM = HOM_Mu - (HET_Mu + WT_Mu) / 2,
+  Mu_genotype_HET = HET_Mu - (HOM_Mu + WT_Mu) / 2,
+  Mu_genotype_WT = WT_Mu - (HOM_Mu + HET_Mu) / 2,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "IPC_genotype_HOM", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "IPC_genotype_HET", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "IPC_genotype_WT", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+design <- model.matrix(~ 0 + sce$cluster_names_genotype_timepoint)
+colnames(design) <- c(
+  "D120_HET_Ex", "D72_HET_Ex",
+  "D120_HOM_Ex", "D72_HOM_Ex",
+  "D120_WT_Ex", "D72_WT_Ex",
+  "D120_HET_In", "D72_HET_In",
+  "D120_HOM_In", "D72_HOM_In",
+  "D120_WT_In", "D72_WT_In",
+  "D120_HET_IPC", "D72_HET_IPC",
+  "D120_HOM_IPC", "D72_HOM_IPC",
+  "D120_WT_IPC", "D72_WT_IPC",
+  "D120_HET_Mu", "D72_HET_Mu",
+  "D120_HOM_Mu", "D72_HOM_Mu",
+  "D120_WT_Mu", "D72_WT_Mu",
+  "D120_HET_RG", "D72_HET_RG",
+  "D120_HOM_RG", "D72_HOM_RG",
+  "D120_WT_RG", "D72_WT_RG",
+  "D120_HET_Unc", "D72_HET_Unc",
+  "D120_HOM_Unc", "D72_HOM_Unc",
+  "D120_WT_Unc", "D72_WT_Unc"
+)
+fit <- lmFit(logcounts(sce), design)
+
+contrast_mat <- makeContrasts(
+  D120_RG_genotype_HOM = D120_HOM_RG - (D120_HET_RG + D120_WT_RG) / 2,
+  D120_RG_genotype_HET = D120_HET_RG - (D120_HOM_RG + D120_WT_RG) / 2,
+  D120_RG_genotype_WT = D120_WT_RG - (D120_HOM_RG + D120_HET_RG) / 2,
+  D120_Ex_genotype_HOM = D120_HOM_Ex - (D120_HET_Ex + D120_WT_Ex) / 2,
+  D120_Ex_genotype_HET = D120_HET_Ex - (D120_HOM_Ex + D120_WT_Ex) / 2,
+  D120_Ex_genotype_WT = D120_WT_Ex - (D120_HOM_Ex + D120_HET_Ex) / 2,
+  D120_Unc_genotype_HOM = D120_HOM_Unc - (D120_HET_Unc + D120_WT_Unc) / 2,
+  D120_Unc_genotype_HET = D120_HET_Unc - (D120_HOM_Unc + D120_WT_Unc) / 2,
+  D120_Unc_genotype_WT = D120_WT_Unc - (D120_HOM_Unc + D120_HET_Unc) / 2,
+  D120_IPC_genotype_HOM = D120_HOM_IPC - (D120_HET_IPC + D120_WT_IPC) / 2,
+  D120_IPC_genotype_HET = D120_HET_IPC - (D120_HOM_IPC + D120_WT_IPC) / 2,
+  D120_IPC_genotype_WT = D120_WT_IPC - (D120_HOM_IPC + D120_HET_IPC) / 2,
+  D120_In_genotype_HOM = D120_HOM_In - (D120_HET_In + D120_WT_In) / 2,
+  D120_In_genotype_HET = D120_HET_In - (D120_HOM_In + D120_WT_In) / 2,
+  D120_In_genotype_WT = D120_WT_In - (D120_HOM_In + D120_HET_In) / 2,
+  D120_Mu_genotype_HOM = D120_HOM_Mu - (D120_HET_Mu + D120_WT_Mu) / 2,
+  D120_Mu_genotype_HET = D120_HET_Mu - (D120_HOM_Mu + D120_WT_Mu) / 2,
+  D120_Mu_genotype_WT = D120_WT_Mu - (D120_HOM_Mu + D120_HET_Mu) / 2,
+  D72_RG_genotype_HOM = D72_HOM_RG - (D72_HET_RG + D72_WT_RG) / 2,
+  D72_RG_genotype_HET = D72_HET_RG - (D72_HOM_RG + D72_WT_RG) / 2,
+  D72_RG_genotype_WT = D72_WT_RG - (D72_HOM_RG + D72_HET_RG) / 2,
+  D72_Ex_genotype_HOM = D72_HOM_Ex - (D72_HET_Ex + D72_WT_Ex) / 2,
+  D72_Ex_genotype_HET = D72_HET_Ex - (D72_HOM_Ex + D72_WT_Ex) / 2,
+  D72_Ex_genotype_WT = D72_WT_Ex - (D72_HOM_Ex + D72_HET_Ex) / 2,
+  D72_Unc_genotype_HOM = D72_HOM_Unc - (D72_HET_Unc + D72_WT_Unc) / 2,
+  D72_Unc_genotype_HET = D72_HET_Unc - (D72_HOM_Unc + D72_WT_Unc) / 2,
+  D72_Unc_genotype_WT = D72_WT_Unc - (D72_HOM_Unc + D72_HET_Unc) / 2,
+  D72_IPC_genotype_HOM = D72_HOM_IPC - (D72_HET_IPC + D72_WT_IPC) / 2,
+  D72_IPC_genotype_HET = D72_HET_IPC - (D72_HOM_IPC + D72_WT_IPC) / 2,
+  D72_IPC_genotype_WT = D72_WT_IPC - (D72_HOM_IPC + D72_HET_IPC) / 2,
+  D72_In_genotype_HOM = D72_HOM_In - (D72_HET_In + D72_WT_In) / 2,
+  D72_In_genotype_HET = D72_HET_In - (D72_HOM_In + D72_WT_In) / 2,
+  D72_In_genotype_WT = D72_WT_In - (D72_HOM_In + D72_HET_In) / 2,
+  D72_Mu_genotype_HOM = D72_HOM_Mu - (D72_HET_Mu + D72_WT_Mu) / 2,
+  D72_Mu_genotype_HET = D72_HET_Mu - (D72_HOM_Mu + D72_WT_Mu) / 2,
+  D72_Mu_genotype_WT = D72_WT_Mu - (D72_HOM_Mu + D72_HET_Mu) / 2,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "D120_IPC_genotype_HOM", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "D120_IPC_genotype_HET", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "D120_IPC_genotype_WT", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "D72_IPC_genotype_HOM", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "D72_IPC_genotype_HET", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
+
+top <- topTable(cont_fit, "D72_IPC_genotype_WT", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+datatable_download_exp(top)
 ```
 
 ## Excitatory Neuron
