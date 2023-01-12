@@ -182,6 +182,9 @@ top$gene <- rownames(top)
 cat("D120 IPC vs. D72 IPC")
 datatable_download_exp(top)
 
+VlnPlot(seurat, gene, group.by = "cluster_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+
 design <- model.matrix(~ 0 + sce$cluster_names_genotype)
 colnames(design) <- c(
   "HET_Ex", "HOM_Ex", "WT_Ex",
