@@ -158,10 +158,12 @@ summary(decideTests(cont_fit))
 
 top <- topTable(cont_fit, "D120_IPC_All", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("D120 IPC vs. D120 All")
 datatable_download_exp(top)
 
 top <- topTable(cont_fit, "D72_IPC_All", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("D72 IPC vs. D72 All")
 datatable_download_exp(top)
 
 contrast_mat <- makeContrasts(
@@ -177,6 +179,7 @@ summary(decideTests(cont_fit))
 
 top <- topTable(cont_fit, "IPC_timepoint", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("D120 IPC vs. D72 IPC")
 datatable_download_exp(top)
 
 design <- model.matrix(~ 0 + sce$cluster_names_genotype)
@@ -216,14 +219,17 @@ summary(decideTests(cont_fit))
 
 top <- topTable(cont_fit, "HOM_IPC_All", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("HOM IPC vs. HOM All")
 datatable_download_exp(top)
 
 top <- topTable(cont_fit, "HET_IPC_All", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("HET IPC vs. HET All")
 datatable_download_exp(top)
 
 top <- topTable(cont_fit, "WT_IPC_All", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("WT IPC vs. WT All")
 datatable_download_exp(top)
 
 contrast_mat <- makeContrasts(
@@ -252,14 +258,17 @@ summary(decideTests(cont_fit))
 
 top <- topTable(cont_fit, "IPC_genotype_HOM", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("HOM IPC vs. HET+WT IPC")
 datatable_download_exp(top)
 
 top <- topTable(cont_fit, "IPC_genotype_HET", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("HET IPC vs. HOM+WT IPC")
 datatable_download_exp(top)
 
 top <- topTable(cont_fit, "IPC_genotype_WT", Inf, p.value = 0.05)
 top$gene <- rownames(top)
+cat("WT IPC vs. HOM+HET IPC")
 datatable_download_exp(top)
 ```
 
