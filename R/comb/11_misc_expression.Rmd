@@ -114,12 +114,12 @@ sce$sample <- seurat$sample
 sce$genotype <- seurat$genotype
 sce$timepoint <- seurat$timepoint
 sce$cluster_names <- seurat$cluster_names
-sce$sample_timepoint <- paste(sce$sample, sce$timepoint)
+sce$sample_cluster_names <- paste(sce$sample, sce$cluster_names)
 sce$cluster_names_timepoint <- paste(sce$cluster_names, sce$timepoint)
 sce$cluster_names_genotype <- paste(sce$cluster_names, sce$genotype)
 
 sce <- suppressWarnings(aggregateAcrossCells(sce, colData(sce)[ , c("sample", "cluster_names")]))
-colnames(sce) <- sce$sample_timepoint
+colnames(sce) <- sce$sample_cluster_names
 dge <- DGEList(counts(sce))
 dge <- calcNormFactors(dge)
 logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
@@ -291,8 +291,72 @@ VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "time
 VlnPlot(
   seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
+
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype
+sce$timepoint <- seurat_list[[seurat_idx]]$timepoint
+sce$clustermap_names <- seurat_list[[seurat_idx]]$clustermap_names
+sce$sample_clustermap_names <- paste(sce$sample, sce$clustermap_names)
+sce$clustermap_names_timepoint <- paste(sce$clustermap_names, sce$timepoint)
+sce$clustermap_names_genotype <- paste(sce$clustermap_names, sce$genotype)
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, colData(sce)[ , c("sample", "clustermap_names")]))
+colnames(sce) <- sce$sample_clustermap_names
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
 VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
+
+design <- model.matrix(~ 0 + sce$clustermap_names_genotype)
+colnames(design) <- c(
+  "HET_DeepLayer01", "HOM_DeepLayer01", "WT_DeepLayer01",
+  "HET_DeepLayer02", "WT_DeepLayer02",
+  "WT_DeepLayer03",
+  "HET_DeepLayer04", "WT_DeepLayer04",
+  "HET_DeepLayer05", "HOM_DeepLayer05", "WT_DeepLayer05",
+  "HOM_DeepLayer06", "WT_DeepLayer06",
+  "HET_Newborn01", "WT_Newborn01",
+  "HOM_Newborn02",
+  "HOM_Newborn03",
+  "HOM_Unc01",
+  "HET_Unc02", "WT_Unc02",
+  "HET_UpperLayer01", "WT_UpperLayer01",
+  "HET_UpperLayer02", "WT_UpperLayer02",
+  "HET_UpperLayer03", "HOM_UpperLayer03", "WT_UpperLayer03",
+  "HET_UpperLayer04", "WT_UpperLayer04",
+  "HET_UpperLayer05",
+  "HET_UpperLayer06", "HOM_UpperLayer06", "WT_UpperLayer06",
+  "HET_UpperLayer07", "HOM_UpperLayer07", "WT_UpperLayer07"
+)
+fit <- lmFit(logcounts(sce), design)
+
+contrast_mat <- makeContrasts(
+  HOM_DeepLayer01_HOM_DeepLayer = HOM_DeepLayer01 - (HOM_DeepLayer05 + HOM_DeepLayer06) / 2,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "HOM_DeepLayer01_HOM_DeepLayer", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+cat("HOM Deep Layer 01 vs. HOM Deep Layer All")
+datatable_download_exp(top)
+
+contrast_mat <- makeContrasts(
+  HOM_UpperLayer03_HOM_UpperLayer = HOM_UpperLayer03 - (HOM_UpperLayer06 + HOM_UpperLayer07) / 2,
+  levels = colnames(design)
+)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+summary(decideTests(cont_fit))
+
+top <- topTable(cont_fit, "HOM_UpperLayer03_HOM_UpperLayer", Inf, p.value = 0.05)
+top$gene <- rownames(top)
+cat("HOM Upper Layer 03 vs. HOM Upper Layer All")
+datatable_download_exp(top)
+
 VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
