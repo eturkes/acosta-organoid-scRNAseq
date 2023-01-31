@@ -353,7 +353,17 @@ for (i in seq(nrow(seurat))) {
     FeaturePlot(seurat, rownames(seurat)[i], order = TRUE, reduction = "rca_umap") +
       scale_color_gradientn(colors = c("blue", "#F8F8F8", "red"),  limits = c(-1, 1))
   )
+  print(
+    RidgePlot(seurat, rownames(seurat)[i])
+  )
+  print(
+    RidgePlot(seurat, rownames(seurat)[i], group.by = "genotype")
+  )
 }
+
+DotPlot(seurat, features = rownames(seurat), cols = c("blue", "red")) + RotatedAxis()
+DotPlot(seurat, features = rownames(seurat), cols = c("blue", "red"), group.by = "genotype") +
+  RotatedAxis()
 ```
 
 # References
