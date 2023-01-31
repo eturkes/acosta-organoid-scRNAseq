@@ -568,10 +568,9 @@ file_list$D120 <- RenameIdents(
   "4" = "Ex Newborn 01", "16" = "Ex Newborn 02", "2" = "Ex Upper Layer 01",
   "1" = "Ex Upper Layer 02", "11" = "Ex Upper Layer 03", "13" = "Ex Upper Layer 04",
   "5" = "Ex Deep Layer 01", "18" = "Ex Deep Layer 02", "17" = "Ex Deep Layer 03",
-  "11" = "Ex Deep Layer 04", "3" = "Ex Deep Layer 05", "6" = "Ex Deep Layer 06",
-  "7" = "Ex Upper Layer 06", "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07",
-  "15" = "Ex Upper Layer 05", "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01",
-  "10" = "Ex Unclassified 02"
+  "3" = "Ex Deep Layer 04", "6" = "Ex Deep Layer 05", "7" = "Ex Upper Layer 06",
+  "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07", "15" = "Ex Upper Layer 05",
+  "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01", "10" = "Ex Unclassified 02"
 )
 file_list$D120$clustermap_names <- factor(as.character(file_list$D120@active.ident))
 file_list$D120$clustermap_names_short <- factor(
@@ -586,10 +585,9 @@ file_list$D72 <- RenameIdents(
   "4" = "Ex Newborn 01", "16" = "Ex Newborn 02", "2" = "Ex Upper Layer 01",
   "1" = "Ex Upper Layer 02", "11" = "Ex Upper Layer 03", "13" = "Ex Upper Layer 04",
   "5" = "Ex Deep Layer 01", "18" = "Ex Deep Layer 02", "17" = "Ex Deep Layer 03",
-  "11" = "Ex Deep Layer 04", "3" = "Ex Deep Layer 05", "6" = "Ex Deep Layer 06",
-  "7" = "Ex Upper Layer 06", "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07",
-  "15" = "Ex Upper Layer 05", "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01",
-  "10" = "Ex Unclassified 02"
+  "3" = "Ex Deep Layer 04", "6" = "Ex Deep Layer 05", "7" = "Ex Upper Layer 06",
+  "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07", "15" = "Ex Upper Layer 05",
+  "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01", "10" = "Ex Unclassified 02"
 )
 file_list$D72$clustermap_names <- factor(as.character(file_list$D72@active.ident))
 file_list$D72$clustermap_names_short <- factor(
@@ -604,10 +602,9 @@ file_list$comb <- RenameIdents(
   "4" = "Ex Newborn 01", "16" = "Ex Newborn 02", "2" = "Ex Upper Layer 01",
   "1" = "Ex Upper Layer 02", "11" = "Ex Upper Layer 03", "13" = "Ex Upper Layer 04",
   "5" = "Ex Deep Layer 01", "18" = "Ex Deep Layer 02", "17" = "Ex Deep Layer 03",
-  "11" = "Ex Deep Layer 04", "3" = "Ex Deep Layer 05", "6" = "Ex Deep Layer 06",
-  "7" = "Ex Upper Layer 06", "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07",
-  "15" = "Ex Upper Layer 05", "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01",
-  "10" = "Ex Unclassified 02"
+  "3" = "Ex Deep Layer 04", "6" = "Ex Deep Layer 05", "7" = "Ex Upper Layer 06",
+  "12" = "Ex Deep Layer 06", "9" = "Ex Upper Layer 07", "15" = "Ex Upper Layer 05",
+  "8" = "Ex Newborn 03", "14" = "Ex Unclassified 01", "10" = "Ex Unclassified 02"
 )
 file_list$comb$clustermap_names <- factor(as.character(file_list$comb@active.ident))
 file_list$comb$clustermap_names_short <- factor(
