@@ -56,7 +56,9 @@ red_dim_plot <- function(data, x, y, color, type = NULL) {
     label_df <- gg_df %>% group_by_at(color) %>% summarise_at(vars(x:y), median)
     label_df <- cbind(label_df[[1]], label_df)
     names(label_df) <- c("label", color, x, y)
-    gg <- gg + geom_label_repel(data = label_df, aes(label = label), show.legend = FALSE)
+    gg <- gg + geom_label_repel(
+      data = label_df, max.overlaps = Inf, aes(label = label), show.legend = FALSE
+    )
 
   } else if (type == "cont") {
     if ((class(data))[1] == "SingleCellExperiment") {

@@ -1,5 +1,5 @@
 ---
-title: '01 Analysis - `r unlist(strsplit(getwd(), "/"))[8]`'
+title: '01 Prep - `r unlist(strsplit(getwd(), "/"))[8]`'
 author:
   - name: "Emir Turkes [emir.turkes@eturkes.com]"
   - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
@@ -20,7 +20,7 @@ output:
       smooth_scroll: false
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
-    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "01_analysis.html"
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "01_prep.html"
   ))})
 ---
 
@@ -64,7 +64,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 #
 #    Emir Turkes can be contacted at emir.turkes@eturkes.com
 
-packages <- c("conflicted", "Seurat", "parallel", "ggplot2", "dplyr", "ggrepel", "viridis")
+packages <- c("conflicted", "Seurat", "stringr", "ggplot2", "dplyr", "ggrepel", "viridis")
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 source(file.path("..", "utils.R"))
 
@@ -75,8 +75,10 @@ parallel_override <- 0 # See `parallel_plan` in `utils.R`.
 # Metadata to plot after dimensionality reduction and clustering.
 # Values in list can include "no_legend and/or "no_label" to exclude those.
 # -------------------------------------------------------------------------
-metadata_to_plot <- vector("list", 2)
-names(metadata_to_plot) <- c("seurat_clusters", "Phase")
+metadata_to_plot <- vector("list", 6)
+names(metadata_to_plot) <- c(
+  "seurat_clusters", "Phase", "SampleName2", "sample", "genotype", "timepoint"
+)
 metadata_to_plot$Phase <- "no_label"
 # -------------------------------------------------------------------------
 
@@ -100,7 +102,14 @@ knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
 
 ```{r}
 seurat <- readRDS(file.path(data_dir, "glasauer_2022", "processed", "FB1.seurat"))
-seurat <- seurat[ , seurat$Genotype == "406RW"]
+seurat$sample <- sub("^[^_]*_", "", seurat$SampleName2)
+seurat$genotype <- seurat$Genotype2
+seurat$timepoint <- str_extract(seurat$SampleName2, "^.{2}")
+
+seurat <- seurat[
+  , seurat$genotype == "406RW" | seurat$genotype == "406RR" | seurat$genotype == "406WW"
+]
+seurat <- seurat[ , seurat$timepoint == "2m" | seurat$timepoint == "4m" | seurat$timepoint == "6m"]
 
 sub_name <- "all"
 seurat <- cluster_pipeline(
@@ -108,12 +117,31 @@ seurat <- cluster_pipeline(
 )
 seurat
 
-red_dim_plot(seurat, "umap1", "umap2", "seurat_clusters", "cat")
-```
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat") + NoLegend())
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(seurat, "umap1", "umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
 
-# Analysis
+if (protocol[4] == "umis") {
+  print("nFeature_SCT")
+  red_dim_plot(seurat, "umap1", "umap2", "nFeature_SCT", "cont")
+  print("nCount_SCT")
+  red_dim_plot(seurat, "umap1", "umap2", "nCount_SCT", "cont")
+} else if (protocol[4] == "reads") {
+  print("nFeature_RNA")
+  red_dim_plot(seurat, "umap1", "umap2", "nFeature_RNA", "cont")
+  print("nCount_RNA")
+  red_dim_plot(seurat, "umap1", "umap2", "nCount_RNA", "cont")
+}
 
-```{r}
 plots <- FeaturePlot(
   seurat, c("GFAP", "GRAMD1B"), order = TRUE, blend = TRUE,
   combine = FALSE, blend.threshold = 0, max.cutoff = "q10", reduction = "umap"
@@ -121,16 +149,7 @@ plots <- FeaturePlot(
 print(CombinePlots(plots[3:4], legend = "none") + NoLegend())
 
 FeaturePlot(seurat, "GFAP", order = TRUE, cols = c("lightgrey", "red"))
-
-sub_seurat <- subset(seurat, idents = c("3", "13", "49", "41"))
-
-FeaturePlot(sub_seurat, "GFAP", order = TRUE, cols = c("lightgrey", "red"))
-
-plots <- FeaturePlot(
-  sub_seurat, c("GFAP", "GRAMD1B"), order = TRUE, blend = TRUE,
-  combine = FALSE, blend.threshold = 0, max.cutoff = "q10", reduction = "umap"
-)
-print(CombinePlots(plots[3:4], legend = "none") + NoLegend())
+FeaturePlot(seurat, "GRAMD1B", order = TRUE, cols = c("lightgrey", "red"))
 ```
 
 # References
