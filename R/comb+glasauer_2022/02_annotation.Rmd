@@ -1,0 +1,356 @@
+---
+title: "02 Annotation - Combined Organelles and Glasauer et al. 2022"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "02_annotation.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we annotate cell-types based on reference datasets and marker genes.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Hongjun Fu, Ohio State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c(
+  "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "RCAv2", "ComplexHeatmap", "patchwork"
+)
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+
+analysis_no <- 2
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Metadata to plot after dimensionality reduction and clustering.
+# Values in list can include "no_legend and/or "no_label" to exclude those.
+# -------------------------------------------------------------------------
+metadata_to_plot <- vector("list", 4)
+names(metadata_to_plot) <- c("seurat_clusters", "sample", "timepoint_merged", "genotype_merged")
+metadata_to_plot[[3]] <- c("no_label")
+metadata_to_plot[[4]] <- c("no_label")
+# -------------------------------------------------------------------------
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, dpi = 300)
+```
+
+# Prep
+
+```{r}
+seurat <- readRDS(file.path(cache_dir, "..", "01", "seurat_merged_processed.rds"))
+seurat
+
+markers <- read.delim(
+  file.path(data_dir, "gene-lists", "Human cortical development-gene-list summary - page3.tsv"),
+  check.names = FALSE
+)
+
+markers <- markers[ , 1:which(colnames(markers) == "Polioudakis Neuron 2019")]
+markers <- markers[ , -(which(colnames(markers) == "oRG vRG shared genes"))]
+markers <- Filter(function(x) !all(is.na(x)), markers)
+markers <- as.list(markers)
+markers <- lapply(markers, function(x) x[!(x == "")])
+
+remove <- c(
+  "SORCS1", "ADRA2A", "SLA", "STMN2", "SORBS2", "ELAVL2", "DCX", "ZFHX4", "GLI3", "CD99", "IGFBP7",
+  "AURKC", "HMGB1", "HMGB3", "CTNNB1", "HES1", "VIM", "PTN", "CLU", "IL33", "NPR3", "CCNB2",
+  "KIF15", "ARHGAP11B", "CENPK", "NEUROD2", "NEUROD6", "DLX2", "ERBB4", "SOX5"
+)
+markers <- markers
+for (i in seq_along(remove)) {
+  markers <- rapply(
+    markers, function(x) ifelse(x == remove[i], "", x), how = "replace")
+}
+markers <- lapply(markers, function(x) x[!(x == "")])
+remove <- which(
+  names(markers) %in% c(
+    "Radial Glia_vRG", "Radial Glia_tRG", "Microglia", "oRG specific genes", "vRG specific genes"
+  )
+)
+markers <- markers[-remove]
+```
+
+# RCAv2
+
+## Bhaduri
+
+### Primary Broad Clusters
+
+```{r}
+rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
+if (file.exists(rds)) {
+  rca <- readRDS(rds)
+} else {
+
+  rds <- file.path(cache_dir, "..", "..", "comb", "02", "bhaduri_primary_ref.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- fread(
+      file.path(data_dir, "bhaduri_2020", "primary", "exprMatrix.tsv"), data.table = FALSE
+    )
+    gc()
+    rownames(ref) <- ref[ , 1]
+    ref <- ref[ , -1]
+  
+    meta <- read.delim(file.path(data_dir, "bhaduri_2020", "primary", "meta.tsv"), row.names = 1)
+    meta <- meta[-(which(meta$Type == "Outlier")), ]
+    meta <- meta[-(which(meta$Subtype == "Microglia low quality")), ]
+    meta <- meta[-(which(meta$Subtype == "Low Quality")), ]
+  
+    ref <- ref[ , which(colnames(ref) %in% rownames(meta))]
+    ref <- 2 ^ ref - 1
+  
+    ref <- SingleCellExperiment(list(counts = ref), colData = meta)
+    rm(meta)
+    gc()
+    saveRDS(ref, rds, compress = FALSE)
+  }
+
+  rds <- file.path(cache_dir, "..", "..", "comb", "02", "bhaduri_primary_pseudobulk_Type.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    top <- nrow(ref) / 2
+    top <- ref[1:top, ]
+    top <- aggregateAcrossCells(top, top$Type, "mean")
+  
+    bottom <- (nrow(ref) / 2) + 1
+    bottom <- ref[bottom:(nrow(ref)), ]
+    bottom <- aggregateAcrossCells(bottom, bottom$Type, "mean")
+  
+    ref <- rbind(top, bottom)
+    rm(top, bottom)
+    saveRDS(ref, rds, compress = FALSE)
+  }
+
+  rds <- file.path(cache_dir, "..", "..", "comb", "02", "bhaduri_primary_panel_Type.rds")
+  if (file.exists(rds)) {
+    ref <- readRDS(rds)
+  } else {
+    ref <- ref[-(which(rowSums(counts(ref)) == 0)), ]
+  
+    ref2 <- ref
+    colnames(ref2) <- paste(colnames(ref2), "2", sep = "_")
+    colnames(ref) <- paste(colnames(ref), "1", sep = "_")
+    ref <- cbind(ref, ref2)
+    rm(ref2)
+  
+    ref <- buildReferencePanel(counts(ref))
+    file.rename("my_reference_panel.rds", rds)
+  }
+
+  rds <- file.path(cache_dir, "bhaduri_primary_rca_Type.rds")
+  if (file.exists(rds)) {
+    rca <- readRDS(rds)
+  } else {
+    rca <- createRCAObject(GetAssayData(seurat, "counts"), GetAssayData(seurat))
+    rca <- dataProject(
+      rca,
+      "Custom",
+      file.path(
+        cache_dir, "..", "..", "comb", "02", "bhaduri_primary_panel_Type.rds"
+      ),
+      "spearman",
+      min.cell.number.expressing = 0
+    )
+    rca <- computeUMAP(rca)
+    saveRDS(rca, rds, compress = FALSE)
+  }
+}
+
+rca
+
+set.seed(1)
+heatmap <- Heatmap(
+  as.matrix(rca$projection.data),
+  column_km = 5,
+  show_column_names = FALSE,
+  cluster_columns = FALSE,
+  cluster_rows = FALSE,
+  row_names_max_width = max_text_width(rownames(as.matrix(rca$projection.data))),
+  heatmap_legend_param = list(title = "ssGSEA enrichment", title_position = "leftcenter-rot"))
+draw(heatmap)
+
+seurat[["rca_umap"]] <- CreateDimReducObject(
+  as.matrix(rca$umap.coordinates), key = "rca_umap_", assay = DefaultAssay(seurat)
+)
+add_df <- data.frame(Embeddings(seurat, "rca_umap"))
+names(add_df) <- paste0("rca_umap", seq(ncol(add_df)))
+seurat$rca_umap1 <- add_df$rca_umap1
+seurat$rca_umap2 <- add_df$rca_umap2
+
+rca_seurat <- CreateAssayObject(data = rca$projection.data)
+seurat[["RCA"]] <- rca_seurat
+DefaultAssay(seurat) <- "RCA"
+
+seurat <- FindNeighbors(seurat, NULL, NULL, features = rownames(seurat), verbose = FALSE)
+seurat <- FindClusters(seurat, resolution = 7, verbose = FALSE)
+DefaultAssay(seurat) <- "SCT"
+
+for (i in 1:length(metadata_to_plot)) {
+  print(names(metadata_to_plot)[i])
+  if ("no_legend" %in% metadata_to_plot[[i]] && "no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "rca_umap1", "rca_umap2", names(metadata_to_plot)[i]) + NoLegend())
+  } else if ("no_legend" %in% metadata_to_plot[[i]]) {
+    print(
+      red_dim_plot(seurat, "rca_umap1", "rca_umap2", names(metadata_to_plot)[i], "cat") + NoLegend()
+    )
+  } else if ("no_label" %in% metadata_to_plot[[i]]) {
+    print(red_dim_plot(seurat, "rca_umap1", "rca_umap2", names(metadata_to_plot)[i]))
+  } else {
+    print(red_dim_plot(seurat, "rca_umap1", "rca_umap2", names(metadata_to_plot)[i], "cat"))
+  }
+}
+
+plots <- FeaturePlot(
+  seurat, c("SLC17A7", "GAD1"), order = TRUE, blend = TRUE,
+  combine = FALSE, blend.threshold = 0, max.cutoff = "q10", reduction = "rca_umap"
+)
+CombinePlots(plots[3:4], legend = "none") + NoLegend()
+
+for (i in seq_along(markers)) {
+  if (any(markers[[i]] %in% rownames(seurat))) {
+    print(
+      FeaturePlot(
+        seurat, markers[[i]], reduction = "rca_umap", order = TRUE, cols = c("lightgrey", "red")
+      ) +
+        plot_annotation(
+          names(markers)[i],
+          theme = theme(plot.title = element_text(hjust = 0.5, size = 18, face = "bold"))
+        )
+    )
+  }
+}
+
+seurat@active.ident <- seurat$seurat_clusters
+seurat <- RenameIdents(
+  seurat,
+  "0" = "Excitatory Neuron", "1" = "Inhibitory Neuron",
+  "2" = "Radial Glia", "3" = "Excitatory Neuron",
+  "4" = "Radial Glia", "5" = "Excitatory Neuron",
+  "6" = "Radial Glia", "7" = "Radial Glia",
+  "8" = "Excitatory Neuron", "9" = "Excitatory Neuron",
+  "10" = "Inhibitory Neuron", "11" = "Inhibitory Neuron",
+  "12" = "Inhibitory Neuron", "13" = "Excitatory Neuron",
+  "14" = "Inhibitory Neuron", "15" = "Excitatory Neuron",
+  "16" = "Excitatory Neuron", "17" = "Excitatory Neuron",
+  "18" = "Excitatory Neuron", "19" = "Excitatory Neuron",
+  "20" = "Excitatory Neuron", "21" = "Radial Glia",
+  "22" = "Radial Glia", "23" = "Excitatory Neuron",
+  "24" = "Radial Glia", "25" = "Radial Glia",
+  "26" = "Excitatory Neuron", "27" = "Inhibitory Neuron",
+  "28" = "Inhibitory Neuron", "29" = "Inhibitory Neuron",
+  "30" = "Inhibitory Neuron", "31" = "Unclassified",
+  "32" = "Radial Glia", "33" = "IPC",
+  "34" = "IPC", "35" = "IPC",
+  "36" = "Radial Glia", "37" = "Radial Glia",
+  "38" = "Unclassified", "39" = "Excitatory Neuron",
+  "40" = "IPC", "41" = "Inhibitory Neuron",
+  "42" = "Radial Glia", "43" = "Excitatory Neuron",
+  "44" = "Radial Glia", "45" = "Excitatory Neuron",
+  "46" = "Radial Glia", "47" = "Radial Glia",
+  "48" = "Radial Glia", "49" = "Excitatory Neuron",
+  "50" = "Excitatory Neuron", "51" = "Inhibitory Neuron",
+  "52" = "Mural", "53" = "Radial Glia",
+  "54" = "Excitatory Neuron", "55" = "Excitatory Neuron",
+  "56" = "Radial Glia", "57" = "Unclassified",
+  "58" = "Excitatory Neuron", "59" = "Excitatory Neuron",
+  "60" = "Radial Glia", "61" = "Excitatory Neuron",
+  "62" = "Excitatory Neuron", "63" = "Excitatory Neuron",
+  "64" = "Excitatory Neuron", "65" = "Radial Glia",
+  "66" = "Radial Glia", "67" = "IPC",
+  "68" = "Inhibitory Neuron", "69" = "Inhibitory Neuron",
+  "70" = "Excitatory Neuron", "71" = "IPC",
+  "72" = "Excitatory Neuron", "73" = "IPC",
+  "74" = "Mural", "75" = "Radial Glia",
+  "76" = "Inhibitory Neuron", "77" = "Inhibitory Neuron",
+  "78" = "Inhibitory Neuron", "79" = "Radial Glia",
+  "80" = "Radial Glia", "81" = "Unclassified",
+  "82" = "Excitatory Neuron", "83" = "Excitatory Neuron",
+  "84" = "Excitatory Neuron", "85" = "Radial Glia",
+  "86" = "Inhibitory Neuron", "87" = "Inhibitory Neuron",
+  "88" = "Excitatory Neuron", "89" = "Inhibitory Neuron",
+  "90" = "Excitatory Neuron", "91" = "Radial Glia",
+  "92" = "Radial Glia", "93" = "Radial Glia",
+  "94" = "IPC", "95" = "Excitatory Neuron",
+  "96" = "Radial Glia"
+)
+seurat$cluster_names <- seurat@active.ident
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
+red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
+
+rds <- file.path(cache_dir, "rca_seurat.rds")
+if (!file.exists(rds)) {
+  saveRDS(seurat, rds, compress = FALSE)
+}
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
