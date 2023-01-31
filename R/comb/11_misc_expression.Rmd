@@ -109,6 +109,9 @@ for (i in seq_along(sub_name)) {
 ```{r}
 gene <- "GRAMD1B"
 
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) < 1)
+seurat_no_zero_A <- seurat[ , -remove]
+
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat, slot = "counts")))
 sce$sample <- seurat$sample
 sce$genotype <- seurat$genotype
@@ -124,7 +127,7 @@ dge <- DGEList(counts(sce))
 dge <- calcNormFactors(dge)
 logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
 
-VlnPlot(seurat, gene, group.by = "cluster_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 design <- model.matrix(~ 0 + sce$cluster_names_timepoint)
@@ -182,7 +185,7 @@ top$gene <- rownames(top)
 cat("D120 IPC vs. D72 IPC")
 datatable_download_exp(top)
 
-VlnPlot(seurat, gene, group.by = "cluster_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 
 design <- model.matrix(~ 0 + sce$cluster_names_genotype)
@@ -280,16 +283,23 @@ datatable_download_exp(top)
 ```{r}
 seurat_idx <- 1
 
+remove <- which(
+  colSums(
+    GetAssayData(seurat_list[[seurat_idx]][which(rownames(seurat_list[[seurat_idx]]) == gene), ])
+  ) == 0
+)
+seurat_no_zero <- seurat_list[[seurat_idx]][ , -remove]
+
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
 
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
@@ -307,7 +317,7 @@ dge <- DGEList(counts(sce))
 dge <- calcNormFactors(dge)
 logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
 
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 
 design <- model.matrix(~ 0 + sce$clustermap_names_genotype)
@@ -357,7 +367,7 @@ top$gene <- rownames(top)
 cat("HOM Upper Layer 03 vs. HOM Upper Layer All")
 datatable_download_exp(top)
 
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -366,20 +376,27 @@ VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "gen
 ```{r}
 seurat_idx <- 2
 
+remove <- which(
+  colSums(
+    GetAssayData(seurat_list[[seurat_idx]][which(rownames(seurat_list[[seurat_idx]]) == gene), ])
+  ) == 0
+)
+seurat_no_zero <- seurat_list[[seurat_idx]][ , -remove]
+
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -388,20 +405,27 @@ VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "gen
 ```{r}
 seurat_idx <- 3
 
+remove <- which(
+  colSums(
+    GetAssayData(seurat_list[[seurat_idx]][which(rownames(seurat_list[[seurat_idx]]) == gene), ])
+  ) == 0
+)
+seurat_no_zero <- seurat_list[[seurat_idx]][ , -remove]
+
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -410,20 +434,27 @@ VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "gen
 ```{r}
 seurat_idx <- 4
 
+remove <- which(
+  colSums(
+    GetAssayData(seurat_list[[seurat_idx]][which(rownames(seurat_list[[seurat_idx]]) == gene), ])
+  ) == 0
+)
+seurat_no_zero <- seurat_list[[seurat_idx]][ , -remove]
+
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -432,20 +463,27 @@ VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "gen
 ```{r}
 seurat_idx <- 5
 
+remove <- which(
+  colSums(
+    GetAssayData(seurat_list[[seurat_idx]][which(rownames(seurat_list[[seurat_idx]]) == gene), ])
+  ) == 0
+)
+seurat_no_zero <- seurat_list[[seurat_idx]][ , -remove]
+
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -454,20 +492,27 @@ VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "gen
 ```{r}
 seurat_idx <- 6
 
+remove <- which(
+  colSums(
+    GetAssayData(seurat_list[[seurat_idx]][which(rownames(seurat_list[[seurat_idx]]) == gene), ])
+  ) == 0
+)
+seurat_no_zero <- seurat_list[[seurat_idx]][ , -remove]
+
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_list[[seurat_idx]], gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_list[[seurat_idx]], gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
