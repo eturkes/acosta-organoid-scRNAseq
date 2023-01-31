@@ -1,5 +1,5 @@
 ---
-title: '01 Prep - `r unlist(strsplit(getwd(), "/"))[8]`'
+title: "01 Prep - Glasauer et al. 2022"
 author:
   - name: "Emir Turkes [emir.turkes@eturkes.com]"
   - name: "Diana Acosta [Diana.Acosta@osumc.edu]"

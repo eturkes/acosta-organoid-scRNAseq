@@ -1,5 +1,5 @@
 ---
-title: "03 Subclusters - Combined Organelles"
+title: "03 Subclusters - Glasauer et al. 2022"
 author:
   - name: "Emir Turkes [emir.turkes@eturkes.com]"
   - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
