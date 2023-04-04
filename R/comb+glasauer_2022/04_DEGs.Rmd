@@ -1,0 +1,703 @@
+---
+title: "04 DEGs - Combined Organelles"
+author:
+  - name: "Emir Turkes [emir.turkes@eturkes.com]"
+  - name: "Diana Acosta [Diana.Acosta@osumc.edu]"
+  - name: "Hongjun Fu [Hongjun.Fu@osumc.edu]"
+  - name: "Ohio State University Wexner Medical Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+link-citations: true
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    theme: lumen
+    highlight: haddock
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_file = file.path(
+    "..", "..", "results", unlist(strsplit(getwd(), "/"))[8], "04_DEGs.html"
+  ))})
+---
+
+<style type="text/css">
+body {font-size: 16px;}
+h1.title {font-size: 35px;}
+h1 {font-size: 24px;}
+h2 {font-size: 22px;}
+h3 {font-size: 20px;}
+.toc-content {padding-left: 0px; padding-right: 0px;}
+div.tocify {width: 100%;}
+.tocify-subheader .tocify-item {font-size: 0.95em; padding-left: 25px; text-indent: 0;}
+.tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 35px; text-indent: 0;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-item {
+  font-size: 0.95em; padding-left: 45px; text-indent: 0;
+}
+div.main-container {max-width: none; width: 100%;}
+</style>
+
+*This file is a part of the [Acosta Organoid scRNAseq Project](https://github.com/eturkes/acosta-organoid-scRNAseq).*
+
+In this document we perform differential gene expression analysis.
+The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"))[8]``.
+
+```{r}
+#    This file is part of acosta-organoid-scRNAseq.
+#    Copyright (C) 2022  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Hongjun Fu, Ohio State University Wexner Medical Center
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#    Emir Turkes can be contacted at emir.turkes@eturkes.com
+
+packages <- c("conflicted", "Seurat", "scuttle", "edgeR", "DT", "ComplexHeatmap", "volcano3D")
+invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
+source(file.path("..", "utils.R"))
+conflict_prefer("cpm", "edgeR", quiet = TRUE)
+
+analysis_no <- 4
+data_name <- unlist(strsplit(getwd(), "/"))[8] # Name of dataset.
+data_dir <- file.path("..", "..", "data") # Backed up data.
+results_dir <- file.path("..", "..", "results")
+
+# Unique cache directory for each analysis number.
+# ------------------------------------------------
+cache_dir <- file.path("..", "..", "cache", data_name, paste0("0", analysis_no))
+if (!dir.exists(cache_dir)) {
+  dir.create(cache_dir, recursive = TRUE)
+}
+# ------------------------------------------------
+
+knitr::opts_chunk$set(fig.width = 12, fig.height = 7, dpi = 72)
+```
+
+# Excitatory Neuron
+
+```{r}
+sub_name <- "Ex"
+
+seurat_all <- readRDS(
+  file.path(cache_dir, "..", "02", "combined.rds")
+)
+
+sub <- subset(seurat_all, idents = c("0", "2", "5"))
+DefaultAssay(sub) <- "SCT"
+
+seurat_list <- SplitObject(sub, "timepoint_merged")
+
+genes <- c(
+"GRAMD1B",
+"HMGCS1",
+"CDK5R1",
+"LDLR",
+"SLC5A3",
+"SREBF2",
+"CAPN10"
+)
+
+for (i in 1:length(genes)) {
+  print(VlnPlot(seurat_list[[seurat_idx]], genes[i], group.by = "genotype_merged"))
+}
+```
+
+## D120
+
+```{r}
+seurat_idx <- 1
+
+seurat_list[[seurat_idx]]@active.ident <- factor(
+  seurat_list[[seurat_idx]]$genotype_merged, c("WT", "HET", "HOM")
+)
+```
+
+### All Cells
+
+```{r}
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat_list[[seurat_idx]], slot = "counts")))
+sce$sample <- seurat_list[[seurat_idx]]$sample
+sce$genotype <- seurat_list[[seurat_idx]]$genotype_merged
+
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$sample))
+keep <- filterByExpr(counts(sce), group = sce$genotype, min.total.count = 10)
+sce <- sce[keep, ]
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+
+design <- model.matrix(~ 0 + sce$genotype)
+colnames(design) <- c("HET", "HOM", "WT")
+fit <- lmFit(logcounts(sce), design)
+contrast_mat <- makeContrasts(HET-HOM, HET-WT, HOM-WT, levels = design)
+cont_fit <- eBayes(contrasts.fit(fit, contrast_mat), trend = TRUE)
+tests <- decideTests(cont_fit, "global", adjust.method = "none")
+write.fit(
+  cont_fit, tests, file.path(cache_dir, "results.tsv"),
+  adjust = "BH", method = "global", F.adjust = "BH"
+)
+results <- read.delim(file.path(cache_dir, "results.tsv"))
+rownames(results) <- results$X
+results <- results[ , -1]
+results <- results[order(results$F.p.value), ]
+
+write.csv(
+  results,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "AllStats", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(results)
+```
+
+#### WT < HET < HOM
+
+```{r}
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "WT<HET<HOM", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT > HET > HOM
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == -1 & tests[ , 3] == -1, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "WT>HET>HOM", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### HET
+
+```{r}
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+HET <- rownames(up)[1]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "HET", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### HET + HOM
+
+```{r}
+tests_up <- tests[
+  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
+    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
+    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
+]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+HET_plus_HOM <- rownames(up)[1]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "HET+HOM", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### HOM
+
+```{r}
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+HOM <- rownames(up)[1]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "HOM", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### HOM + WT
+
+```{r}
+tests_up <- tests[
+  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
+    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
+    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
+]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+HOM_plus_WT <- rownames(up)[1]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "HOM+WT", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT
+
+```{r}
+tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+WT <- rownames(up)[1]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "WT", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### WT + HET
+
+```{r}
+tests_up <- tests[
+  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
+    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
+    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
+]
+up <- results[rownames(results) %in% rownames(tests_up), ]
+WT_plus_HET <- rownames(up)[1]
+
+write.csv(
+  up,
+  file.path(
+    results_dir,
+    "comb",
+    "04-DEGs",
+    paste(sub_name, names(seurat_list[seurat_idx]), "AllCells", "WT+HET", "DEGs.csv", sep = "-")
+  )
+)
+datatable_download_exp(up)
+
+if (nrow(up) > 25) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)[1:25]), ]
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+} else if (nrow(up) > 1) {
+  mat <- logcounts(sce)[which(rownames(sce) %in% rownames(up)), ]  
+  mat <- t(apply(mat, 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+  set.seed(1)
+  draw(
+    Heatmap(
+      mat,
+      column_order = c(8, 9, 1, 4, 5, 2, 6, 7, 3),
+      column_names_rot = 45,
+      heatmap_legend_param = list(
+        title = "Per-row Scaled Pseudobulk Expression", direction = "horizontal",
+        legend_width = unit(7.5, "cm")
+      )
+    ),
+    heatmap_legend_side = "top"
+  )
+}
+
+if (nrow(up) > 12) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[1:12])
+} else if (nrow(up) > 0) {
+  VlnPlot(seurat_list[[seurat_idx]], rownames(up)[seq(nrow(up))])
+}
+```
+
+#### Radial and 3D Volcano Plots
+
+```{r}
+DEGs <- c(HET, HOM, WT, HET_plus_HOM, HOM_plus_WT, WT_plus_HET)
+
+design <- data.frame(genotype = sce$genotype)
+rownames(design) <- colnames(sce)
+results <- results[match(rownames(sce), rownames(results)), ]
+
+p_mat <- as.matrix(
+  data.frame(
+    F.p.value = results$F.p.value,
+    P.value.HET...HOM = results$P.value.HET...HOM,
+    P.value.HET...WT = results$P.value.HET...WT,
+    P.value.HOM...WT = results$P.value.HOM...WT
+  )
+)
+p_adj_mat <- as.matrix(
+  data.frame(
+    F.p.value = results$F.p.value,
+    P.value.adj.HET...HOM = results$P.value.adj.HET...HOM,
+    P.value.adj.HET...WT = results$P.value.adj.HET...WT,
+    P.value.adj.HOM...WT = results$P.value.adj.HOM...WT
+  )
+)
+
+polar <- polar_coords(
+  design$genotype, t(logcounts(sce)), p_mat, p_adj_mat, labs = unique(design$genotype)
+)
+
+if (any(is.na(DEGs))) {
+  radial_ggplot(polar, 2, colour_code_labels = TRUE, marker_size = 2)
+} else {
+  radial_ggplot(polar, 2, label_rows = DEGs, colour_code_labels = TRUE, marker_size = 2)
+}
+```
+
+**Interactive**
+
+```{r, dpi = 96}
+radial_plotly(polar, 2)
+volcano3D(polar, 2)
+```
+
+# References
+
+This is the concluding section of the document. Here we output the `sessionInfo` and create a bibliography for works cited.
+
+```{r}
+sessionInfo()
+```
