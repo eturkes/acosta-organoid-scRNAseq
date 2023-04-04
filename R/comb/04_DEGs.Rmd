@@ -268,7 +268,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -411,11 +411,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -474,7 +470,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -533,11 +529,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -596,7 +588,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -739,11 +731,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -1010,7 +998,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -1155,11 +1143,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -1218,7 +1202,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -1277,11 +1261,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -1340,7 +1320,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -1483,11 +1463,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -1754,7 +1730,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -1899,11 +1875,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -1962,7 +1934,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -2021,11 +1993,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -2084,7 +2052,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -2227,11 +2195,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -2498,7 +2462,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -2643,11 +2607,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -2706,7 +2666,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -2765,11 +2725,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -2828,7 +2784,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -2971,11 +2927,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -3242,7 +3194,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -3387,11 +3339,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -3450,7 +3398,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -3509,11 +3457,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -3572,7 +3516,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -3715,11 +3659,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -3990,7 +3930,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -4133,11 +4073,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -4196,7 +4132,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -4255,11 +4191,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -4318,7 +4250,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -4461,11 +4393,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -4732,7 +4660,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -4877,11 +4805,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -4940,7 +4864,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -4999,11 +4923,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -5062,7 +4982,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -5205,11 +5125,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -5476,7 +5392,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -5621,11 +5537,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -5684,7 +5596,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -5743,11 +5655,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -5806,7 +5714,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -5949,11 +5857,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -6220,7 +6124,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -6365,11 +6269,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -6428,7 +6328,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -6487,11 +6387,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -6550,7 +6446,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -6693,11 +6589,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -6964,7 +6856,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -7109,11 +7001,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -7172,7 +7060,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -7231,11 +7119,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -7294,7 +7178,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -7437,11 +7321,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -7721,7 +7601,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -7864,11 +7744,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -7927,7 +7803,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -7986,11 +7862,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -8049,7 +7921,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -8192,11 +8064,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -8463,7 +8331,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -8608,11 +8476,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -8671,7 +8535,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -8730,11 +8594,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -8793,7 +8653,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -8936,11 +8796,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -9213,7 +9069,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -9361,11 +9217,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -9427,7 +9279,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -9488,11 +9340,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -9554,7 +9402,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -9702,11 +9550,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -9981,7 +9825,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -10129,11 +9973,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -10195,7 +10035,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -10256,11 +10096,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -10322,7 +10158,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -10470,11 +10306,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -10743,7 +10575,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -10888,11 +10720,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -10951,7 +10779,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -11010,11 +10838,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -11073,7 +10897,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -11216,11 +11040,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -11487,7 +11307,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -11632,11 +11452,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -11695,7 +11511,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -11754,11 +11570,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -11817,7 +11629,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -11960,11 +11772,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -12235,7 +12043,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -12378,11 +12186,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -12441,7 +12245,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -12500,11 +12304,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -12563,7 +12363,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -12706,11 +12506,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -12977,7 +12773,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -13122,11 +12918,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -13185,7 +12977,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -13244,11 +13036,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -13307,7 +13095,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -13450,11 +13238,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -13721,7 +13505,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -13866,11 +13650,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -13929,7 +13709,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -13988,11 +13768,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -14051,7 +13827,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -14194,11 +13970,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -14478,7 +14250,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -14621,11 +14393,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -14684,7 +14452,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -14743,11 +14511,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -14806,7 +14570,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -14949,11 +14713,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -15224,7 +14984,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -15367,11 +15127,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -15430,7 +15186,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -15489,11 +15245,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -15552,7 +15304,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -15695,11 +15447,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -15979,7 +15727,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -16122,11 +15870,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -16185,7 +15929,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -16244,11 +15988,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -16307,7 +16047,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -16450,11 +16190,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -16721,7 +16457,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -16866,11 +16602,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -16929,7 +16661,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -16988,11 +16720,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -17051,7 +16779,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -17194,11 +16922,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -17469,7 +17193,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -17612,11 +17336,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -17675,7 +17395,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -17734,11 +17454,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -17797,7 +17513,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -17940,11 +17656,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -18211,7 +17923,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -18356,11 +18068,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -18419,7 +18127,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -18478,11 +18186,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -18541,7 +18245,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -18684,11 +18388,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -18968,7 +18668,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -19111,11 +18811,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -19174,7 +18870,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -19233,11 +18929,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -19296,7 +18988,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -19439,11 +19131,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -19714,7 +19402,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -19857,11 +19545,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -19920,7 +19604,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -19979,11 +19663,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -20042,7 +19722,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -20185,11 +19865,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -20469,7 +20145,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -20612,11 +20288,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -20675,7 +20347,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -20734,11 +20406,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -20797,7 +20465,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -20940,11 +20608,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
@@ -21215,7 +20879,7 @@ if (nrow(up) > 12) {
 #### HET
 
 ```{r}
-tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 0, ]
+tests_up <- tests[tests[ , 1] == 1 & tests[ , 2] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET <- rownames(up)[1]
 
@@ -21358,11 +21022,7 @@ if (nrow(up) > 12) {
 #### HET + HOM
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 0 & tests[ , 2] == 1 & tests[ , 3] == 1 |
-    tests[ , 1] == 1 & tests[ , 2] == 1 & tests[ , 3] == 1,
-]
+tests_up <- tests[tests[ , 2] == 1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HET_plus_HOM <- rownames(up)[1]
 
@@ -21421,7 +21081,7 @@ if (nrow(up) > 12) {
 #### HOM
 
 ```{r}
-tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM <- rownames(up)[1]
 
@@ -21480,11 +21140,7 @@ if (nrow(up) > 12) {
 #### HOM + WT
 
 ```{r}
-tests_up <- tests[
-  tests[ , 1] == -1 & tests[ , 3] == -1 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 0 & tests[ , 2] == -1 |
-    tests[ , 1] == -1 & tests[ , 3] == 1 & tests[ , 2] == -1,
-]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 2] == -1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 HOM_plus_WT <- rownames(up)[1]
 
@@ -21543,7 +21199,7 @@ if (nrow(up) > 12) {
 #### WT
 
 ```{r}
-tests_up <- tests[tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 0, ]
+tests_up <- tests[tests[ , 1] == -1 & tests[ , 3] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT <- rownames(up)[1]
 
@@ -21686,11 +21342,7 @@ if (nrow(up) > 12) {
 #### WT + HET
 
 ```{r}
-tests_up <- tests[
-  tests[ , 2] == -1 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 0 & tests[ , 3] == -1 & tests[ , 1] == 1 |
-    tests[ , 2] == 1 & tests[ , 3] == -1 & tests[ , 1] == 1,
-]
+tests_up <- tests[tests[ , 3] == -1 & tests[ , 1] == 1, ]
 up <- results[rownames(results) %in% rownames(tests_up), ]
 WT_plus_HET <- rownames(up)[1]
 
