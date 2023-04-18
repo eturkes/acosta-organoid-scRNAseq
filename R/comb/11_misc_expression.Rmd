@@ -110,7 +110,7 @@ for (i in seq_along(sub_name)) {
 gene <- "GRAMD1B"
 
 remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) < 1)
-seurat_no_zero_A <- seurat[ , -remove]
+seurat_no_zero <- seurat[ , -remove]
 
 sce <- SingleCellExperiment(list(counts = GetAssayData(seurat, slot = "counts")))
 sce$sample <- seurat$sample
