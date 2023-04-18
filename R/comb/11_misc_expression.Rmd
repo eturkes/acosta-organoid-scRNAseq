@@ -117,7 +117,7 @@ gene <- "GRAMD1B"
 ```{r}
 timepoint <- "comb"
 
-remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) < 1)
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
 seurat_no_zero <- seurat[ , -remove]
 
 VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "timepoint") +
@@ -334,7 +334,7 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 ```{r}
 timepoint <- "D120"
 
-remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) < 1)
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
 seurat_no_zero <- seurat[ , -remove]
 
 keep <- which(seurat_no_zero$timepoint == timepoint)
@@ -554,7 +554,7 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 ```{r}
 timepoint <- "D72"
 
-remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) < 1)
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
 seurat_no_zero <- seurat[ , -remove]
 
 keep <- which(seurat_no_zero$timepoint == timepoint)
