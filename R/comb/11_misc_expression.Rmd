@@ -116,18 +116,38 @@ gene <- "GRAMD1B"
 
 ```{r}
 timepoint <- "comb"
+```
 
-remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
-seurat_no_zero <- seurat[ , -remove]
+### Regular Violin
 
-VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "timepoint") +
+```{r}
+seurat_sub <- seurat
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
-VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+### Remove Non-zero
+
+```{r}
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
+seurat_sub <- seurat[ , -remove]
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -135,7 +155,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 1
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -145,22 +191,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -168,7 +214,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 2
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -178,22 +250,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -201,7 +273,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 3
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -211,22 +309,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -234,7 +332,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 4
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -244,22 +368,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -267,7 +391,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 5
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -277,22 +427,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -300,7 +450,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 6
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -310,22 +486,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -333,21 +509,42 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 timepoint <- "D120"
+```
 
-remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
-seurat_no_zero <- seurat[ , -remove]
+### Regular Violin
 
-keep <- which(seurat_no_zero$timepoint == timepoint)
-seurat_no_zero <- seurat_no_zero[ , keep]
+```{r}
+keep <- which(seurat$timepoint == timepoint)
+seurat_sub <- seurat[ , keep]
 
-VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
-VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+### Remove Non-zero
+
+```{r}
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
+seurat_sub <- seurat[ , -remove]
+
+keep <- which(seurat_sub$timepoint == timepoint)
+seurat_sub <- seurat_sub[ , keep]
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -355,7 +552,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 1
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -365,22 +588,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -388,7 +611,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 2
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -398,22 +647,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -421,7 +670,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 3
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -431,22 +706,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -454,7 +729,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 4
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -464,22 +765,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -487,7 +788,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 5
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -497,22 +824,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -520,7 +847,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 6
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -530,22 +883,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -553,21 +906,42 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 timepoint <- "D72"
+```
 
-remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
-seurat_no_zero <- seurat[ , -remove]
+### Regular Violin
 
-keep <- which(seurat_no_zero$timepoint == timepoint)
-seurat_no_zero <- seurat_no_zero[ , keep]
+```{r}
+keep <- which(seurat$timepoint == timepoint)
+seurat_sub <- seurat[ , keep]
 
-VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
-VlnPlot(seurat_no_zero, gene, group.by = "cluster_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+### Remove Non-zero
+
+```{r}
+remove <- which(colSums(GetAssayData(seurat[which(rownames(seurat) == gene), ])) == 0)
+seurat_sub <- seurat[ , -remove]
+
+keep <- which(seurat_sub$timepoint == timepoint)
+seurat_sub <- seurat_sub[ , keep]
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -575,7 +949,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 1
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -585,22 +985,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -608,7 +1008,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 2
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -618,22 +1044,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -641,7 +1067,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 3
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -651,22 +1103,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -674,7 +1126,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 4
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -684,22 +1162,22 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
@@ -707,7 +1185,33 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 
 ```{r}
 seurat_idx <- 5
+```
 
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 remove <- which(
   colSums(
     GetAssayData(
@@ -717,30 +1221,56 @@ remove <- which(
     )
   ) == 0
 )
-seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 ) + scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
-VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2))
 
 VlnPlot(
-  seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 ) + scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
-VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3))
 ```
 
 ### Unclassified
 
 ```{r}
-# seurat_idx <- 6
-# 
+seurat_idx <- 6
+```
+
+#### Regular Violin
+
+```{r}
+seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+) + scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
+  scale_fill_manual(values = hue_pal()(2))
+
+VlnPlot(
+  seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
+) + scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3))
+```
+
+#### Remove Non-zero
+
+```{r}
 # remove <- which(
 #   colSums(
 #     GetAssayData(
@@ -750,22 +1280,22 @@ VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
 #     )
 #   ) == 0
 # )
-# seurat_no_zero <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
+# seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 # 
 # VlnPlot(
-#   seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "timepoint"
+#   seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint"
 # ) + scale_fill_manual(values = hue_pal()(2))
-# VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "timepoint") +
+# VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
 #   scale_fill_manual(values = hue_pal()(2))
-# VlnPlot(seurat_no_zero, gene, group.by = "genotype", split.by = "timepoint") +
+# VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
 #   scale_fill_manual(values = hue_pal()(2))
 # 
 # VlnPlot(
-#   seurat_no_zero, gene, group.by = "clustermap_names_short", split.by = "genotype"
+#   seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype"
 # ) + scale_fill_manual(values = hue_pal()(3))
-# VlnPlot(seurat_no_zero, gene, group.by = "clustermap_names", split.by = "genotype") +
+# VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
 #   scale_fill_manual(values = hue_pal()(3))
-# VlnPlot(seurat_no_zero, gene, group.by = "timepoint", split.by = "genotype") +
+# VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
 #   scale_fill_manual(values = hue_pal()(3))
 ```
 
