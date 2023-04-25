@@ -673,6 +673,18 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalised Counts")
+
+remove <- which(
+  seurat_sub$clustermap_names == "Ex Deep Layer 01" |
+    seurat_sub$clustermap_names == "Ex Deep Layer 06" |
+    seurat_sub$clustermap_names == "Ex Newborn 01" |
+    seurat_sub$clustermap_names == "Ex Newborn 03"
+)
+
+seurat_sub <- seurat_sub[ , -remove]
+VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
+  scale_fill_manual(values = hue_pal()(3)) +
+  ylab("log1p Normalised Counts")
 ```
 
 ### Radial Glia
