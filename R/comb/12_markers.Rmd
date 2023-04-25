@@ -178,6 +178,33 @@ sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
 Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+
+seurat <- seurat[ , seurat$clustermap_names_short == "Ex Upper Layer"]
+seurat@active.ident <- seurat$clustermap_names
+
+rds <- file.path(cache_dir, paste(sub_name, "upper_layer", "markers.rds", sep = "_"))
+if (file.exists(rds)) {
+  markers <- readRDS(rds)
+} else {
+  markers <- FindAllMarkers(seurat, only.pos = TRUE, verbose = FALSE)
+  saveRDS(markers, rds, compress = FALSE)
+}
+markers$cluster <- factor(markers$cluster, sort(unique(as.character(markers$cluster))))
+markers <- markers[markers$p_val_adj < 0.05, ]
+datatable_download(markers)
+markers <- markers %>% group_by(cluster) %>% slice_head(n = 5)
+
+sce <- SingleCellExperiment(list(counts = GetAssayData(seurat, slot = "counts")))
+sce$clustermap_names <- seurat$clustermap_names
+sce <- suppressWarnings(aggregateAcrossCells(sce, sce$clustermap_names))
+dge <- DGEList(counts(sce))
+dge <- calcNormFactors(dge)
+logcounts(sce, withDimnames = FALSE) <- cpm(dge, log = TRUE, prior.count = 3)
+sce <- sce[rownames(sce) %in% markers$gene, ]
+sce <- sce[match(markers$gene, rownames(sce)), ]
+
+mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
+Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
 ```
 
 # Radial Glia
