@@ -117,7 +117,20 @@ sce_sub <- sce[rownames(sce) %in% markers$gene, ]
 sce_sub <- sce_sub[match(markers$gene, rownames(sce_sub)), ]
 
 mat <- t(apply(logcounts(sce_sub), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    column_order = c(1, 2, 5, 4, 6, 3),
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # Excitatory Neuron
@@ -151,7 +164,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 
 seurat@active.ident <- seurat$clustermap_names_short
 
@@ -177,7 +202,20 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    column_names_rot = 45,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 
 seurat <- seurat[ , seurat$clustermap_names_short == "Ex Upper Layer"]
 seurat@active.ident <- seurat$clustermap_names
@@ -204,7 +242,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # Radial Glia
@@ -238,7 +288,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 
 seurat@active.ident <- seurat$clustermap_names_short
 
@@ -264,7 +326,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # IPC
@@ -298,7 +372,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # Inhibitory Neuron
@@ -332,7 +418,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 
 seurat@active.ident <- seurat$clustermap_names_short
 
@@ -358,7 +456,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # Mural
@@ -392,7 +502,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # Unclassified
@@ -426,7 +548,19 @@ sce <- sce[rownames(sce) %in% markers$gene, ]
 sce <- sce[match(markers$gene, rownames(sce)), ]
 
 mat <- t(apply(logcounts(sce), 1, function (x) ((2 * (x - min(x)) / (max(x) - min(x))) - 1)))
-Heatmap(mat, cluster_rows = FALSE, cluster_columns = FALSE)
+set.seed(1)
+draw(
+  Heatmap(
+    mat,
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    heatmap_legend_param = list(
+      title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
+      legend_width = unit(7.5, "cm")
+    )
+  ),
+  heatmap_legend_side = "top"
+)
 ```
 
 # References
