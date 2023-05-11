@@ -110,8 +110,14 @@ for (i in seq_along(sub_name)) {
   seurat_list[[i]]$comb$genotype <- factor(seurat_list[[i]]$comb$genotype, c("WT", "HET", "HOM"))
 }
 
-seurat_list[[1]]$clustermap_names_short <- factor(
-  seurat_list[[1]]$clustermap_names_short, c("Ex Newborn", "Ex Deep Layer", "Ex Upper Layer")
+seurat_list[[1]]$D120$clustermap_names_short <- factor(
+  seurat_list[[1]]$D120$clustermap_names_short, c("Ex Upper Layer", "Ex Deep Layer", "Ex Newborn")
+)
+seurat_list[[1]]$D72$clustermap_names_short <- factor(
+  seurat_list[[1]]$D72$clustermap_names_short, c("Ex Upper Layer", "Ex Deep Layer", "Ex Newborn")
+)
+seurat_list[[1]]$comb$clustermap_names_short <- factor(
+  seurat_list[[1]]$comb$clustermap_names_short, c("Ex Upper Layer", "Ex Deep Layer", "Ex Newborn")
 )
 ```
 
