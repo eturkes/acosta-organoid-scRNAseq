@@ -598,14 +598,18 @@ keep <- which(seurat_sub$timepoint == timepoint)
 seurat_sub <- seurat_sub[ , keep]
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
-  scale_fill_manual(values = hue_pal()(2))
+  scale_fill_manual(values = hue_pal()(2)) +
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
-  scale_fill_manual(values = hue_pal()(2))
+  scale_fill_manual(values = hue_pal()(2)) +
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
+  scale_fill_manual(values = hue_pal()(3)) +
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
+  scale_fill_manual(values = hue_pal()(3)) +
+  ylab("log1p Normalized Counts")
 ```
 
 ### Excitatory Neuron
@@ -1059,14 +1063,18 @@ keep <- which(seurat_sub$timepoint == timepoint)
 seurat_sub <- seurat_sub[ , keep]
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
-  scale_fill_manual(values = hue_pal()(2))
+  scale_fill_manual(values = hue_pal()(2)) +
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
-  scale_fill_manual(values = hue_pal()(2))
+  scale_fill_manual(values = hue_pal()(2)) +
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
+  scale_fill_manual(values = hue_pal()(3)) +
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
-  scale_fill_manual(values = hue_pal()(3))
+  scale_fill_manual(values = hue_pal()(3)) +
+  ylab("log1p Normalized Counts")
 ```
 
 ### Excitatory Neuron
