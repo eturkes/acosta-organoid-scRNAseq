@@ -100,7 +100,7 @@ for (i in seq_along(seurat_list)) {
   seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
   seurat_list[[i]]$cluster_names <- factor(
     seurat_list[[i]]$cluster_names,
-    c("Unclassified", "Mural", "IPC", "Inhibitory Neuron", "Excitatory Neuron", "Radial Glia")
+    c("Unclassified", "Mural", "IPC", "Radial Glia", "Inhibitory Neuron", "Excitatory Neuron")
   )
 }
 ```
@@ -119,7 +119,19 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   theme_classic() +
   scale_fill_manual(
     breaks = c(
-      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
+ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Number of Cells") +
+  ggtitle("D72 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(
+    breaks = c(
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
     ),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
@@ -130,6 +142,13 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_y_continuous(labels = percent) +
   ylab("Percent of Cells") +
+  ggtitle("D72 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Number of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
@@ -146,7 +165,19 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   theme_classic() +
   scale_fill_manual(
     breaks = c(
-      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
+ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Percent of Cells") +
+  ggtitle("D72 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(
+    breaks = c(
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
     ),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
@@ -157,6 +188,13 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_y_continuous(labels = percent) +
   ylab("Percent of Cells") +
+  ggtitle("D72 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Number of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
@@ -177,7 +215,19 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   theme_classic() +
   scale_fill_manual(
     breaks = c(
-      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
+ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Number of Cells") +
+  ggtitle("D120 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(
+    breaks = c(
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
     ),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
@@ -188,6 +238,13 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_y_continuous(labels = percent) +
   ylab("Percent of Cells") +
+  ggtitle("D120 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Number of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
@@ -204,7 +261,19 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   theme_classic() +
   scale_fill_manual(
     breaks = c(
-      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
+ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Percent of Cells") +
+  ggtitle("D120 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(
+    breaks = c(
+      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
     ),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
@@ -215,6 +284,13 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
   scale_y_continuous(labels = percent) +
   ylab("Percent of Cells") +
+  ggtitle("D120 Organoids") +
+  coord_flip() +
+  theme_classic() +
+  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
+  geom_bar(position = "stack", stat = "identity") +
+  ylab("Number of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
