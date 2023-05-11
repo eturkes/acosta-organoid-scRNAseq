@@ -112,7 +112,7 @@ df <- as.data.frame(table(seurat_list$D72$cluster_names, seurat_list$D72$sample)
 colnames(df) <- c("Celltype", "Sample", "Proportion")
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -125,6 +125,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   )
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Number of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -140,7 +141,7 @@ df <- as.data.frame(table(seurat_list$D72$subclusters, seurat_list$D72$sample))
 colnames(df) <- c("Celltype", "Sample", "Proportion")
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -148,6 +149,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Number of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -158,7 +160,7 @@ df <- as.data.frame(table(seurat_list$D72$cluster_names, seurat_list$D72$genotyp
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -171,6 +173,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   )
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -186,7 +189,7 @@ df <- as.data.frame(table(seurat_list$D72$subclusters, seurat_list$D72$genotype)
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -194,6 +197,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Number of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
@@ -208,7 +212,7 @@ df <- as.data.frame(table(seurat_list$D120$cluster_names, seurat_list$D120$sampl
 colnames(df) <- c("Celltype", "Sample", "Proportion")
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -221,6 +225,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   )
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Number of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -236,7 +241,7 @@ df <- as.data.frame(table(seurat_list$D120$subclusters, seurat_list$D120$sample)
 colnames(df) <- c("Celltype", "Sample", "Proportion")
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -244,6 +249,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Number of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -254,7 +260,7 @@ df <- as.data.frame(table(seurat_list$D120$cluster_names, seurat_list$D120$genot
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -267,6 +273,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   )
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -282,7 +289,7 @@ df <- as.data.frame(table(seurat_list$D120$subclusters, seurat_list$D120$genotyp
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "fill", stat = "identity") +
-  scale_y_continuous(labels = percent) +
+  scale_y_continuous(labels = percent, breaks = pretty_breaks(5)) +
   ylab("Percent of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
@@ -290,6 +297,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_y_continuous(breaks = pretty_breaks(5)) +
   ylab("Number of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
