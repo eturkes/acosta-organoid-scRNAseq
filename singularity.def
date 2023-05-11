@@ -32,6 +32,7 @@ From: rocker/rstudio:4.2.0
         -e "install.packages('fastmatch')" \
         -e "install.packages('volcano3D')" \
         -e "install.packages('flashClust')" \
+        -e "install.packages('pals')" \
         -e "install.packages('BiocManager')" \
         -e "install.packages('remotes')" \
         -e "BiocManager::install('SingleCellExperiment')" \
