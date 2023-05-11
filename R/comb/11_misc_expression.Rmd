@@ -125,17 +125,17 @@ seurat_sub <- seurat
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Remove Non-zero
@@ -146,17 +146,17 @@ seurat_sub <- seurat[ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Excitatory Neuron
@@ -172,23 +172,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -207,23 +207,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Radial Glia
@@ -239,23 +239,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -274,23 +274,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### IPC
@@ -306,23 +306,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -341,23 +341,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Inhibitory Neuron
@@ -373,23 +373,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -408,23 +408,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Mural
@@ -440,23 +440,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -475,23 +475,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Unclassified
@@ -507,23 +507,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -542,23 +542,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ## D120
@@ -575,17 +575,17 @@ seurat_sub <- seurat[ , keep]
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Remove Non-zero
@@ -621,23 +621,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -656,23 +656,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 remove <- which(
   seurat_sub$clustermap_names == "Ex Deep Layer 01" |
@@ -684,7 +684,7 @@ remove <- which(
 seurat_sub <- seurat_sub[ , -remove]
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Radial Glia
@@ -700,23 +700,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -735,23 +735,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### IPC
@@ -767,23 +767,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -802,23 +802,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Inhibitory Neuron
@@ -834,23 +834,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -869,23 +869,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Mural
@@ -901,23 +901,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -936,23 +936,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Unclassified
@@ -968,23 +968,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1003,23 +1003,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ## D72
@@ -1036,17 +1036,17 @@ seurat_sub <- seurat[ , keep]
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Remove Non-zero
@@ -1082,23 +1082,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1117,23 +1117,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Radial Glia
@@ -1149,23 +1149,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1184,23 +1184,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### IPC
@@ -1216,23 +1216,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1251,23 +1251,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Inhibitory Neuron
@@ -1283,23 +1283,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1318,23 +1318,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Mural
@@ -1350,23 +1350,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1385,23 +1385,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]][ , -remove]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 ### Unclassified
@@ -1417,23 +1417,23 @@ seurat_sub <- seurat_list[[seurat_idx]][[timepoint]]
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
   scale_fill_manual(values = hue_pal()(2)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
-  ylab("log1p Normalised Counts")
+  ylab("log1p Normalized Counts")
 ```
 
 #### Remove Non-zero
@@ -1452,23 +1452,23 @@ VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
 # 
 # VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "timepoint") +
 #   scale_fill_manual(values = hue_pal()(2)) +
-#   ylab("log1p Normalised Counts")
+#   ylab("log1p Normalized Counts")
 # VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "timepoint") +
 #   scale_fill_manual(values = hue_pal()(2)) +
-#   ylab("log1p Normalised Counts")
+#   ylab("log1p Normalized Counts")
 # VlnPlot(seurat_sub, gene, group.by = "genotype", split.by = "timepoint") +
 #   scale_fill_manual(values = hue_pal()(2)) +
-#   ylab("log1p Normalised Counts")
+#   ylab("log1p Normalized Counts")
 # 
 # VlnPlot(seurat_sub, gene, group.by = "clustermap_names_short", split.by = "genotype") +
 #   scale_fill_manual(values = hue_pal()(3)) +
-#   ylab("log1p Normalised Counts")
+#   ylab("log1p Normalized Counts")
 # VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
 #   scale_fill_manual(values = hue_pal()(3)) +
-#   ylab("log1p Normalised Counts")
+#   ylab("log1p Normalized Counts")
 # VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
 #   scale_fill_manual(values = hue_pal()(3)) +
-#   ylab("log1p Normalised Counts")
+#   ylab("log1p Normalized Counts")
 ```
 
 # References
