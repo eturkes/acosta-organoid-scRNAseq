@@ -84,7 +84,7 @@ if (!dir.exists(cache_dir)) {
 }
 # ------------------------------------------------
 
-knitr::opts_chunk$set(fig.width = 10, fig.height = 5, dpi = 300)
+knitr::opts_chunk$set(fig.width = 8, fig.height = 4, dpi = 300)
 ```
 
 # Prep
@@ -107,15 +107,15 @@ for (i in seq_along(seurat_list)) {
 seurat_list$D72$sample <- factor(
   seurat_list$D72$sample,
   c(
-    "D72_WT_rep1", "D72_WT_rep2", "D72_HET_rep1",
-    "D72_HET_rep2", "D72_HOMO_rep1", "D72_HOMO_rep2"
+    "D72_HOM_rep2", "D72_HOM_rep1", "D72_HET_rep2",
+    "D72_HET_rep1", "D72_WT_rep2", "D72_WT_rep1"
   )
 )
 seurat_list$D120$sample <- factor(
   seurat_list$D120$sample,
   c(
-    "D120_WT_rep1", "D120_WT_rep2", "D120_HET_rep1",
-    "D120_HET_rep2", "D120_HOMO_rep1", "D120_HOMO_rep2"
+    "D120_HOM_rep2", "D120_HOM_rep1", "D120_HET_rep2",
+    "D120_HET_rep1", "D120_WT_rep2", "D120_WT_rep1"
   )
 )
 ```
