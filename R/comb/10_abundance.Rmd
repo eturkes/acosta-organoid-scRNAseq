@@ -98,6 +98,10 @@ rm(timepoint_seurat)
 for (i in seq_along(seurat_list)) {
   seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
   seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
+  seurat_list[[i]]$cluster_names <- factor(
+    seurat_list[[i]]$cluster_names,
+    c("Unclassified", "Mural", "IPC", "Inhibitory Neuron", "Excitatory Neuron", "Radial Glia")
+  )
 }
 ```
 
@@ -113,7 +117,12 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 
 df <- as.data.frame(table(seurat_list$D72$subclusters, seurat_list$D72$sample))
 colnames(df) <- c("Celltype", "Sample", "Proportion")
@@ -135,7 +144,12 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 
 df <- as.data.frame(table(seurat_list$D72$subclusters, seurat_list$D72$genotype))
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
@@ -161,7 +175,12 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 
 df <- as.data.frame(table(seurat_list$D120$subclusters, seurat_list$D120$sample))
 colnames(df) <- c("Celltype", "Sample", "Proportion")
@@ -183,7 +202,12 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Radial Glia", "Excitatory Neuron", "Inhibitory Neuron", "IPC", "Mural", "Unclassified"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 
 df <- as.data.frame(table(seurat_list$D120$subclusters, seurat_list$D120$genotype))
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
