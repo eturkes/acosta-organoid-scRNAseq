@@ -189,7 +189,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
-  ylab("Percent of Cells") +
+  ylab("Number of Cells") +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
@@ -289,7 +289,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
-  ylab("Percent of Cells") +
+  ylab("Number of Cells") +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
