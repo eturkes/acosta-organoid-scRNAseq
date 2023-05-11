@@ -123,7 +123,7 @@ draw(
     mat,
     cluster_rows = FALSE,
     cluster_columns = FALSE,
-    column_order = c(1, 2, 5, 4, 6, 3),
+    column_order = c(2, 5, 1, 4, 6, 3),
     heatmap_legend_param = list(
       title = "Per-row Scaled Aggregated Expression", direction = "horizontal",
       legend_width = unit(7.5, "cm")

@@ -93,6 +93,11 @@ knitr::opts_chunk$set(fig.width = 12, fig.height = 7, dpi = 150)
 ```{r}
 seurat <- readRDS(file.path(cache_dir, "..", "03", "seurat.rds"))
 seurat$genotype <- factor(seurat$genotype, c("WT", "HET", "HOM"))
+seurat <- seurat[ , -(which(seurat$cluster_names == "Unclassified"))]
+seurat$cluster_names <- factor(
+  seurat$cluster_names,
+  c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural")
+)
 
 sub_name <- c("Ex", "RG", "IPC", "In", "Mu", "Unc")
 seurat_list <- list("list", length(sub_name))
@@ -104,6 +109,10 @@ for (i in seq_along(sub_name)) {
   seurat_list[[i]]$D72$genotype <- factor(seurat_list[[i]]$D72$genotype, c("WT", "HET", "HOM"))
   seurat_list[[i]]$comb$genotype <- factor(seurat_list[[i]]$comb$genotype, c("WT", "HET", "HOM"))
 }
+
+seurat_list[[1]]$clustermap_names_short <- factor(
+  seurat_list[[1]]$clustermap_names_short, c("Ex Newborn", "Ex Deep Layer", "Ex Upper Layer")
+)
 ```
 
 # GRAMD1B

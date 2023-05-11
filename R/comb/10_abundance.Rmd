@@ -96,13 +96,28 @@ seurat_list <- c(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb 
 rm(timepoint_seurat)
 
 for (i in seq_along(seurat_list)) {
-  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("WT", "HET", "HOM"))
+  seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("HOM", "HET", "WT"))
   seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
   seurat_list[[i]]$cluster_names <- factor(
     seurat_list[[i]]$cluster_names,
     c("Unclassified", "Mural", "IPC", "Radial Glia", "Inhibitory Neuron", "Excitatory Neuron")
   )
 }
+
+seurat_list$D72$sample <- factor(
+  seurat_list$D72$sample,
+  c(
+    "D72_WT_rep1", "D72_WT_rep2", "D72_HET_rep1",
+    "D72_HET_rep2", "D72_HOMO_rep1", "D72_HOMO_rep2"
+  )
+)
+seurat_list$D120$sample <- factor(
+  seurat_list$D120$sample,
+  c(
+    "D120_WT_rep1", "D120_WT_rep2", "D120_HET_rep1",
+    "D120_HET_rep2", "D120_HOMO_rep1", "D120_HOMO_rep2"
+  )
+)
 ```
 
 # D72
