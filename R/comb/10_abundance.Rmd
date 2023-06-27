@@ -96,11 +96,20 @@ seurat_list <- c(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb 
 rm(timepoint_seurat)
 
 for (i in seq_along(seurat_list)) {
+  remove <- which(seurat_list[[i]]$cluster_names == "Unclassified")
+  seurat_list[[i]] <- seurat_list[[i]][ , -remove]
   seurat_list[[i]]$genotype <- factor(seurat_list[[i]]$genotype, c("HOM", "HET", "WT"))
   seurat_list[[i]]$timepoint <- factor(seurat_list[[i]]$timepoint, c("D72", "D120"))
   seurat_list[[i]]$cluster_names <- factor(
     seurat_list[[i]]$cluster_names,
-    c("Unclassified", "Mural", "IPC", "Radial Glia", "Inhibitory Neuron", "Excitatory Neuron")
+    c("Mural", "IPC", "Radial Glia", "Inhibitory Neuron", "Excitatory Neuron")
+  )
+  seurat_list[[i]]$subclusters <- factor(
+    seurat_list[[i]]$subclusters,
+    c("Mu", "IPC",  "RG Late", "RG Early",
+      "RG Astrocyte", "In Unclassified", "In", "Ex Unclassified",
+      "Ex Newborn", "Ex Upper Layer", "Ex Deep Layer"
+    )
   )
 }
 
@@ -133,9 +142,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
@@ -146,9 +153,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 
@@ -161,7 +166,14 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
@@ -169,7 +181,14 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 
 df <- as.data.frame(table(seurat_list$D72$cluster_names, seurat_list$D72$genotype))
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
@@ -181,9 +200,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
@@ -194,9 +211,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 
@@ -209,7 +224,14 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
@@ -217,7 +239,14 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   ggtitle("D72 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 ```
 
 # D120
@@ -233,9 +262,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
@@ -246,9 +273,7 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 
@@ -261,7 +286,14 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
@@ -269,7 +301,14 @@ ggplot(df, aes(Sample, Proportion, fill = Celltype)) +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 
 df <- as.data.frame(table(seurat_list$D120$cluster_names, seurat_list$D120$genotype))
 colnames(df) <- c("Celltype", "Genotype", "Proportion")
@@ -281,9 +320,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
@@ -294,9 +331,7 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   coord_flip() +
   theme_classic() +
   scale_fill_manual(
-    breaks = c(
-      "Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified"
-    ),
+    breaks = c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural"),
     values = as.vector(cols25(length(unique(df$Celltype))))
   )
 
@@ -309,7 +344,14 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   geom_bar(position = "stack", stat = "identity") +
   scale_y_continuous(breaks = pretty_breaks(5)) +
@@ -317,7 +359,14 @@ ggplot(df, aes(Genotype, Proportion, fill = Celltype)) +
   ggtitle("D120 Organoids") +
   coord_flip() +
   theme_classic() +
-  scale_fill_manual(values = as.vector(cols25(length(unique(df$Celltype)))))
+  scale_fill_manual(
+    breaks = c(
+      "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified",
+      "In", "In Unclassified", "RG Astrocyte", "RG Early", 
+      "RG Late", "IPC", "Mu"
+    ),
+    values = as.vector(cols25(length(unique(df$Celltype))))
+  )
 ```
 
 # References
