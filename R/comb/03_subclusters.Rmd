@@ -1377,7 +1377,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
 final_annotations_long <- c(final_annotations_long, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
@@ -1608,7 +1608,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
 final_annotations_long <- c(final_annotations_long, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
@@ -1832,7 +1832,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
 final_annotations_long <- c(final_annotations_long, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
@@ -2058,7 +2058,7 @@ if (!file.exists(rds)) {
   saveRDS(file_list, rds, compress = FALSE)
 }
 
-final_annotations <- c(final_annotations, as.character(sub_seurat$clustermap_names_short))
+final_annotations <- c(final_annotations, as.character(file_list$comb$clustermap_names_short))
 final_annotations_long <- c(final_annotations_long, as.character(file_list$comb$clustermap_names))
 cell_order <- c(cell_order, colnames(sub_seurat))
 ```
