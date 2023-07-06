@@ -383,8 +383,15 @@ seurat <- RenameIdents(
   "74" = "Mural"
 )
 seurat$cluster_names <- seurat@active.ident
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names", "cat")
-red_dim_plot(seurat, "umap1", "umap2", "cluster_names", "cat")
+seurat$cluster_names <- factor(
+  seurat$cluster_names,
+  c("Excitatory Neuron", "Inhibitory Neuron", "Radial Glia", "IPC", "Mural", "Unclassified")
+)
+
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "cluster_names") +
+  guides(color = guide_legend(override.aes = list(size = 10)))
+red_dim_plot(seurat, "umap1", "umap2", "cluster_names") +
+  guides(color = guide_legend(override.aes = list(size = 10)))
 
 rds <- file.path(cache_dir, "rca_seurat.rds")
 if (!file.exists(rds)) {
