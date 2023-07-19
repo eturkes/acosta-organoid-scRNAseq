@@ -2071,7 +2071,8 @@ final_annotations_long <- final_annotations_long[match(colnames(seurat), cell_or
 
 seurat$subclusters <- factor(final_annotations)
 seurat$subclusters_long <- factor(final_annotations_long)
-red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters", "cat")
+red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters") +
+  guides(color = guide_legend(override.aes = list(size = 10)))
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters_long") + NoLegend()
 
 rds <- file.path(cache_dir, "seurat.rds")
