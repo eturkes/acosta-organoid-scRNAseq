@@ -1371,9 +1371,9 @@ red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") 
 red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
 
+file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
-  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
   saveRDS(file_list, rds, compress = FALSE)
 }
 
@@ -1602,9 +1602,9 @@ red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") 
 red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
 
+file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
-  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
   saveRDS(file_list, rds, compress = FALSE)
 }
 
@@ -1826,9 +1826,9 @@ red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") 
 red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
 
+file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
-  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
   saveRDS(file_list, rds, compress = FALSE)
 }
 
@@ -2052,9 +2052,9 @@ red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names", "cat") 
 red_dim_plot(timepoint_seurat$D72, "umap1", "umap2", "clustermap_names_short", "cat") +
   ggtitle("D72")
 
+file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
 rds <- file.path(cache_dir, paste(sub_name, "seurat_list.rds", sep = "_"))
 if (!file.exists(rds)) {
-  file_list <- list(D120 = timepoint_seurat$D120, D72 = timepoint_seurat$D72, comb = sub_seurat)
   saveRDS(file_list, rds, compress = FALSE)
 }
 
@@ -2069,7 +2069,14 @@ cell_order <- c(cell_order, colnames(sub_seurat))
 final_annotations <- final_annotations[match(colnames(seurat), cell_order)]
 final_annotations_long <- final_annotations_long[match(colnames(seurat), cell_order)]
 
-seurat$subclusters <- factor(final_annotations)
+seurat$subclusters <- factor(
+  final_annotations,
+  c(
+    "Ex Deep Layer", "Ex Upper Layer", "Ex Newborn", "Ex Unclassified", "In",
+    "In Unclassified", "RG Astrocyte", "RG OPC", "RG Early", "RG Late",
+    "RG Unclassified", "IPC", "Mu", "Unc"
+  )
+)
 seurat$subclusters_long <- factor(final_annotations_long)
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters") +
   guides(color = guide_legend(override.aes = list(size = 10)))
