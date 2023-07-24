@@ -67,7 +67,7 @@ The data here will be referenced using the name ``r unlist(strsplit(getwd(), "/"
 packages <- c(
   "conflicted", "Seurat", "ggplot2", "dplyr", "ggrepel", "SingleCellExperiment", "scuttle", "RCAv2",
   "data.table", "GSVA", "edgeR", "ComplexHeatmap", "ClusterMap", "filesstrings", "patchwork", "DT",
-  "viridis"
+  "viridis", "pals"
 )
 invisible(suppressPackageStartupMessages(lapply(packages, library, character.only = TRUE)))
 options(future.globals.maxSize = 10485760000)
@@ -2079,7 +2079,8 @@ seurat$subclusters <- factor(
 )
 seurat$subclusters_long <- factor(final_annotations_long)
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters") +
-  guides(color = guide_legend(override.aes = list(size = 10)))
+  guides(color = guide_legend(override.aes = list(size = 10))) +
+  scale_fill_manual(values = cols25(length(unique(seurat$subclusters))))
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters_long") + NoLegend()
 
 rds <- file.path(cache_dir, "seurat.rds")
