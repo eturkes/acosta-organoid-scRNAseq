@@ -2078,9 +2078,11 @@ seurat$subclusters <- factor(
   )
 )
 seurat$subclusters_long <- factor(final_annotations_long)
+n <- length(unique(seurat$subclusters))
+color <- cols25(n + 3)[c(1:(n - 2), n + 3, n)]
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters") +
   guides(color = guide_legend(override.aes = list(size = 10))) +
-  scale_fill_manual(values = cols25(length(unique(seurat$subclusters))))
+  scale_fill_manual(values = color)
 red_dim_plot(seurat, "rca_umap1", "rca_umap2", "subclusters_long") + NoLegend()
 
 rds <- file.path(cache_dir, "seurat.rds")
