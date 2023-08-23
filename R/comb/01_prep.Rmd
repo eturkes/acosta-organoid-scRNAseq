@@ -109,7 +109,9 @@ if (file.exists(rds)) {
 } else {
 
   file_list <- list.files(file.path(cache_dir, "..", ".."), recursive = TRUE)
-  file_list <- file_list[-grep("comb", file_list)]
+  if (length(grep("comb", file_list)) > 0) {
+    file_list <- file_list[-grep("comb", file_list)] 
+  }
   files <- vector("list", length(file_list))
   for (i in seq_along(files)) {
     files[[i]] <- readRDS(file.path(cache_dir, "..", "..", file_list[i]))
