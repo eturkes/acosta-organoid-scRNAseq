@@ -172,6 +172,12 @@ VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Excitatory Neuron
@@ -239,6 +245,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Radial Glia
@@ -306,6 +318,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### IPC
@@ -373,6 +391,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Inhibitory Neuron
@@ -440,6 +464,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Mural
@@ -507,6 +537,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Unclassified
@@ -574,6 +610,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ## D120
@@ -625,6 +667,12 @@ VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat[, which(seurat$timepoint == timepoint)])
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Excitatory Neuron
@@ -704,6 +752,12 @@ seurat_sub <- seurat_sub[ , -remove]
 VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Radial Glia
@@ -771,6 +825,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### IPC
@@ -838,6 +898,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Inhibitory Neuron
@@ -905,6 +971,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Mural
@@ -972,6 +1044,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Unclassified
@@ -1039,6 +1117,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ## D72
@@ -1090,6 +1174,12 @@ VlnPlot(seurat_sub, gene, group.by = "cluster_names", split.by = "genotype") +
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat[, which(seurat$timepoint == timepoint)])
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Excitatory Neuron
@@ -1157,6 +1247,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Radial Glia
@@ -1224,6 +1320,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### IPC
@@ -1291,6 +1393,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Inhibitory Neuron
@@ -1358,6 +1466,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Mural
@@ -1425,6 +1539,12 @@ VlnPlot(seurat_sub, gene, group.by = "clustermap_names", split.by = "genotype") 
 VlnPlot(seurat_sub, gene, group.by = "timepoint", split.by = "genotype") +
   scale_fill_manual(values = hue_pal()(3)) +
   ylab("log1p Normalized Counts")
+
+non_zero <- table(seurat_sub$genotype)
+all <- table(seurat_list[[seurat_idx]][[timepoint]]$genotype)
+non_zero
+all
+non_zero / all * 100
 ```
 
 ### Unclassified
