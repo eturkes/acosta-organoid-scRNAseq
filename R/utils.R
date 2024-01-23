@@ -1,5 +1,5 @@
 #    This file is part of acosta-organoid-scRNAseq.
-#    Copyright (C) 2022-2023  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
+#    Copyright (C) 2022-2024  Emir Turkes, Diana Acosta, Gi Guo, Yuzhou Chang,
 #    Hongjun Fu, Ohio State University Wexner Medical Center
 #
 #    This program is free software: you can redistribute it and/or modify
