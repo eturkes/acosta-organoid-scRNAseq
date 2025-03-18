@@ -1,5 +1,5 @@
 # Acosta Organoid scRNAseq
-#### *Please visit [https://github.com/eturkes/acosta-organoid-scRNAseq](https://github.com/eturkes/acosta-organoid-scRNAseq) for the latest up-to-date version of this codebase.*
+#### *Please visit [https://github.com/eturkes/acosta-organoid-scRNAseq](https://github.com/eturkes/acosta-organoid-scRNAseq) for the latest version of this codebase.*
 
 Analysis of organoid lines modeling FTD with Alzheimer's-like phenotype.  
 This repo contains all code to reproduce the analysis.  
