@@ -1,9 +1,9 @@
 # Acosta Organoid scRNAseq
-#### *Please visit [https://github.com/eturkes/acosta-organoid-scRNAseq](https://github.com/eturkes/acosta-organoid-scRNAseq) for latest up-to-date version of this codebase.*
+#### *Please visit [https://github.com/eturkes/acosta-organoid-scRNAseq](https://github.com/eturkes/acosta-organoid-scRNAseq) for the latest up-to-date version of this codebase.*
 
 Analysis of organoid lines modeling FTD with Alzheimer's-like phenotype.  
 This repo contains all code to reproduce the analysis.  
-Required processed data is available at: [https://www.dropbox.com/scl/fo/z50uy5cl5qoo56rjmlz8g/AHderLDov3AaJ18vh1PFxt8?rlkey=a648zfsfjvog9tp2bpu9bdgxy&st=e3vbc9cy&dl=0](https://www.dropbox.com/scl/fo/z50uy5cl5qoo56rjmlz8g/AHderLDov3AaJ18vh1PFxt8?rlkey=a648zfsfjvog9tp2bpu9bdgxy&st=e3vbc9cy&dl=0)  
+Required processed data is available at: [Dropbox Link](https://www.dropbox.com/scl/fo/z50uy5cl5qoo56rjmlz8g/AHderLDov3AaJ18vh1PFxt8?rlkey=a648zfsfjvog9tp2bpu9bdgxy&st=e3vbc9cy&dl=0).  
 Raw data (not needed) is available at the following GEO accession: [GSM8551336](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM8551336).
 
 ```
