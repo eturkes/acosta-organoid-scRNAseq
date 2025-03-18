@@ -1,9 +1,10 @@
 # Acosta Organoid scRNAseq
-#### *This analysis is complete and should not see major updates.*
+#### *Please visit [https://github.com/eturkes/acosta-organoid-scRNAseq](https://github.com/eturkes/acosta-organoid-scRNAseq) for latest up-to-date version of this codebase.*
 
-Analysis of organoid lines modeling FTD with Alzheimer's-like phenotype.
-This repo contains all code to reproduce the analysis.
-Required data however, are currently stored on OSC, they are described in this README.
+Analysis of organoid lines modeling FTD with Alzheimer's-like phenotype.  
+This repo contains all code to reproduce the analysis.  
+Required processed data is available at: [https://www.dropbox.com/scl/fo/z50uy5cl5qoo56rjmlz8g/AHderLDov3AaJ18vh1PFxt8?rlkey=a648zfsfjvog9tp2bpu9bdgxy&st=e3vbc9cy&dl=0](https://www.dropbox.com/scl/fo/z50uy5cl5qoo56rjmlz8g/AHderLDov3AaJ18vh1PFxt8?rlkey=a648zfsfjvog9tp2bpu9bdgxy&st=e3vbc9cy&dl=0)  
+Raw data (not needed) is available at the following GEO accession: [GSM8551336](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM8551336).
 
 ```
 This file is part of acosta-organoid-scRNAseq.
@@ -42,15 +43,9 @@ We can start with establishing the project structure/layout.
 This can be done by first cloning/downloading this repo.
 As this repo only contains source code it will be of negligible size.
 The project structure currently assumes a Unix environment as there are the top-level symbolic links `data` and `results` pointing to those respective directories within `storage`.
-These may have to be recreated on non-Unix OS such as Windows.
-Closer to the time of publication, the entire `storage` dir will be made available for download, for now it can be found in the following directory on OSC:
-
-```
-/fs/project/PAS1475/turkes2/acosta-organoid-scRNAseq/storage
-```
-
-This `storage` dir is neccessary to run the analysis.
-With the `storage` dir, one can also see all already computed results in the `results` dir.
+These symbolic links may have to be recreated on non-Unix OS such as Windows.
+Next, the folder in the Dropbox link (see top of README) should be downloaded and placed at the top-level of this project.
+Within this `storage` directory, one can also see all already computed results in the `results` dir.
 
 ### Step 2.
 
