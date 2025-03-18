@@ -44,7 +44,7 @@ This can be done by first cloning/downloading this repo.
 As this repo only contains source code it will be of negligible size.
 The project structure currently assumes a Unix environment as there are the top-level symbolic links `data` and `results` pointing to those respective directories within `storage`.
 These symbolic links may have to be recreated on non-Unix OS such as Windows.
-Next, the folder in the Dropbox link (see top of README) should be downloaded and placed at the top-level of this project.
+Next, download the entire folder in the Dropbox link (see top of README) and place it at the top-level of this project.
 Within this `storage` directory, one can also see all already computed results in the `results` dir.
 
 ### Step 2.
